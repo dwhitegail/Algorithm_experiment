@@ -1,0 +1,108 @@
+{{ block title }}
+    <div class="text-center mb-5">Task 1 Instructions</div>
+{{ endblock }}
+
+
+{{ block content }}
+
+    <div class="text-center">
+        <div id="vimeo-player"></div>
+    </div>
+
+    <div class="text-center mt-5">
+        {{ next_button }}
+        <br>
+        <i>(This button becomes active after you watch the video.)</i>
+    </div>
+
+{{ endblock }}
+
+{{ block scripts }}
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <script>
+        // Use jQuery's document ready function
+        $(function () {
+            const $nextButton = $('.otree-btn-next');
+            const $hiddenInput = $('#id_video_watched');
+            $nextButton.prop('disabled', true);
+
+            // --- Vimeo Player Logic ---
+            const options = {
+                id: '1090462940',
+                width: 800,
+                loop: false
+            };
+            const player = new Vimeo.Player('vimeo-player', options);
+            const requiredWatchPercentage = 0.95    ; // Require 95% of video to be watched
+            let videoDuration = 0;
+
+            player.getDuration().then(function(duration) {
+                videoDuration = duration;
+            }).catch(function(error) {
+                console.error('Error getting video duration: ', error);
+            });
+
+            player.on('timeupdate', function(data) {
+                if (videoDuration === 0) return; // safeguard against division by zero
+                player.getPlayed().then(function(played) {
+                    let totalPlayed = 0;
+                    for (let i = 0; i < played.length; i++) {
+                        totalPlayed += played[i][1] - played[i][0];
+                    }
+
+                    const watchedPercentage = totalPlayed / videoDuration;
+                    if (watchedPercentage >= requiredWatchPercentage) {
+                        enableNext();
+                        player.off('timeupdate'); // Stop listening to the event
+                    }
+                }).catch(function(error) {
+                    console.error('Error getting played time: ', error);
+                });
+            });
+
+            player.on('ended', enableNext);
+
+            // --- Function to enable the next button ---
+            function enableNext() {
+                $hiddenInput.val('True'); // Use .val() to set the value
+                $nextButton.prop('disabled', false); // Use .prop() to change the disabled property
+            }
+
+            // --- Developer Bypass Key Sequence Logic (jQuery version with logging) ---
+            let ctrlPressed = false;
+            let vPressed = false;
+
+            // Use jQuery's .on() for event handling
+            $(document).on('keydown', function(event) {
+                console.log("Key pressed:", event.key); // LOG 2: Shows every key press
+
+                if (event.key === 'Control') {
+                    ctrlPressed = true;
+                    console.log("Control key is down."); // LOG 3: Confirms Control key is detected
+                }
+
+                // Check for Ctrl + V
+                if (ctrlPressed && event.key.toLowerCase() === 'v') {
+                    vPressed = true;
+                    console.log("'V' key detected while Control is down."); // LOG 4: Confirms 'V' is detected
+                    event.preventDefault();
+                }
+
+                // Check for Ctrl + A (after Ctrl + V)
+                if (ctrlPressed && event.key.toLowerCase() === 'a' && vPressed) {
+                    console.log("'A' key detected, sequence complete."); // LOG 5: Confirms the full sequence
+                    enableNext();
+                    event.preventDefault();
+                }
+            });
+
+            $(document).on('keyup', function(event) {
+                if (event.key === 'Control') {
+                    ctrlPressed = false;
+                    vPressed = false;
+                    console.log("Control key released. Sequence reset.");
+                }
+            });
+        });
+    </script>
+{{ endblock }}

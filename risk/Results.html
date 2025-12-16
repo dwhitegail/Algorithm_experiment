@@ -1,0 +1,379 @@
+{% extends "global/Page.html" %}
+
+
+{% block style %}
+    <style>
+        .page-header {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-top: 10px;
+        }
+        body {
+          font-family: 'Verdana', sans-serif;
+          font-size: 24px;
+        }
+        .otree-body{
+            max-width: 1920px;
+            background-color: #F0F0F0;
+        }
+        #lotteries_div {
+            display: flex;
+            /*align-items: center;*/
+            justify-content: space-evenly;
+        }
+
+        #left_div, #right_div {
+            border: 1px solid transparent;
+            align-items: flex-start;
+        }
+        .not_selected {
+            border: 1px solid #D1D0CE;
+        }
+
+
+        div {
+            border: 1px solid transparent;
+        }
+
+        .selected {
+            border: 4px solid #4863A0 !important;
+            margin: -3px;
+        }
+
+        header {
+          overflow: auto;
+        }
+
+        .circle-letter {
+          width: 40px; /* Or any desired size */
+          height: 40px; /* Must be equal to width for a perfect circle */
+          border-radius: 50%; /* This makes the div circular */
+          background-color: white  ; /* Example background color for the circle */
+          color: #333; /* Example text color for the letter */
+          font-size: 24px; /* Adjust as needed for the letter's size */
+          font-family: Arial, sans-serif; /* Example font */
+          display: inline-flex;
+          justify-content: center; /* Centers content horizontally */
+          align-items: center; /* Centers content vertically */
+          border: 2px solid #333; /* Optional: if you want a border around the circle */
+          text-align: center; /* Ensures the text itself is centered if it wraps (less likely for a single letter) */
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2 class="text-center mb-5">Your Earnings from Task 1</h2>
+    <p>
+        <span id="round_text"></span>
+    </p>
+
+
+    <div id="lotteries_div">
+        <div id="left_div">
+            <ul>
+                Round selected for payment: {{ participant.risk_payoff_round }}
+                <br><br>
+                Your choice in round {{ participant.risk_payoff_round }} is now displayed.
+                <br><br>
+                Random number drawn: {{ random_number }}
+                <br><br>
+                <span id="coin">Random coin flip: <div class="circle-letter"> <span>{{ random_coin }}</span></div></span>
+                <br><br>
+                Your earnings from this task: ${{ earnings }}
+            </ul>
+        </div>
+        <div id="right_div">
+            <canvas id="right_canvas"></canvas>
+        </div>
+    </div>
+    <br>
+    <div class="text-center">
+        <button id="submit" class="otree-btn-next btn btn-primary"><span id="submit_text">Next</span></button>
+    </div>
+{% endblock %}
+
+{% block script %}
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.js"></script>-->
+
+    <script src= "{{ static 'fabric.js' }}" ></script>
+
+
+    <script>
+        let response = '{{ response }}';
+        let left_lottery = {{ left_lottery }};
+        let right_lottery = {{ right_lottery }};
+        let show_coin = {{ if show_random_coin }} true {{ else }} false {{ endif }};
+        console.log('show_random_coin: ' + '{{show_random_coin}}');
+
+        // This results page always shows the selected lottery on the right side of the screen.
+        // So, if the subject selected the Left lottery, then assign the left lottery to the right side.
+        if (response  === 'L'){
+            right_lottery = left_lottery;
+        }
+        let colors = ['#98AFC7', '#E77471', '#99C68E', '#DAA520'];
+
+        // const right_canvas = new fabric.Canvas('right_canvas', {
+        //     preserveObjectStacking: true,
+        //     selection: false,
+        //         // lockMovementX: 'true',
+        // });
+        //     fabric.Object.prototype.set({
+        //         // transparentCorners: true,
+        //         originX: 'center',
+        //         originY: 'center',
+        //         borderColor: 'transparent',
+        //         cornerColor: 'transparent',
+        //         lockScalingX: 'true',
+        //         lockScalingY: 'true',
+        //         lockMovementX: 'true',
+        //         lockMovementY: 'true',
+        //     });
+
+            // Display lotteries in standard pie charts
+
+            function get_pieslice_path(x_center, y_center, radius, angle_start, angle_stop){
+                let points = [];
+                // start at center of circle
+                points.push(new fabric.Point(x_center, y_center));
+                // add path that traces circumference between two angles
+                let step = 0.01;
+                for (let a= (angle_start  * Math.PI / 180); a < angle_stop * Math.PI / 180; a += step){
+                    let _x = x_center + radius * Math.cos(a);
+                    let _y = y_center + radius * Math.sin(a);
+                    let _point = new fabric.Point(_x, _y);
+                    points.push(_point);
+                }
+                return points;
+            }
+
+
+
+
+
+            // The following function support Double or Nothing logic
+        function expandListToRange(numbers, indicators) {
+            console.log('N ', numbers);
+            console.log('I ', indicators);
+            /**
+             * Expands a list of integers into a sequence based on an indicator list,
+             * returning the min and max of a contiguous range. The indicator list corresponds to the
+             * numbers list.  The range of the expanded list is determined by the
+             * sum of all numbers in the numbers list.
+             *
+             * @param {number[]} numbers - A list of integers.
+             * @param {number[]} indicators - A list of integers (0 or 1) indicating which numbers from the
+             * numbers from the expanded list to include return ranges.
+             * It should have the same length as the 'numbers' list.
+             *
+             * @returns {number[][] | null} A list of tuples, where each tuple represents the (min, max) of an
+             * indicated contiguous range in the expanded sequence, or null if the input lists
+             * are invalid. Returns an empty list if no contiguous ranges are found.
+             */
+            // if (!numbers || !indicators) {
+            //     return -1;  // Handle empty list case
+            // }
+            // if (numbers.length !== indicators.length) {
+            //     return -2;  // Handle lists of different lengths
+            // }
+            // if (numbers.some(n => n <= 0)) {
+            //     return -3;  // Handle non-positive numbers
+            // }
+
+            const totalSum = numbers.reduce((sum, num) => sum + num, 0);
+            const expandedRange = Array.from({ length: totalSum }, (_, i) => i + 1);
+            const ranges = [];
+            let start = null;
+
+            // Create a list of included values based on the indicators
+            const includedValues = [];
+            for (let i = 0; i < indicators.length; i++) {
+                if (indicators[i] === 1) {
+                    for (let j = sum(numbers.slice(0, i)) + 1; j <= sum(numbers.slice(0, i)) + numbers[i]; j++)
+                        includedValues.push(j);
+                }
+            }
+
+            function sum(arr) {
+                return arr.reduce((a, b) => a + b, 0);
+            }
+
+            for (const val of expandedRange) {
+                if (includedValues.includes(val)) {
+                    if (start === null) {
+                        start = val;
+                    }
+                    var end = val;
+                } else {
+                    if (start !== null) {
+                        ranges.push([start, end]);
+                        start = null;
+                    }
+                }
+            }
+            if (start !== null) {
+                ranges.push([start, end]);
+            }
+            return ranges;
+        }
+
+
+        document.addEventListener( 'DOMContentLoaded', function() {
+
+            // if (show_coin){
+            //     $('#coin').show();
+            // } else {
+            //     $('#coin').hide();
+            // }
+            $('#coin').toggle(show_coin);
+
+            // this defines the size of the left/right canvases
+            let canvas_width = 600;
+            let canvas_height = 800;
+
+            $('#left_canvas, #right_canvas').prop('width', canvas_width);
+            $('#left_canvas, #right_canvas').prop('height', canvas_height);
+
+
+
+            /** @type { import("fabric/fabric-impl") } */
+            const fabric = window.fabric;
+            // create `Canvas` object using `<left_canvas>` DOM node
+
+            const left_canvas = new fabric.Canvas('left_canvas', {
+                preserveObjectStacking: true,
+                selection: false,
+                // lockMovementX: 'true',
+            })
+
+           const right_canvas = new fabric.Canvas('right_canvas', {
+                preserveObjectStacking: true,
+                selection: false,
+                // lockMovementX: 'true',
+            })
+            fabric.Object.prototype.set({
+                // transparentCorners: true,
+                originX: 'center',
+                originY: 'center',
+                borderColor: 'transparent',
+                cornerColor: 'transparent',
+                lockScalingX: 'true',
+                lockScalingY: 'true',
+                lockMovementX: 'true',
+                lockMovementY: 'true',
+            });
+
+            let radius = 150;
+            let center_x = 300;
+            let center_y = 250;
+
+            // Right lottery
+
+            // Step through each of the lottery outcomes and create a pie slice for each (if p>0).
+
+            // Note that we must calculate probabilities given that the lotteries are expressed as urn compositions
+            // (i.e., the number of events associated with each outcome)
+            array_sum = 0;
+            right_lottery[0].forEach(num => array_sum += num);
+
+            // Check for 'Double or Nothing' (DON)
+
+            if (right_lottery.length>2){
+
+                // center_y += 50;
+
+                let DON_ranges = expandListToRange(right_lottery[0], right_lottery[2]);
+                console.log('RANGES:  ' + DON_ranges);
+
+                let DON_text;
+                if (DON_ranges.length == 1){
+                    DON_text = 'DOUBLE or NOTHING for numbers ' + DON_ranges[0][0] + ' to ' + DON_ranges[0][1];
+                } else {
+                    DON_text = 'DOUBLE or NOTHING for numbers ?????';
+                }
+
+                let txt = new fabric.Text(DON_text, {
+                    fontFamily: 'Calibri',
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    fill: 'black',
+                    stroke: 'black',
+                    // stroke: 'black',
+                    textAlign: 'center',
+                    left: center_x,
+                    top: 10,
+                });
+                right_canvas.add(txt);
+            }
+
+            for (let i=0; i<right_lottery[0].length; i++){
+                let start_angle = 0;
+                if (i>0){
+                    for (let j=0; j<i; j++){
+                        start_angle += (right_lottery[0][j] / array_sum)*360;
+                    }
+                }
+                let stop_angle = start_angle + (right_lottery[0][i] / array_sum)*360;
+                console.log('start: ' + start_angle);
+                console.log('stop: ' + stop_angle);
+                if (stop_angle > start_angle){
+                    let pieslice_points = get_pieslice_path(center_x, center_y, radius, start_angle, stop_angle);
+                    const polygon = new fabric.Polygon(pieslice_points, {
+                        fill: colors[i],
+                        stroke: colors[i],
+                        // strokeWidth: 2
+                        selectable: false,
+                    });
+                    right_canvas.add(polygon);
+
+                    // add money text on outer edge of each pie slice
+                    let mid_angle = (start_angle + stop_angle)/2;
+                    let radians = mid_angle * Math.PI / 180;
+                    let _x = center_x + (radius + 40) * Math.cos(radians);
+                    let _y = center_y + (radius + 40) * Math.sin(radians);
+                    let text_money = new fabric.Text('$' + right_lottery[1][i], {
+                        fontFamily: 'Calibri',
+                        fontSize: 36,
+                        fontWeight: 'bold',
+                        fill: colors[i],
+                        // stroke: colors[i],
+                        // stroke: 'black',
+                        textAlign: 'center',
+                        left: _x,
+                        top: _y,
+                    });
+                    right_canvas.add(text_money);
+
+                    // Add text details below the pie
+                    let prob = right_lottery[0][i] / array_sum * 100;
+                    let start_num = 1 + Math.round(100*start_angle/360);
+                    let stop_num = Math.round(100*stop_angle/360);
+                    let str = 'Chance of winning $' + right_lottery[1][i] + ' is ' + prob.toFixed(0) + '%  (numbers ' + start_num + ' to ' + stop_num +')';
+                    let text_details = new fabric.Text(str, {
+                        fontFamily: 'Calibri',
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        fill: colors[i],
+                        stroke: colors[i],
+                        // stroke: 'black',
+                        textAlign: 'center',
+                        left: center_x,
+                        top: center_y + radius + 150 + 50*(i),
+                    });
+                    right_canvas.add(text_details);
+                }
+            }
+
+        });
+
+
+
+
+
+
+
+
+
+        console.log(response);
+    </script>
+{% endblock %}

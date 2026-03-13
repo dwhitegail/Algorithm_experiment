@@ -189,4 +189,4 @@ def score_response(player: Player):
     player.efficiency = player.earnings / (player.alpha + player.beta)
 
 
-page_sequence = [Intro, MyPage, Results]
+page_sequence = [MyPage, Results]

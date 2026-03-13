@@ -53,13 +53,6 @@ class Intro(Page):
         return player.round_number == 1
 
 
-class Gender(Page):
-    form_model = 'player'
-    form_fields = ['gender']
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == 1
-
 
 class MyPage(Page):
 

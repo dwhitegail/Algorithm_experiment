@@ -144,9 +144,9 @@ class MyPage(Page):
             # Randomly select a prior round and save the associated player instance
             p_prior = random.choice(player.in_all_rounds())
 
-            if p_prior.response == 'L':
+            if p_prior.pre_beliefs == 'L':
                 lottery = json.loads(p_prior.left_lottery)
-            elif p_prior.response == 'R':
+            elif p_prior.pre_beliefs == 'R':
                 lottery = json.loads(p_prior.right_lottery)
             outcome = check_partition(p_prior.random_number, lottery[0])
 

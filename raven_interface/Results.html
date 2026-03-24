@@ -1,10 +1,10 @@
-{{ block title }}
+{% block title %}
     Your Results
-{{ endblock }}
+{% endblock %}
 
-{{ block content }}
-    {{my_table}}
-    {{ next_button }}
-{{ endblock }}
+{% block content %}
+    {{ my_table|safe }}
+    {% next_button %}
+{% endblock %}
 
 

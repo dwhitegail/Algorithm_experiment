@@ -1,0 +1,496 @@
+{% extends "global/Page.html" %}
+
+{% block style %}
+    <style>
+        :root {
+            --green:	#2db166;
+            --yellow:	#f1e826;
+            --orange:	#faa71b;
+            --red:	    #ef2f27;
+            --black:	#000000;
+            --blue:     #7cb5ec;
+        }
+
+
+
+
+
+        .page-header {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-top: 10px;
+        }
+
+        .otree-body{
+            max-width: 1366px;
+        }
+
+        .bins{}
+
+        .quantity {
+            position: relative;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .quantity input {
+            width: 50px;
+            height: 120px;
+            line-height: 1.65;
+            float: left;
+            display: block;
+            padding: 0;
+            margin: 0;
+            padding-left: 20px;
+            border: none;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+            border-radius: 4px;
+            /*text-align: left;*/
+        }
+
+        .quantity input:focus {
+            outline: 0;
+        }
+
+        .quantity-nav {
+            float: left;
+            position: relative;
+            height: 80px;
+        }
+
+        .quantity-button {
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            /*border: 1px solid black;*/
+            /*border-left: 1px solid rgba(0, 0, 0, 0.08);*/
+            width: 50px;
+            text-align: center;
+            color: #333;
+            font-size: 13px;
+            /*font-family: "FontAwesome" !important;*/
+            line-height: 1.5px;
+            padding: 0;
+            background: #FAFAFA;
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+
+        .quantity-button:active {
+            background: #EAEAEA;
+        }
+
+        .quantity-button.quantity-up {
+            position: absolute;
+            height: 50%;
+            top: 0;
+            /*border-bottom: 1px solid rgba(0, 0, 0, 0.08);*/
+            border-radius: 4px 4px 0 0;
+            /*line-height: 1.6*/
+        }
+
+        .quantity-button.quantity-down {
+            position: absolute;
+            bottom: -40px;
+            height: 50%;
+            border-radius: 0 0 4px 4px;
+        }
+
+        #submit_div {
+            /*display: flex;*/
+            /*align-items: center;*/
+            /*justify-content: space-between;*/
+            text-align: center;
+        }
+
+        #laptop_border {
+            position: absolute;
+            border-bottom: 1px solid red !important;
+            top: 0px;
+            left: 0px;
+            width: 1366px;
+            height: 768px;
+            z-index: -1;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+{#    <div id="laptop_border"></div>#}
+    <p>
+        <span id="round_text"></span>
+    </p>
+    <br>
+
+    <div class="row">
+        <div class="col-12 justify-content-center">
+            {{ stimulus_html|safe }}
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-12">
+            <div id="chart_container"></div>
+            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+            <br>
+            <div class="row bins" id="input_div"></div>
+        </div>
+    </div>
+
+    <br>
+
+
+    {{ for field in form }}
+        <input type="hidden" name={{field.name}} id="response" />
+    {{ endfor }}
+
+{#    <div id="submit_div">#}
+    <div class="row">
+        <div class="col-4" style="text-align: left">
+            <span id="unallocated_tokens"></span>
+        </div>
+        <div class="col-4" style="text-align: center">
+            <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
+        </div>
+
+        <div class="col-4" style="text-align: right">
+            <span id="directions">t</span>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'highcharts.js' %}"></script>
+    <script>
+
+
+        let qid = 42;
+        console.log ('QUESTION = ' + qid.toString());
+        let color = '#6495ED';
+        let bin_labels = {{bin_labels}};
+        console.log(bin_labels);
+        let num_bins = bin_labels.length;
+        let response = new Array(num_bins);
+        let scores = new Array(num_bins);
+        let i;
+        for (i=0; i < num_bins; i++)
+        {
+           response[i] = 0;
+           scores[i] = 0;
+        }
+
+        let num_tokens = {{num_tokens}};
+        let allocated_tokens = 0;
+        let unallocated_tokens = num_tokens;
+
+        let alpha = {{alpha}};
+        let beta = {{beta}};
+
+        let my_chart;
+
+        currency_a = '$';
+        currency_b = '';
+        or = 'OR';
+        submit = 'Submit';
+        round_a = 'Round ';
+        round_b = ' of ';
+        round_c = '';
+        unallocated_text = 'Unallocated tokens: ';
+        allocate_all = 'You must allocate all tokens before you are able to submit';
+        submit_text = 'Submit your decision or continue making choices';
+        tokens = 'tokens';
+
+        function scoring_rule(index) {
+            //console.log('in scoring rule')
+            let ss = 0;
+            let b;
+            for (b = 0; b < num_bins; b++) {
+                // division of two integers results in integer (with possible rounding), so multiply by 1.0 to convert to float
+                ss = ss + Math.pow(response[b] / num_tokens, 2); // forces result to be float
+            }
+            return alpha + beta * ((2 * response[index] / num_tokens) - ss);
+        };
+
+        function response_changed() {
+                // update chart
+                let i
+                for (i = 0; i < num_bins; i++) {
+                    scores[i] = scoring_rule(i);
+                }
+                my_chart.series[0].setData(scores);
+
+                // update remaining tokens
+                $('#unallocated_tokens').text(unallocated_text + unallocated_tokens.toString());
+
+                // update hidden form field
+                 $("#response").val(JSON.stringify(response));
+
+                // enable submit button if all tokens allocated
+                if (unallocated_tokens==0) {
+                    $('#submit').prop('disabled', false);
+                    $('#directions').text(submit_text)
+                } else {
+                    $('#submit').prop('disabled', true);
+                    $('#directions').text(allocate_all)
+                }
+        };
+
+        document.addEventListener( 'DOMContentLoaded', function() {
+
+            $('#round_text').text(    'Round ' + {{subsession.round_number}});
+
+            $('#submit_text').text(submit);
+
+
+            my_chart = Highcharts.chart('chart_container', {
+                title: {
+                    text: "",
+                },
+                chart: {
+                    type: "column",
+                    animation: false,
+                    marginTop: 40,  // Extra space so that bar labels are not cropped when always on top of bar.
+                },
+                // colors: ['#faa71b'],
+                // colors: [getComputedStyle(document.documentElement,null).getPropertyValue(color[0])],
+                colors: ['#6495ED'],
+                plotOptions: {
+                    series: {
+                        animation: false,
+                    },
+                column: {
+                    maxPointWidth: 100,  // max width of column
+                    dataLabels: {
+                        enabled: true,
+                        inside: false,
+                        crop: false,
+                        overflow: 'none',
+                        style: {
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                            textShadow: "0px",
+                            textOutline: "none",
+                        },
+                        formatter: function () {
+                            return currency_a + this.y.toFixed(2);
+                        }
+                    },
+                },
+                },
+                xAxis: {
+                    tickLength: 0,
+                    labels: {
+                        style: {
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                            textShadow: "0px",
+                            textOutline: "none",
+                        },
+                        formatter: function () {
+                            return bin_labels[this.value]
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '' // axis label
+                    },
+                    min: alpha - beta,
+                    max: alpha + beta,
+                    tickPositions: [alpha - beta, alpha - beta/2, alpha, alpha + beta/2, alpha + beta ],
+                    labels: {
+                        formatter: function () {
+                            return currency_a + this.value.toFixed(2)
+                        }
+                    },
+                    gridLineWidth: 0,
+                    lineWidth: 1,
+                    tickWidth: 1,
+                },
+                series: [{
+                    data: scores,
+
+                }],
+                credits: {
+                    enabled: false,
+                },
+                legend: {
+                    enabled: false,
+                },
+            });
+
+
+            function sliderRowMargins() {
+                let leftInt = -30
+                let rightInt = 0
+
+                leftInt = my_chart.xAxis[0].toPixels(-0.5,false) - my_chart.container.clientLeft
+                rightInt = my_chart.container.clientWidth - my_chart.xAxis[0].toPixels(num_bins - 0.5,false)
+
+                return {
+                    'margin-left': (leftInt) + 'px',
+                    'margin-right': (rightInt) + 'px',
+                }
+            }
+
+            $('.bins').css(sliderRowMargins());
+
+            // console.log(my_chart)
+            // console.log(sliderRowMargins())
+
+            for (i=0; i < num_bins; i++)
+            {
+                let bin_num = i; // local scope so that we don't see final value of i in some places...
+                let txt_html;
+
+                // add divs with token allocations
+                txt_html = "";
+                txt_html += "<div class='col d-flex justify-content-center'>";
+                txt_html += "<div class='large'><span id='tokens_span_" + bin_num.toString() + "'>0</span> "+ tokens + "</div>";
+                txt_html += "</div>";
+                $('#tokens_div').append(txt_html);
+
+                // add the updown spinner input widgets
+                txt_html = "";
+                txt_html += "<div class='quantity col d-flex justify-content-center' id='bin_" + bin_num.toString() + "'>";
+                txt_html += "<input type='number' min='0' max='" + num_tokens.toString() + "' step='1' value='0'  disabled='disabled'>";
+                txt_html += "</div>"
+                $('#input_div').append(txt_html);
+                $('<div class="quantity-nav"><button class="quantity-button quantity-up btn" type="button">&#708;</button><button class="quantity-button quantity-down btn" type="button">&#709;</button></div>').insertAfter('#bin_'+bin_num+' input');
+                $('#bin_'+i).each(function () {
+                    var spinner = $(this),
+                        input = spinner.find('input[type="number"]'),
+                        btnUp = spinner.find('.quantity-up'),
+                        btnDown = spinner.find('.quantity-down'),
+                        min = input.attr('min'),
+                        //max = input.attr('max');
+                        max = unallocated_tokens;
+
+                    var timeout, interval;
+
+                    let up_handled = false;
+                    $(btnUp).on('touchstart mousedown', function (e) {
+                        e.stopImmediatePropagation();
+                        if(e.type == "touchstart") {
+                            up_handled = true;
+                            handleIt();
+                        }
+                        else if(e.type == "mousedown" && !up_handled) {
+                            handleIt();
+                        }
+                        else {
+                            up_handled = false;
+                        }
+                        function handleIt(){
+                            increment_value();
+                            timeout = setTimeout(function() {
+                                interval = setInterval(function() {
+                                    increment_value();
+                                }, 50);
+                            }, 300);
+                            function increment_value() {
+                                let oldValue = parseFloat(input.val());
+                                let newVal
+                                if (unallocated_tokens <= 0) {
+                                    newVal = oldValue;
+                                } else {
+                                    newVal = oldValue + 1;
+                                    unallocated_tokens -= 1;
+                                    console.log(response)
+                                    response[bin_num] += 1;
+                                    response_changed();
+                                }
+                                $('#tokens_span_'+bin_num).text(newVal);
+                                spinner.find("input").val(newVal);
+                                spinner.find("input").trigger("change");
+                            }
+                        }
+
+                    });
+
+                    $(btnUp).on('touchend mouseup', clearTimers);
+                    $(btnUp).on('mouseleave', clearTimers);
+
+                    let down_handled = false;
+                    $(btnDown).on('touchstart mousedown', function (e) {
+                        e.stopImmediatePropagation();
+                        if(e.type == "touchstart") {
+                            down_handled = true;
+                            handleIt();
+                        }
+                        else if(e.type == "mousedown" && !down_handled) {
+                            handleIt();
+                        }
+                        else {
+                            down_handled = false;
+                        }
+                        function handleIt(){
+                            decrement_value();
+                            timeout = setTimeout(function() {
+                                interval = setInterval(function() {
+                                    decrement_value();
+                                }, 50);
+                            }, 300);
+                            function decrement_value() {
+                                let oldValue = parseFloat(input.val());
+                                let newVal;
+                                if (oldValue <= min) {
+                                    newVal = oldValue;
+                                } else {
+                                    newVal = oldValue - 1;
+                                    unallocated_tokens += 1;
+                                    response[bin_num] -= 1;
+                                    response_changed();
+                                }
+                                $('#tokens_span_'+bin_num).text(newVal);
+                                spinner.find("input").val(newVal);
+                                spinner.find("input").trigger("change");
+                            }
+                        }
+                     });
+
+                    $(btnDown).on('mouseup touchend', clearTimers);
+                    $(btnDown).on('mouseleave', clearTimers);
+
+                    function clearTimers() {
+                        clearTimeout(timeout);
+                        clearInterval(interval);
+                    }
+                });
+
+
+            }
+            //$('input').attr('max', 5);
+            // console.log(unallocated_tokens)
+
+            // Call the following on page load so that bars draw with zero allocation (instead of bars not showing)
+            response_changed();
+
+        });
+
+
+
+
+    </script>
+
+{% endblock %}

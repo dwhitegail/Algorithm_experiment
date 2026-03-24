@@ -15,6 +15,23 @@ SESSION_FIELDS = [
 ]
 
 SESSION_CONFIGS = [
+    # dict(
+    #     name='mpl_1',
+    #     display_name='multiple price list example',
+    #     num_demo_participants=1,
+    #     app_sequence=['mpl_example'],
+    # ),
+    dict(
+        name='advice_example',
+        display_name="advice app testing",
+        app_sequence=['advice'],
+        num_demo_participants=1,
+        questions=[
+            ['flat_earth', '<b>Is the Earth flat?</b>', ['Yes', 'No'], 2, ],
+            ['lemon_color', '<b>What color is a lemon?</b><br><br>1. Red<br>2. Yellow<br>3. Blue', ['Red', 'Yellow', 'Blue'], 2],
+            ['dog_legs', '<b>How many legs does a dog have?</b>', ['two', 'three', 'four', 'other'], 3],
+        ]
+    ),
     dict(
         name = "risk_piechart",
         language = 'english',

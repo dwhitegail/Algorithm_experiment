@@ -1,0 +1,11 @@
+{% block title %}
+    Your Advice
+{% endblock %}
+
+{% block content %}
+    {{ include advice_path | safe }}
+
+    <br><br>
+
+    {% next_button %}
+{% endblock %}

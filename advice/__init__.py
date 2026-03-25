@@ -24,7 +24,6 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     qid = models.StringField()
     question = models.StringField()
-    stimulus_html = models.LongStringField()
     alpha = models.FloatField(initial=10.0)
     beta = models.FloatField(initial=10.0)
     num_tokens = models.IntegerField(initial=10)
@@ -36,6 +35,7 @@ class Player(BasePlayer):
     earnings = models.FloatField(initial=0)
     accuracy = models.FloatField()
     efficiency = models.FloatField()
+    layout = models.StringField(initial='v')
 
     mpl_response = models.StringField()
     selected_row = models.IntegerField()
@@ -56,14 +56,12 @@ class Pre_beliefs(Page):
     def before_next_page(player, timeout_happened):
         response = json.loads(player.pre_beliefs)
         score_response(player, response)
-        # print(player.response)
-        # print(json.loads(player.response))
 
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
             qid=player.qid,
-            stimulus_html=player.stimulus_html,
+            stimulus_path=f"advice/stimulus/{player.qid}.html",
 
             alpha=player.alpha,
             beta=player.beta,
@@ -121,7 +119,7 @@ class Advice(Page):
     def vars_for_template(player: Player):
         return dict(
             # This builds the string: "my_app_name/advice/42.html"
-            advice_path=f"advice/advice/{player.qid}.html"
+            advice_path=f"advice/intervention/{player.qid}.html"
         )
 
 
@@ -141,7 +139,7 @@ class Post_beliefs(Page):
     def vars_for_template(player: Player):
         return dict(
             qid=player.qid,
-            stimulus_html=player.stimulus_html,
+            stimulus_path=f"advice/stimulus/{player.qid}.html",
 
             alpha=player.alpha,
             beta=player.beta,
@@ -243,13 +241,19 @@ def creating_session(subsession: Subsession):
         for p in subsession.get_players():
             question_data = questions[subsession.round_number - 1]
             p.qid = str(question_data[0])
-            p.stimulus_html = str(question_data[1])
             # p.question = "Please allocate your tokens based on your belief."
 
-            labels = question_data[2]
+            labels = question_data[1]
 
             p.bin_labels = json.dumps(labels)
             p.color = json.dumps(['#6495ED'])
+
+            # Layout logic: Normalize to 'h' or 'v'
+            layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'v'
+            if layout_input in ['h', 'horizontal']:
+                p.layout = 'h'
+            else:
+                p.layout = 'v'
 
 
 
@@ -268,7 +272,7 @@ def score_response(player: Player, response):
         score = player.alpha + player.beta * ((2 * response[cb]) - SS)
         return score
 
-    player.correct_bin = int(player.session.config['questions'][player.subsession.round_number-1][3]) - 1
+    player.correct_bin = int(player.session.config['questions'][player.subsession.round_number-1][2]) - 1
     player.earnings = ScoringRule(player.correct_bin)
 
     # response_dict = {f"response_bin{i+1}": response[i] for i in range(min(len(response), 8))}

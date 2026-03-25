@@ -27,9 +27,11 @@ SESSION_CONFIGS = [
         app_sequence=['advice'],
         num_demo_participants=1,
         questions=[
-            ['flat_earth', '<b>Is the Earth flat?</b>', ['Yes', 'No'], 2, ],
-            ['lemon_color', '<b>What color is a lemon?</b><br><br>1. Red<br>2. Yellow<br>3. Blue', ['Red', 'Yellow', 'Blue'], 2],
-            ['dog_legs', '<b>How many legs does a dog have?</b>', ['two', 'three', 'four', 'other'], 3],
+            # [qid, labels, correct_bin, layout]
+            ['weight01', ['< 120', '120-129', '130-139', '140-149', '150-159', '160-169', '170-179', '180-189', '190-199', '> 200'], 5, 'h'],
+            ['flat_earth', ['Yes', 'No'], 2, 'h'],
+            ['lemon_color', ['Red', 'Yellow', 'Blue'], 2, 'h'],
+            ['dog_legs', ['two', 'three', 'four', 'other'], 3, 'h'],
         ]
     ),
     dict(
@@ -109,19 +111,6 @@ SESSION_CONFIGS = [
            ]
         ],
     ),
-
-    dict(
-        name='raven_3questions',
-        display_name="3 Silly Questions (Test)",
-        app_sequence=['raven_interface'],
-        num_demo_participants=1,
-        questions=[
-            ['Q1', '<b>Is the Earth flat?</b>', ['True', 'False'], 2],
-            ['Q2', '<b>What color is a lemon?</b><br><br>1. Red<br>2. Yellow<br>3. Blue', ['Red', 'Yellow', 'Blue'], 2],
-            ['Q3', '<b>How many legs does a dog have?</b>', ['2', '3', '4', '5'], 3],
-        ]
-    ),
-
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

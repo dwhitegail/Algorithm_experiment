@@ -138,11 +138,21 @@
     <br>
 
     <div class="row">
-        <div class="col-12 justify-content-center">
-            {{ stimulus_html|safe }}
+        <div class="{% if player.layout == 'h' %}col-4{% else %}col-12{% endif %} justify-content-center">
+            {{ include stimulus_path | safe }}
         </div>
+
+        {% if player.layout == 'h' %}
+        <div class="col-8">
+            <div id="chart_container"></div>
+            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+            <br>
+            <div class="row bins" id="input_div"></div>
+        </div>
+        {% endif %}
     </div>
 
+    {% if player.layout != 'h' %}
     <br>
 
     <div class="row">
@@ -153,6 +163,7 @@
             <div class="row bins" id="input_div"></div>
         </div>
     </div>
+    {% endif %}
 
     <br>
 

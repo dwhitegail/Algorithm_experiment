@@ -219,8 +219,8 @@
 
         let my_chart;
 
-        currency_a = '$';
-        currency_b = '';
+        currency_a = '';
+        currency_b = 'points';
         or = 'OR';
         submit = 'Submit';
         round_a = 'Round ';
@@ -303,7 +303,8 @@
                             textOutline: "none",
                         },
                         formatter: function () {
-                            return currency_a + this.y.toFixed(2);
+                            // return currency_a + this.y.toFixed(2) + currency_b;
+                            return currency_a + this.y.toFixed(2) + '<br/>' + currency_b;
                         }
                     },
                 },

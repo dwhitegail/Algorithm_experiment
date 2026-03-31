@@ -24,9 +24,9 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     qid = models.StringField()
     question = models.StringField()
-    alpha = models.FloatField(initial=10.0)
-    beta = models.FloatField(initial=10.0)
-    num_tokens = models.IntegerField(initial=10)
+    alpha = models.FloatField(initial=50.0)
+    beta = models.FloatField(initial=50.0)
+    num_tokens = models.IntegerField(initial=100)
     color = models.StringField()
     bin_labels = models.StringField()
     pre_beliefs = models.StringField()

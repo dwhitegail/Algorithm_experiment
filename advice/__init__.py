@@ -1,6 +1,7 @@
 from otree.api import *
 import json
 import csv
+import random
 
 
 doc = """
@@ -26,7 +27,7 @@ class Player(BasePlayer):
     question = models.StringField()
     alpha = models.FloatField(initial=50.0)
     beta = models.FloatField(initial=50.0)
-    num_tokens = models.IntegerField(initial=100)
+    num_tokens = models.IntegerField(initial=20)
     color = models.StringField()
     bin_labels = models.StringField()
     pre_beliefs = models.StringField()
@@ -42,6 +43,17 @@ class Player(BasePlayer):
     advice_purchased = models.BooleanField()
     selected_value = models.IntegerField()
 
+    pre_BLP_draw = models.FloatField(initial=-1)
+    post_BLP_draw = models.FloatField(initial=-1)
+    pre_score = models.FloatField(initial=0)
+    post_score = models.FloatField(initial=0)
+    pre_earnings = models.FloatField(initial=0)
+    post_earnings = models.FloatField(initial=0)
+    pre_accuracy = models.FloatField(initial=0)
+    post_accuracy = models.FloatField(initial=0)
+    pre_efficiency = models.FloatField(initial=0)
+    post_efficiency = models.FloatField(initial=0)
+
 
 # PAGES
 
@@ -55,7 +67,11 @@ class Pre_beliefs(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         response = json.loads(player.pre_beliefs)
-        score_response(player, response)
+        score, earnings, accuracy, efficiency = score_response(player, response, player.pre_BLP_draw)
+        player.pre_score = score
+        player.pre_earnings = earnings
+        player.pre_accuracy = accuracy
+        player.pre_efficiency = efficiency
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -131,7 +147,11 @@ class Post_beliefs(Page):
     @staticmethod
     def before_next_page(player, timeout_happened):
         response = json.loads(player.post_beliefs)
-        score_response(player, response)
+        score, earnings, accuracy, efficiency = score_response(player, response, player.post_BLP_draw)
+        player.post_score = score
+        player.post_earnings = earnings
+        player.post_accuracy = accuracy
+        player.post_efficiency = efficiency
         # print(player.response)
         # print(json.loads(player.response))
 
@@ -205,14 +225,19 @@ class Results(Page):
         sum_efficiency = 0
         for i in range(num_rounds):
             p = player.in_round(i+1)
-            sum_accuracy += p.accuracy
-            sum_earnings += p.earnings
-            sum_efficiency += p.efficiency
+            # Use post_ beliefs for final results
+            acc = p.post_accuracy
+            earn = p.post_earnings
+            eff = p.post_efficiency
+
+            sum_accuracy += acc
+            sum_earnings += earn
+            sum_efficiency += eff
             s += "<tr>"
             s += "    <td class='text-center'>" + str(p.round_number) + "</td>"
-            s += "    <td class='text-center'>" + str(round(p.accuracy*100, 2)) + "%</td>"
-            s += "    <td class='text-center'>$" + str(round(p.earnings, 2)) + "</td>"
-            s += "    <td class='text-center'>" + str(round(p.efficiency, 4)) + "</td>"
+            s += "    <td class='text-center'>" + str(round(acc*100, 2)) + "%</td>"
+            s += "    <td class='text-center'>$" + str(round(earn, 2)) + "</td>"
+            s += "    <td class='text-center'>" + str(round(eff, 4)) + "</td>"
             s += "</tr>"
         average_accuracy = sum_accuracy / num_rounds if num_rounds > 0 else 0
         average_earnings = sum_earnings / num_rounds if num_rounds > 0 else 0
@@ -255,9 +280,12 @@ def creating_session(subsession: Subsession):
             else:
                 p.layout = 'v'
 
+            p.pre_BLP_draw = round(random.uniform(0, 100), 2)
+            p.post_BLP_draw = round(random.uniform(0, 100), 2)
 
 
-def score_response(player: Player, response):
+
+def score_response(player: Player, response, draw):
     # response = json.loads(player.pre_beliefs)
     num_bins = len(response)
     for i in range(len(response)):
@@ -273,14 +301,29 @@ def score_response(player: Player, response):
         return score
 
     player.correct_bin = int(player.session.config['questions'][player.subsession.round_number-1][2]) - 1
-    player.earnings = ScoringRule(player.correct_bin)
+
+    # BLP START -----------------------
+    # This part of code must handle both BLP and non-BLP cases. For now it is fixed for BLP
+    score = round(ScoringRule(player.correct_bin), 2)
+
+    # The following line is for non-BLP
+    # player.earnings = score
+
+    # The following lines are for BLP
+    if draw <= score:
+        earnings = 10    # hardwired for $10 presently
+    else:
+        earnings = 0
+    # BLP END -----------------------
 
     # response_dict = {f"response_bin{i+1}": response[i] for i in range(min(len(response), 8))}
     # for field, val in response_dict.items():
     #     setattr(player, field, val)
 
-    player.accuracy = response[player.correct_bin]
-    player.efficiency = player.earnings / (player.alpha + player.beta)
+    accuracy = response[player.correct_bin]
+    efficiency = earnings / (player.alpha + player.beta)
+
+    return score, earnings, accuracy, efficiency
 
 
 page_sequence = [Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs]

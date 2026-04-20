@@ -29,9 +29,13 @@ SESSION_CONFIGS = [
         questions=[
             # [qid, labels, correct_bin, layout]
             ['weight01', ['< 120', '120-129', '130-139', '140-149', '150-159', '160-169', '170-179', '180-189', '190-199', '> 200'], 5, 'h'],
-            ['flat_earth', ['Yes', 'No'], 2, 'h'],
-            ['lemon_color', ['Red', 'Yellow', 'Blue'], 2, 'h'],
-            ['dog_legs', ['two', 'three', 'four', 'other'], 3, 'h'],
+            ['height01', ["Under 5'0", "5'0-5'2", "5'3-5'5", "5'6-5'8",
+                          "5'9-5'11", "6'0-6'2", "6'3-6'5", "6'6-6'8",
+                          "6'9-6'11", "Over 7'0"], 5, 'h'],
+            ['song01', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more'], 1, 'h'],
+            ['song02', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more'], 2, 'h'],
+           # ['lemon_color', ['Red', 'Yellow', 'Blue'], 2, 'h'],
+            # ['dog_legs', ['two', 'three', 'four', 'other'], 3, 'h'],
         ]
     ),
     dict(

@@ -64,10 +64,10 @@
                 let side = id.charAt(0);
 
                 if (side == "L") {
-                    response[row-1] = 0
+                    response[row] = 0
                     $('#R' + row).removeClass('selected');
                 } else if (side == "R") {
-                    response[row-1] = 1
+                    response[row] = 1
                     $('#L' + row).removeClass('selected');
                 }
                 $("#response").val(JSON.stringify(response));

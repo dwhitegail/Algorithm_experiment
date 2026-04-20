@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'advice'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 4
 
 
 class Subsession(BaseSubsession):
@@ -93,12 +93,13 @@ class Mpl(Page):
 
     def vars_for_template(player):
         # Define the number of rows for your MPL.
-        num_rows = 10
+        num_rows = 7
         rows = []
 
-        for i in range(1, num_rows + 1):
-            left_option = f"Buy advice for ${i}"
-            right_option = "Do not buy advice"
+        for i in range(0, num_rows):
+            n = 1 + i*.25
+            left_option = f"Buy advice for ${n}"
+            right_option = f"Do not buy advice for ${n}"
 
             rows.append({
                 'id': i,
@@ -175,12 +176,13 @@ class ResultsWaitPage(WaitPage):
 
 class Mpl_results(Page):
     def vars_for_template(player: Player):
-        num_rows = 10
+        num_rows = 7
         rows = []
 
-        for i in range(1, num_rows + 1):
-            left_option = f"Buy advice for ${i}"
-            right_option = "Do not buy advice"
+        for i in range(0, num_rows):
+            n = 1 + i * .25
+            left_option = f"Buy advice for ${n}"
+            right_option = f"Do not buy advice for ${n}"
 
             rows.append({
                 'id': i,

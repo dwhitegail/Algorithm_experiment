@@ -11,6 +11,7 @@ Your app description
 """
 
 
+
 class Constants(BaseConstants):
     name_in_url = 'risk'
     players_per_group = None

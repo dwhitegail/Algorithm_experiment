@@ -1,4 +1,4 @@
-{#{% extends "global/Page.html" %}#}
+{% extends "global/Page.html" %}
 
 {% block style %}
     <style>
@@ -137,29 +137,40 @@
     </p>
     <br>
 
-<!--    <div class="row">-->
-<!--        <div class="col-12 justify-content-center">-->
-<!--            {{ player.question }}-->
-<!--        </div>-->
-<!--    </div>-->
-
-    <div class = "row">
-        <div class = "col-4">
-<!--            <img id="full_pic" class="img-fluid"/>-->
+    <div class="row">
+        <div class="{% if player.layout == 'h' %}col-4{% else %}col-12{% endif %} justify-content-center">
+            {{ include stimulus_path | safe }}
         </div>
-        <div class = "col-8">
+
+        {% if player.layout == 'h' %}
+        <div class="col-8">
             <div id="chart_container"></div>
-<!--            <div class="row bins" id="puzzle_pieces_div"></div>-->
             <div class="row bins" id="tokens_div" style="font-size:14px"></div>
             <br>
-            <div class="row bins" id="input_div">
+            <div class="row bins" id="input_div"></div>
         </div>
+        {% endif %}
     </div>
 
-   </div>
+    {% if player.layout != 'h' %}
     <br>
 
-    <input type="hidden" name="response" id="response" />
+    <div class="row">
+        <div class="col-12">
+            <div id="chart_container"></div>
+            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+            <br>
+            <div class="row bins" id="input_div"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <br>
+
+
+    {{ for field in form }}
+        <input type="hidden" name={{field.name}} id="response" />
+    {{ endfor }}
 
 {#    <div id="submit_div">#}
     <div class="row">
@@ -183,15 +194,12 @@
     <script src="{% static 'highcharts.js' %}"></script>
     <script>
 
-        const relativePaths = {{ image_paths|json }};
 
-        let url = 'https://static-assets-sn9cfm28nxl7m72wfgzcp0i9jfmpo7b.s3.us-east-2.amazonaws.com/';
-        let qid = '{{ player.qid }}';
-        console.log ('QUESTION = ' + qid);
-        let color = {{ player.color }};
-        console.log('color: ' + color[0]);
-        console.log({{ player.bin_labels }});
-        let bin_labels = {{ player.bin_labels }};
+        let qid = 42;
+        console.log ('QUESTION = ' + qid.toString());
+        let color = '#6495ED';
+        let bin_labels = {{bin_labels}};
+        console.log(bin_labels);
         let num_bins = bin_labels.length;
         let response = new Array(num_bins);
         let scores = new Array(num_bins);
@@ -202,17 +210,17 @@
            scores[i] = 0;
         }
 
-        let num_tokens = {{ player.num_tokens }};
+        let num_tokens = {{num_tokens}};
         let allocated_tokens = 0;
         let unallocated_tokens = num_tokens;
 
-        let alpha = {{ player.alpha }};
-        let beta = {{ player.beta }};
+        let alpha = {{alpha}};
+        let beta = {{beta}};
 
         let my_chart;
 
-        currency_a = '$';
-        currency_b = '';
+        currency_a = '';
+        currency_b = 'points';
         or = 'OR';
         submit = 'Submit';
         round_a = 'Round ';
@@ -247,7 +255,6 @@
 
                 // update hidden form field
                  $("#response").val(JSON.stringify(response));
-                 console.log($("#response").val(JSON.stringify(response)));
 
                 // enable submit button if all tokens allocated
                 if (unallocated_tokens==0) {
@@ -261,12 +268,9 @@
 
         document.addEventListener( 'DOMContentLoaded', function() {
 
-            $('#round_text').text(    'Round ' + {{ subsession.round_number }} )
+            $('#round_text').text(    'Round ' + {{subsession.round_number}});
 
             $('#submit_text').text(submit);
-
-            let img = url + qid + '.png';
-            $('#full_pic').attr('src', img);
 
 
             my_chart = Highcharts.chart('chart_container', {
@@ -299,7 +303,8 @@
                             textOutline: "none",
                         },
                         formatter: function () {
-                            return currency_a + this.y.toFixed(2);
+                            // return currency_a + this.y.toFixed(2) + currency_b;
+                            return currency_a + this.y.toFixed(2) + '<br/>' + currency_b;
                         }
                     },
                 },
@@ -369,14 +374,6 @@
             {
                 let bin_num = i; // local scope so that we don't see final value of i in some places...
                 let txt_html;
-
-                // add the puzzle pieces
-                txt_html = "";
-                txt_html += "<div class='col d-flex justify-content-center'>";
-                let image = 'https://static-assets-sn9cfm28nxl7m72wfgzcp0i9jfmpo7b.s3.us-east-2.amazonaws.com/' + qid + '_' + (i+1) + '.png';
-                txt_html += "<img src='" + image + "' width='75px' />";
-                txt_html += "</div>";
-                $('#puzzle_pieces_div').append(txt_html);
 
                 // add divs with token allocations
                 txt_html = "";

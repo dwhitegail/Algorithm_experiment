@@ -15,6 +15,29 @@ SESSION_FIELDS = [
 ]
 
 SESSION_CONFIGS = [
+    # dict(
+    #     name='mpl_1',
+    #     display_name='multiple price list example',
+    #     num_demo_participants=1,
+    #     app_sequence=['mpl_example'],
+    # ),
+    dict(
+        name='advice_example',
+        display_name="advice app testing",
+        app_sequence=['advice'],
+        num_demo_participants=1,
+        questions=[
+            # [qid, labels, correct_bin, layout]
+            ['weight01', ['< 120', '120-129', '130-139', '140-149', '150-159', '160-169', '170-179', '180-189', '190-199', '> 200'], 5, 'h'],
+            ['height01', ["Under 5'0", "5'0-5'2", "5'3-5'5", "5'6-5'8",
+                          "5'9-5'11", "6'0-6'2", "6'3-6'5", "6'6-6'8",
+                          "6'9-6'11", "Over 7'0"], 5, 'h'],
+            ['song01', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more'], 1, 'h'],
+            ['song02', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more'], 2, 'h'],
+           # ['lemon_color', ['Red', 'Yellow', 'Blue'], 2, 'h'],
+            # ['dog_legs', ['two', 'three', 'four', 'other'], 3, 'h'],
+        ]
+    ),
     dict(
         name = "risk_piechart",
         language = 'english',
@@ -92,64 +115,6 @@ SESSION_CONFIGS = [
            ]
         ],
     ),
-
-    dict(
-        name='raven_3questions',
-        display_name="First 3 questions from RAPM Set 2 (for testing results page with more than 1 question)",
-        app_sequence=['raven_interface'],
-        num_demo_participants=1,
-        questions=[
-            ['raven_set2_q1', 8, 5],
-            ['raven_set2_q2', 8, 1],
-            ['raven_set2_q3', 8, 7],
-        ]
-    ),
-    dict(
-        name='raven_interface',
-        display_name="RAPM Set 2 (36 questions)",
-        app_sequence=['raven_interface'],
-        num_demo_participants=1,
-        questions=[
-            ['raven_set2_q1', 8, 5],
-            ['raven_set2_q2', 8, 1],
-            ['raven_set2_q3', 8, 7],
-            ['raven_set2_q4', 8, 4],
-            ['raven_set2_q5', 8, 3],
-            ['raven_set2_q6', 8, 1],
-            ['raven_set2_q7', 8, 6],
-            ['raven_set2_q8', 8, 1],
-            ['raven_set2_q9', 8, 8],
-            ['raven_set2_q10', 8, 4],
-            ['raven_set2_q11', 8, 5],
-            ['raven_set2_q12', 8, 6],
-            ['raven_set2_q13', 8, 2],
-            ['raven_set2_q14', 8, 1],
-            ['raven_set2_q15', 8, 2],
-            ['raven_set2_q16', 8, 4],
-            ['raven_set2_q17', 8, 6],
-            ['raven_set2_q18', 8, 7],
-            ['raven_set2_q19', 8, 3],
-            ['raven_set2_q20', 8, 8],
-            ['raven_set2_q21', 8, 8],
-            ['raven_set2_q22', 8, 7],
-            ['raven_set2_q23', 8, 6],
-            ['raven_set2_q24', 8, 3],
-            ['raven_set2_q25', 8, 7],
-            ['raven_set2_q26', 8, 2],
-            ['raven_set2_q27', 8, 7],
-            ['raven_set2_q28', 8, 5],
-            ['raven_set2_q29', 8, 6],
-            ['raven_set2_q30', 8, 5],
-            ['raven_set2_q31', 8, 4],
-            ['raven_set2_q32', 8, 8],
-            ['raven_set2_q33', 8, 5],
-            ['raven_set2_q34', 8, 1],
-            ['raven_set2_q35', 8, 3],
-            ['raven_set2_q36', 8, 2],
-        ]
-
-    ),
-
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

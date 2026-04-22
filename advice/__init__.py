@@ -41,7 +41,7 @@ class Player(BasePlayer):
     mpl_response = models.StringField()
     selected_row = models.IntegerField()
     advice_purchased = models.BooleanField()
-    selected_value = models.IntegerField()
+    selected_value = models.FloatField()
 
     pre_BLP_draw = models.FloatField(initial=-1)
     post_BLP_draw = models.FloatField(initial=-1)
@@ -97,9 +97,10 @@ class Mpl(Page):
         rows = []
 
         for i in range(0, num_rows):
+            # The following line is responsible for the monetary values shown in the MPL.
             n = 1 + i*.25
-            left_option = f"Buy advice for ${n}"
-            right_option = f"Do not buy advice for ${n}"
+            left_option = f"Buy advice for ${n:.2f}"
+            right_option = f"Do not buy advice for ${n:.2f}"
 
             rows.append({
                 'id': i,
@@ -118,11 +119,13 @@ class Mpl(Page):
         response = json.loads(player.mpl_response)
         num_rows = len(response)
         selected_row_idx = random.randint(0, num_rows - 1)
-        player.selected_row = selected_row_idx + 1  # 1-indexed
+        # This line transforms the selected row into the monetary amount shown in the selected row.
+        player.selected_value = selected_row_idx * .25 + 1
+        player.selected_row = selected_row_idx
 
         # In MyPage: 0 = L (purchase), 1 = R (forego)
         player.advice_purchased = (response[selected_row_idx] == 0)
-        player.selected_value = selected_row_idx + 1
+
 
 
 class Advice(Page):
@@ -180,9 +183,10 @@ class Mpl_results(Page):
         rows = []
 
         for i in range(0, num_rows):
+            # this line displays MPL monetary amounts in 25cent increments.
             n = 1 + i * .25
-            left_option = f"Buy advice for ${n}"
-            right_option = f"Do not buy advice for ${n}"
+            left_option = f"Buy advice for ${n:.2f}"
+            right_option = f"Do not buy advice for ${n:.2f}"
 
             rows.append({
                 'id': i,
@@ -197,7 +201,7 @@ class Mpl_results(Page):
         return dict(
             num_rows=num_rows,
             rows=rows,
-            selected_row=player.selected_row,
+            selected_row=player.selected_row + 1,
             is_purchase=player.advice_purchased,
             selected_value=player.selected_value
         )

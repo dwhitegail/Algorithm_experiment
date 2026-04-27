@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'advice'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 6
+    NUM_ROUNDS = 3
     PARTICIPATION_FEE = 10.00
     ENDOWMENT = 10.00
 
@@ -39,6 +39,7 @@ class Player(BasePlayer):
     accuracy = models.FloatField()
     efficiency = models.FloatField()
     layout = models.StringField(initial='v')
+    treatment = models.StringField()
 
     mpl_response = models.StringField()
     selected_row = models.IntegerField()
@@ -155,9 +156,13 @@ class Advice(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        # Route to correct intervention based on treatment
+        suffix = 'AL' if player.treatment == 'algorithmic' else 'H'
+        advice_path = f"advice/intervention/{player.qid}_{suffix}.html"
+
         return dict(
-            # This builds the string: "my_app_name/advice/42.html"
-            advice_path=f"advice/intervention/{player.qid}.html"
+            advice_path=advice_path,
+            treatment=player.treatment,
         )
 
 
@@ -339,6 +344,14 @@ def creating_session(subsession: Subsession):
 
             p.pre_BLP_draw = round(random.uniform(0, 100), 2)
             p.post_BLP_draw = round(random.uniform(0, 100), 2)
+
+            # ── Randomly assign treatment ──────────────────────────
+            # Only assign once in round 1, carry forward to other rounds
+            if subsession.round_number == 1:
+                p.treatment = random.choice(['algorithmic', 'human'])
+            else:
+                # Keep same treatment across all rounds
+                p.treatment = p.in_round(1).treatment
 
 
 

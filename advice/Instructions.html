@@ -9,12 +9,12 @@
     <div class="card">
         <div class="card-body">
 
-                        <h4>Please watch the following instructions video before proceeding:</h4>
+            <h4>Please watch the following instructions video before proceeding:</h4>
 
-            <!-- YouTube Video Embed -->
             <div class="mb-4" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
                 <iframe
-                    src="https://www.youtube.com/embed/wg3Tz25qN8Q"
+                    id="yt-player"
+                    src="https://www.youtube.com/embed/wg3Tz25qN8Q?enablejsapi=1"
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -24,10 +24,10 @@
 
             <hr>
 
-            <h4>Overview</h4>
+            <h4>Summary of Instructions</h4>
             <p>
-                Welcome! In this experiment you will be asked to estimate 
-                answers to a series of questions by allocating tokens across 
+                Welcome! In this experiment you will be asked to estimate
+                answers to a series of questions by allocating tokens across
                 a set of possible answers.
             </p>
 
@@ -35,56 +35,28 @@
 
             <h4>Your Tokens</h4>
             <p>
-                You will be given <strong>{{ num_tokens }} tokens</strong> 
-                per question. Allocate them across the bins to reflect 
-                your belief about the correct answer. More tokens in a bin 
-                means you are more confident the answer falls there.
-            </p>
-
-            <hr>
-
-            <h4>Advice</h4>
-            <p>
-                Before receiving advice you may choose to
-                <strong>purchase advice</strong> from a Multiple Price List.
-                The cost of advice will be deducted from your endowment.
+                You will be given <strong>{{ num_tokens }} tokens</strong>
+                per question. Allocate them across the bins to reflect
+                your belief about the correct answer.
             </p>
 
             <hr>
 
             <h4>Payment</h4>
-            <p>
-                Your payment consists of three parts:
-            </p>
             <ul>
                 <li>
-                    <strong>Participation Fee:</strong> 
-                    ${{ participation_fee }} — paid to everyone regardless 
-                    of performance.
+                    <strong>Participation Fee:</strong>
+                    ${{ participation_fee }} — paid to everyone.
                 </li>
                 <li>
-                    <strong>Endowment:</strong> 
-                    ${{ endowment }} — given at the start. Reduced each 
-                    time you purchase advice.
+                    <strong>Endowment:</strong>
+                    ${{ endowment }} — reduced each time you purchase advice.
                 </li>
                 <li>
-                    <strong>Task Earnings:</strong> 
-                    Based on how well you allocate your tokens
-                    you can earn up to ${{ max_earnings }} per question.
+                    <strong>Task Earnings:</strong>
+                    Up to ${{ max_earnings }} per question.
                 </li>
             </ul>
-
-            <hr>
-
-            <h4>Scoring Rule</h4>
-            <p>
-                Your token allocation is scored using a 
-                <strong>quadratic scoring rule</strong> combined with a 
-                <strong>binary lottery</strong>. Your score determines 
-                the probability of winning ${{ max_earnings }} for that 
-                question. The best strategy is always to allocate tokens 
-                honestly according to your true beliefs.
-            </p>
 
         </div>
     </div>

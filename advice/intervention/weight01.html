@@ -1,8 +1,32 @@
 <p>ALGORITHMIC ADVICE - WEIGHT TASK</p>
 
-<p>Experimental instructions were uploaded to Google Gemini 3.0, and the following was typed in the prompt:</p>
+<p>Experimental instructions were uploaded to Google Gemini, and the
+following was typed in the prompt:</p>
 
-<p><em>Google Gemini, give your expert algorithmic advice to subjects participating in this experiment as to how to allocate these tokens regarding estimating the weight of the individual in the photograph</em></p>
+<p>
+    <em>
+        Google Gemini, give your expert algorithmic advice to subjects
+        participating in this experiment as to how to allocate these tokens
+        regarding estimating the weight of the individual in the photograph.
+    </em>
+</p>
+
+<p><strong>Google Gemini's Response:</strong></p>
+
+<p><em>WEIGHT ESTIMATION ANALYSIS: To allocate the 20 available tokens
+effectively, we first establish a "mean" estimate based on the individual's
+visible physical characteristics:</em></p>
+
+<p><em><strong>Physical Profile:</strong> The subject is a tall, slender
+male. He appears to have an ectomorphic body type with a relatively low
+Body Mass Index (BMI).</em></p>
+
+<p><em><strong>Visual Height Cues:</strong> Comparing his stature to
+standard door or wall paneling heights, he appears to be roughly 5'11"
+to 6'1" tall.</em></p>
+
+<p><em><strong>Calculated Estimate:</strong> For a slender male of this
+height, a healthy weight typically falls between 155 and 175 lbs.</em></p>
 
 <div class="table-responsive">
 <table class="table table-striped table-bordered">
@@ -18,34 +42,54 @@
   </thead>
   <tbody>
     <tr>
-      <td>&lt; 140</td>
+      <td>&lt; 120</td>
       <td>0</td>
       <td>Unlikely given the height and frame.</td>
     </tr>
     <tr>
-      <td>140&ndash;149</td>
-      <td>10</td>
-      <td>Possible if the individual is shorter than he appears.</td>
-    </tr>
-    <tr>
-      <td>150&ndash;159</td>
-      <td>35</td>
-      <td><strong>Primary target:</strong> Matches a lean BMI for a tall frame.</td>
-    </tr>
-    <tr>
-      <td>160&ndash;169</td>
-      <td>40</td>
-      <td><strong>Secondary target:</strong> Common weight for this build.</td>
-    </tr>
-    <tr>
-      <td>170&ndash;179</td>
-      <td>15</td>
-      <td>Hedge for higher muscle density or height.</td>
-    </tr>
-    <tr>
-      <td>&gt; 180</td>
+      <td>120&ndash;129</td>
       <td>0</td>
-      <td>The individual lacks the visible bulk associated with 180+.</td>
+      <td>Appears too tall for this weight range.</td>
+    </tr>
+    <tr>
+      <td>130&ndash;139</td>
+      <td>1</td>
+      <td>Represents the extreme low end of the slim profile.</td>
+    </tr>
+    <tr>
+      <td>140-149</td>
+      <td>3</td>
+      <td><strong>A "buffer" if the subject is leaner than he appears.</td>
+    </tr>
+    <tr>
+      <td>150-159</td>
+      <td>7</td>
+      <td><strong>Primary target:</strong> Fits the slender, tall frame perfectly..</td>
+    </tr>
+    <tr>
+      <td>160-169</td>
+      <td>6</td>
+      <td><strong>Secondary target:</strong> Highly probable given his height.</td>
+    </tr>
+    <tr>
+      <td>170-179</td>
+      <td>2</td>
+      <td>A "buffer" if the subject has more muscle mass.</td>
+    </tr>
+    <tr>
+      <td>180&ndash;189</td>
+      <td>1</td>
+      <td>Unlikely, as he lacks visible bulk.</td>
+    </tr>
+    <tr>
+      <td>190&ndash;199</td>
+      <td>0</td>
+      <td>Not consistent with the visual evidence.</td>
+    </tr>
+    <tr>
+      <td>&gt; 200</td>
+      <td>0</td>
+      <td>The individual does not exhibit a high mass profile.</td>
     </tr>
   </tbody>
 </table>

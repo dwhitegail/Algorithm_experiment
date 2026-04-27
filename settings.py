@@ -143,6 +143,7 @@ ROOMS = [
         name='lab',
         display_name='lab',
         participant_label_file='_rooms/lab.txt',
+        use_secure_urls=False
     ),
     # dict(
     #     name='econ101',

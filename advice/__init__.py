@@ -13,6 +13,8 @@ class C(BaseConstants):
     NAME_IN_URL = 'advice'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 6
+    PARTICIPATION_FEE = 10.00
+    ENDOWMENT = 10.00
 
 
 class Subsession(BaseSubsession):
@@ -56,6 +58,22 @@ class Player(BasePlayer):
 
 
 # PAGES
+
+class Instructions(Page):
+
+    @staticmethod
+    def is_displayed(player):
+        # Only show instructions on round 1
+        return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            num_tokens=player.num_tokens,
+            participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
+            endowment=f"{C.ENDOWMENT:.2f}",
+            max_earnings=10.00,   # match your hardwired BLP earnings
+        )
 
 class Pre_beliefs(Page):
 
@@ -123,7 +141,7 @@ class Mpl(Page):
         player.selected_value = selected_row_idx * .25 + 1
         player.selected_row = selected_row_idx
 
-        # In MyPage: 0 = L (purchase), 1 = R (forego)
+        # In MyPage: 0 = L (purchase advice), 1 = R (do not purchase)
         player.advice_purchased = (response[selected_row_idx] == 0)
 
 
@@ -215,6 +233,8 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         num_rounds = C.NUM_ROUNDS
+
+        # ── Performance table ──────────────────────────────────────────
         s = f"""
             <table class="table table-striped">
                 <thead>
@@ -256,10 +276,41 @@ class Results(Page):
         s += "    </tr>"
         s += "</table>"
 
+        # ── Payment summary ────────────────────────────────────────────
+        participation_fee = C.PARTICIPATION_FEE
+        endowment = C.ENDOWMENT
+
+        # Build per-round advice cost breakdown
+        advice_breakdown = []
+
+        # Sum advice costs across all rounds
+        total_advice_cost = 0
+        for i in range(1, num_rounds + 1):
+            p = player.in_round(i)
+            if p.advice_purchased:
+                cost = p.selected_value
+                total_advice_cost += cost
+                advice_breakdown.append(
+                    f"Round {i}: -${cost:.2f}"
+                )
+
+                #total_advice_cost += p.selected_value  # already stored as dollar amount
+
+        endowment_remaining = max(round(endowment - total_advice_cost, 2), 0)
+        total_task_earnings = round(sum_earnings, 2)
+        grand_total = round(total_task_earnings + participation_fee + endowment_remaining, 2)
+
         return dict(
             my_table=s,
+            participation_fee=f"{participation_fee:.2f}",
+            endowment=f"{endowment:.2f}",
+            total_advice_cost=f"{total_advice_cost:.2f}",
+            advice_purchased_any=total_advice_cost > 0,
+            advice_breakdown=advice_breakdown,  # ← new
+            endowment_remaining=f"{endowment_remaining:.2f}",
+            total_task_earnings=f"{total_task_earnings:.2f}",
+            grand_total=f"{grand_total:.2f}",
         )
-
 
 # FUNCTIONS
 
@@ -297,6 +348,7 @@ def score_response(player: Player, response, draw):
     for i in range(len(response)):
         response[i] = response[i] / player.num_tokens
     print(response)
+
     def ScoringRule(cb):
         SS = 0.0
         # Dim Result As Single
@@ -332,4 +384,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs]
+page_sequence = [Instructions, Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs, Results]

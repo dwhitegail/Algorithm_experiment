@@ -29,7 +29,7 @@ class Player(BasePlayer):
     question = models.StringField()
     alpha = models.FloatField(initial=50.0)
     beta = models.FloatField(initial=50.0)
-    num_tokens = models.IntegerField(initial=20)
+    num_tokens = models.IntegerField(initial=100)
     color = models.StringField()
     bin_labels = models.StringField()
     pre_beliefs = models.StringField()
@@ -59,6 +59,12 @@ class Player(BasePlayer):
 
 
 # PAGES
+class Consent(Page):
+
+    @staticmethod
+    def is_displayed(player):
+        # Show only once at the beginning
+        return player.round_number == 1
 
 class Instructions(Page):
 
@@ -110,6 +116,12 @@ class Mpl(Page):
     form_model = 'player'
     form_fields = ['mpl_response']
 
+    @staticmethod
+    def is_displayed(player):
+        # Only show MPL if it is NOT song01
+        return player.qid != 'song01'
+
+
     def vars_for_template(player):
         # Define the number of rows for your MPL.
         num_rows = 7
@@ -151,7 +163,8 @@ class Advice(Page):
     form_model = 'player'
 
     def is_displayed(player):
-        return player.advice_purchased
+        # Only show if advice was purchased AND not song01
+        return player.advice_purchased and player.qid != 'song01'
 
 
     @staticmethod
@@ -201,6 +214,11 @@ class ResultsWaitPage(WaitPage):
 
 
 class Mpl_results(Page):
+
+    @staticmethod
+    def is_displayed(player):
+        return player.qid != 'song01'
+
     def vars_for_template(player: Player):
         num_rows = 7
         rows = []
@@ -228,6 +246,10 @@ class Mpl_results(Page):
             is_purchase=player.advice_purchased,
             selected_value=player.selected_value
         )
+class ThankYou(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
 
 
 class Results(Page):
@@ -345,6 +367,13 @@ def creating_session(subsession: Subsession):
             p.pre_BLP_draw = round(random.uniform(0, 100), 2)
             p.post_BLP_draw = round(random.uniform(0, 100), 2)
 
+            # ── Set defaults for rounds that skip MPL ──────────────
+            if p.qid == 'song01':
+                p.mpl_response = json.dumps([-999] * 7)  # placeholder
+                p.advice_purchased = False
+                p.selected_value = 0.0
+                p.selected_row = 0
+
             # ── Randomly assign treatment ──────────────────────────
             # Only assign once in round 1, carry forward to other rounds
             if subsession.round_number == 1:
@@ -397,4 +426,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Instructions, Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs, Results]
+page_sequence = [Consent, Instructions, Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Results]

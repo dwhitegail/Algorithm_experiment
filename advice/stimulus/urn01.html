@@ -1,22 +1,18 @@
-<title>What is the proportion of blue balls in the Urn?</title>
-<br>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Urn Draws Sequence</title>
+<title>What is the proportion of blue balls in the Urn?</title>
 <style>
-
     body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
-         /* Change flex-direction to column to stack elements vertically */
         display: flex;
-        flex-direction: column;
-        align-items: center; /* This keeps your card centered horizontally */
+        flex-direction: column; /* Stacks Card and Debug info vertically */
+        align-items: center;
         padding: 20px;
-}
+    }
 
     .card {
         background-color: white;
@@ -25,28 +21,33 @@
         padding: 20px 30px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         max-width: 500px;
-        margin-bottom: 30px; /* Adds space before the debug info starts */
-}
+        margin-bottom: 40px; /* Space for debug info at bottom */
+    }
+
     .header {
         text-align: center;
         margin-bottom: 20px;
     }
+
     .header h2 {
         margin: 0;
         font-size: 16px;
         color: #000;
     }
+
     .header p {
         margin: 2px 0 0 0;
         font-size: 14px;
         text-decoration: underline;
     }
+
     .main-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 30px;
+        gap: 40px;
     }
+
     .urn-container {
         text-align: center;
         display: flex;
@@ -54,26 +55,20 @@
         align-items: center;
         font-weight: bold;
         font-size: 14px;
-        perspective: 1000px; /* Adds depth for the 3D effect */
     }
+
     .urn {
         width: 80px;
         height: 110px;
-        background: linear-gradient(
-        90deg,
-        rgba(20,20,20,1) 0%,
-        rgba(60,60,60,1) 50%,
-        rgba(20,20,20,1) 100%
-        );
-         /* Soften the bottom corners and slightly curve the top */
+        background: linear-gradient(90deg, #141414 0%, #3c3c3c 50%, #141414 100%);
         border-radius: 4px 4px 15px 15px;
         margin-bottom: 10px;
         position: relative;
-        /* This creates the 'lip' or rim of the urn */
-        border-top: 4px solid #444;
+        border-top: 2px solid #555;
         box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
-    /* Adding some dots to simulate balls at the top of the urn */
+
+    /* Reflection shine */
     .urn::after {
         content: "";
         position: absolute;
@@ -85,41 +80,44 @@
         border-radius: 20px;
         filter: blur(2px);
     }
-   .urn-mouth {
-    position: absolute;
-    top: -10px;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background: #222;
-    border: 2px solid #555;
-    border-radius: 50%; /* Creates the elliptical opening */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+
+    .urn-mouth {
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background: #222;
+        border: 2px solid #444;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
+
     .mini-ball {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 1px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 0 1px;
+        border: 1px solid rgba(0,0,0,0.3);
     }
+
     table {
         border-collapse: collapse;
-        width: 150px;
+        width: 160px;
     }
+
     td {
         border: 1px solid black;
         padding: 4px 10px;
         text-align: center;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 13px;
     }
-    /* The first column is left-aligned in the original image */
-    td:first-child {
-        text-align: left;
-    }
+
+    td:first-child { text-align: left; }
+
     .ball {
         width: 16px;
         height: 16px;
@@ -127,6 +125,7 @@
         margin: 0 auto;
         border: 1px solid rgba(0,0,0,0.2);
     }
+
     .blue { background-color: #4a5481; }
     .orange { background-color: #a86241; }
 
@@ -136,28 +135,30 @@
         margin-top: 15px;
         line-height: 1.5;
     }
-    .text-blue {
-        color: #4a5481;
-        font-weight: bold;
-    }
-    .text-orange {
-        color: #a86241;
-        font-weight: bold;
-    }
+
+    .text-blue { color: #4a5481; font-weight: bold; }
+    .text-orange { color: #a86241; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <div class="card">
     <div class="header">
+        <h2><strong>What is the proportion of blue balls in the Urn?</strong></h2>
         <h2>Sequence of 15 Draws from an Urn with 100 Balls</h2>
         <p>Draws with Replacement</p>
     </div>
 
     <div class="main-content">
         <div class="urn-container">
-            <div class="urn"></div>
-            Total Balls in<br>Urn: 100
+            <div class="urn">
+                <div class="urn-mouth">
+                    <div class="mini-ball blue"></div>
+                    <div class="mini-ball orange"></div>
+                    <div class="mini-ball blue"></div>
+                </div>
+            </div>
+            <div>Total Balls in<br>Urn: 100</div>
         </div>
 
         <div class="table-container">

@@ -119,7 +119,7 @@ class Mpl(Page):
     @staticmethod
     def is_displayed(player):
         # Only show MPL if it is NOT song01
-        return player.qid != 'song01'
+        return player.qid
 
 
     def vars_for_template(player):
@@ -164,7 +164,7 @@ class Advice(Page):
 
     def is_displayed(player):
         # Only show if advice was purchased AND not song01
-        return player.advice_purchased and player.qid != 'song01'
+        return player.advice_purchased
 
 
     @staticmethod
@@ -217,7 +217,7 @@ class Mpl_results(Page):
 
     @staticmethod
     def is_displayed(player):
-        return player.qid != 'song01'
+        return player.qid
 
     def vars_for_template(player: Player):
         num_rows = 7
@@ -415,13 +415,6 @@ def creating_session(subsession: Subsession):
 
             p.pre_BLP_draw = round(random.uniform(0, 100), 2)
             p.post_BLP_draw = round(random.uniform(0, 100), 2)
-
-            # ── Set defaults for rounds that skip MPL ──────────────
-            if p.qid == 'song01':
-                p.mpl_response = json.dumps([-999] * 7)  # placeholder
-                p.advice_purchased = False
-                p.selected_value = 0.0
-                p.selected_row = 0
 
             # ── Randomly assign treatment ──────────────────────────
             # Only assign once in round 1, carry forward to other rounds

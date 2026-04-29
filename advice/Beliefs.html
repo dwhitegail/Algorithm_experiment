@@ -22,7 +22,7 @@
         }
 
         .otree-body{
-            max-width: 1366px;
+            max-width: 1600px;
         }
 
         .bins{}
@@ -138,12 +138,12 @@
     <br>
 
     <div class="row">
-        <div class="{% if player.layout == 'h' %}col-4{% else %}col-12{% endif %} justify-content-center">
+        <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center">
             {{ include stimulus_path | safe }}
         </div>
 
         {% if player.layout == 'h' %}
-        <div class="col-8">
+        <div class="col-7">
             <div id="chart_container"></div>
             <div class="row bins" id="tokens_div" style="font-size:14px"></div>
             <br>

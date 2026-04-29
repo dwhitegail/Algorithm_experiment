@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'advice'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 4
     PARTICIPATION_FEE = 10.00
     ENDOWMENT = 10.00
 
@@ -251,6 +251,55 @@ class ThankYou(Page):
     def is_displayed(player):
         return player.round_number == C.NUM_ROUNDS
 
+class Reveal(Page):
+
+    @staticmethod
+    def is_displayed(player):
+        # Only show on the last round
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        num_rounds = C.NUM_ROUNDS
+
+        # Build list of reveal items matching each round's question
+        reveal_items = []
+        for i in range(1, num_rounds + 1):
+            p = player.in_round(i)
+            qid = p.qid
+
+            # Map each qid to a title, image and description
+            reveal_map = {
+                'height01': {
+                    'title': 'Height Task — Person 1',
+                    'image': 'reveal_height01.png',
+                    'description': 'The correct height was  Less than 5 feet'
+
+                },
+                'weight01': {
+                    'title': 'Weight Task — Person 1',
+                    'image': 'reveal_weight01.png',
+                    'description': 'The correct weight was 170–179 lbs'
+                },
+                'song01': {
+                    'title': 'Song Ranking Task — Song 1',
+                    'image': 'reveal_song01.png',
+                    'description': 'The correct Billboard rank was position 8'
+                },
+                'song02': {
+                    'title': 'Song Ranking Task — Song 2',
+                    'image': 'reveal_song02.png',
+                    'description': 'The correct Billboard rank was position 2'
+                },
+
+            }
+
+            if qid in reveal_map:
+                reveal_items.append(reveal_map[qid])
+
+        return dict(
+            reveal_items=reveal_items,
+        )
 
 class Results(Page):
     @staticmethod
@@ -426,4 +475,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Consent, Instructions, Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Results]
+page_sequence = [Consent, Instructions, Pre_beliefs, Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Reveal, Results]

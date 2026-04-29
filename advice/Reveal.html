@@ -1,0 +1,75 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% load static %}
+
+{% block title %}
+    Correct Answers
+{% endblock %}
+
+{% block content %}
+
+<p>Below are the correct answers for each task you completed.</p>
+
+<hr>
+
+<!-- Height Task -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Height Task</strong>
+    </div>
+    <div class="card-body text-center">
+        <img src="{% static 'advice/reveal/reveal_height01.png' %}"
+             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
+        <p class="mt-2">
+            This image shows the correct answer for the height estimation task.
+        </p>
+    </div>
+</div>
+
+<!-- Weight Task -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Weight Task</strong>
+    </div>
+    <div class="card-body text-center">
+        <img src="{% static 'advice/reveal/reveal_weight01.png' %}"
+             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
+        <p class="mt-2">
+            This image shows the correct answer for the weight estimation task.
+        </p>
+    </div>
+</div>
+
+<!-- Song Task 1 -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Song Task 1</strong>
+    </div>
+    <div class="card-body text-center">
+        <img src="{% static 'advice/reveal/reveal_song01.png' %}"
+             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
+        <p class="mt-2">
+            This image shows the correct ranking for Song Task 1.
+        </p>
+    </div>
+</div>
+
+<!-- Song Task 2 -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Song Task 2</strong>
+    </div>
+    <div class="card-body text-center">
+        <img src="{% static 'advice/reveal/reveal_song02.png' %}"
+             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
+        <p class="mt-2">
+            This image shows the correct ranking for Song Task 2.
+        </p>
+    </div>
+</div>
+
+{% next_button %}
+
+{% endblock %}
+
+{% endblock %}

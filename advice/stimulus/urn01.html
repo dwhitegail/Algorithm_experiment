@@ -1,4 +1,4 @@
-What is the proportion of blue balls?
+<title>What is the proportion of blue balls in the Urn?</title>
 <br>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,13 +7,17 @@ What is the proportion of blue balls?
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Urn Draws Sequence</title>
 <style>
+
     body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
+         /* Change flex-direction to column to stack elements vertically */
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center; /* This keeps your card centered horizontally */
         padding: 20px;
-    }
+}
+
     .card {
         background-color: white;
         border: 1px solid #ccc;
@@ -21,7 +25,8 @@ What is the proportion of blue balls?
         padding: 20px 30px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         max-width: 500px;
-    }
+        margin-bottom: 30px; /* Adds space before the debug info starts */
+}
     .header {
         text-align: center;
         margin-bottom: 20px;
@@ -49,27 +54,56 @@ What is the proportion of blue balls?
         align-items: center;
         font-weight: bold;
         font-size: 14px;
+        perspective: 1000px; /* Adds depth for the 3D effect */
     }
     .urn {
-        width: 70px;
-        height: 90px;
-        background: linear-gradient(to right, #111, #333, #111);
-        border-radius: 4px;
+        width: 80px;
+        height: 110px;
+        background: linear-gradient(
+        90deg,
+        rgba(20,20,20,1) 0%,
+        rgba(60,60,60,1) 50%,
+        rgba(20,20,20,1) 100%
+        );
+         /* Soften the bottom corners and slightly curve the top */
+        border-radius: 4px 4px 15px 15px;
         margin-bottom: 10px;
         position: relative;
-        border-top: 12px solid #555;
+        /* This creates the 'lip' or rim of the urn */
+        border-top: 4px solid #444;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
     /* Adding some dots to simulate balls at the top of the urn */
-    .urn::before {
+    .urn::after {
         content: "";
         position: absolute;
-        top: -12px;
-        left: 10px;
-        width: 12px;
-        height: 12px;
-        background-color: #4a5481;
-        border-radius: 50%;
-        box-shadow: 18px 0 0 #a86241, 36px 0 0 #4a5481;
+        top: 10%;
+        left: 15%;
+        width: 15%;
+        height: 70%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        filter: blur(2px);
+    }
+   .urn-mouth {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: #222;
+    border: 2px solid #555;
+    border-radius: 50%; /* Creates the elliptical opening */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    }
+    .mini-ball {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 1px;
     }
     table {
         border-collapse: collapse;
@@ -123,7 +157,7 @@ What is the proportion of blue balls?
     <div class="main-content">
         <div class="urn-container">
             <div class="urn"></div>
-            Balls in<br>Urn: 100
+            Total Balls in<br>Urn: 100
         </div>
 
         <div class="table-container">

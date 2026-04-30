@@ -12,7 +12,7 @@
             <h4>Overview</h4>
             <p>
                 Welcome! In this experiment you will be asked to estimate
-                answers to a series of questions by allocating tokens across
+                answers to a series of questions by allocating tokens for each task across
                 a set of possible answers.
             </p>
 
@@ -20,10 +20,13 @@
 
             <h4>Your Tokens</h4>
             <p>
-                You will be given <strong>{{ num_tokens }} tokens</strong>
+                You will be given <strong>{{ num_tokens }} 100 tokens</strong>
                 per question. Allocate them across the bins to reflect
                 your belief about the correct answer. More tokens in a bin
-                means you are more confident the answer falls there.
+                means you are more confident the answer falls there. Your score determines
+                the probability of winning ${{ max_earnings }} for each
+                report. The best strategy is always to allocate tokens
+                honestly according to your true beliefs.
             </p>
 
             <hr>
@@ -31,8 +34,7 @@
             <h4>Advice</h4>
             <p>
                 After completing the initial round for each question you may choose to
-                <strong>purchase advice</strong> from a Multiple Price List.
-                The cost of advice will be deducted from your endowment.
+                <strong>purchase advice</strong>. The cost of advice will be deducted from your endowment.
             </p>
 
             <hr>
@@ -57,18 +59,7 @@
                     Based on how well you allocate your tokens you can earn up to
                     ${{ max_earnings }} per question.
                 </li>
-            </ul>
 
-            <hr>
-
-            <h4>Scoring Rule</h4>
-            <p>
-                Your token allocation is scored using a
-                <strong>quadratic scoring rule</strong> combined with a
-                <strong>binary lottery</strong>. Your score determines
-                the probability of winning ${{ max_earnings }} for each
-                question. The best strategy is always to allocate tokens
-                honestly according to your true beliefs.
             </p>
 
         </div>

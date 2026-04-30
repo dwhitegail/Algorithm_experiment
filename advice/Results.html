@@ -15,20 +15,28 @@
     <table class="table table-bordered" style="max-width: 500px;">
         <tbody>
             <tr>
-                <td>Task Earnings (all rounds)</td>
+                <td>Report 1 Earnings (Pre-advice, all rounds)</td>
+                <td class="text-right">${{ total_pre_earnings }}</td>
+            </tr>
+            <tr>
+                <td>Report 2 Earnings (Post-advice, all rounds)</td>
+                <td class="text-right">${{ total_post_earnings }}</td>
+            </tr>
+            <tr>
+                <td><strong>Total Task Earnings</strong></td>
                 <td class="text-right"><strong>${{ total_task_earnings }}</strong></td>
             </tr>
             <tr class="table-light">
-            <td>Participation Fee <small class="text-muted">(one-time)</small></td>
-            <td class="text-right">${{ participation_fee }}</td>
-        </tr>
-        <tr class="table-light">
-            <td>Endowment <small class="text-muted">(one-time)</small></td>
-            <td class="text-right">${{ endowment }}</td>
-        </tr>
+                <td>Participation Fee <small class="text-muted">(one-time)</small></td>
+                <td class="text-right">${{ participation_fee }}</td>
+            </tr>
+            <tr class="table-light">
+                <td>Endowment <small class="text-muted">(one-time)</small></td>
+                <td class="text-right">${{ endowment }}</td>
+            </tr>
             {% if advice_purchased_any %}
             <tr class="text-danger">
-                <td>
+                 <td>
                     Total Advice Cost
                     <small class="text-muted d-block">
                         {% for item in advice_breakdown %}
@@ -37,22 +45,23 @@
                     </small>
                 </td>
                 <td class="text-right">- ${{ total_advice_cost }}</td>
-        </tr>
-        {% endif %}
-        <tr class="table-light">
+            </tr>
+            {% endif %}
+            <tr class="table-light">
                 <td>
-                Remaining Endowment
-                <small class="text-muted">
-                    (${{ endowment }} - ${{ total_advice_cost }})
-                </small>
-            </td>
-            <td class="text-right">${{ endowment_remaining }}</td>
-        </tr>
-        <tr class="table-success">
-            <td><strong>TOTAL PAYMENT</strong></td>
-            <td class="text-right"><strong>${{ grand_total }}</strong></td>
-        </tr>
-    </tbody>
-</table>
+                    Remaining Endowment
+                    <small class="text-muted">
+                        (${{ endowment }} - ${{ total_advice_cost }})
+                    </small>
+                </td>
+                <td class="text-right">${{ endowment_remaining }}</td>
+            </tr>
+            <tr class="table-success">
+                <td><strong>TOTAL PAYMENT</strong></td>
+                <td class="text-right"><strong>${{ grand_total }}</strong></td>
+            </tr>
+        </tbody>
+
+    </table>
 
   {% endblock %}

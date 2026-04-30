@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'advice'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 5
+    NUM_ROUNDS = 4
     PARTICIPATION_FEE = 10.00
     ENDOWMENT = 10.00
 
@@ -97,6 +97,9 @@ class Pre_beliefs(Page):
         player.pre_earnings = earnings
         player.pre_accuracy = accuracy
         player.pre_efficiency = efficiency
+
+        # ── Add pre_beliefs earnings to player.payoff ──────────────
+        player.payoff += earnings  # ← oTree accumulates this automatically
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -195,6 +198,9 @@ class Post_beliefs(Page):
         # print(player.response)
         # print(json.loads(player.response))
 
+        # ── Add post_beliefs earnings to player.payoff ─────────────
+        player.payoff += earnings  # ← oTree accumulates this automatically
+
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
@@ -270,26 +276,26 @@ class Reveal(Page):
 
             # Map each qid to a title, image and description
             reveal_map = {
-                'height01': {
-                    'title': 'Height Task — Person 1',
-                    'image': 'reveal_height01.png',
-                    'description': 'The correct height was  Less than 5 feet'
-
-                },
                 'weight01': {
                     'title': 'Weight Task — Person 1',
                     'image': 'reveal_weight01.png',
                     'description': 'The correct weight was 170–179 lbs'
+
+                },
+                'height01': {
+                    'title': 'Height Task — Person 1',
+                    'image': 'reveal_height01.png',
+                    'description': 'The correct height was  Less than 5 feet'
+                },
+                'urn01': {
+                    'title': 'Urns Task — Proportion of Blue Balls',
+                    'image': 'reveal_urn01.png',
+                    'description': 'The proportion of blue balls is 60%, range (51%-60%)'
                 },
                 'song01': {
                     'title': 'Song Ranking Task — Song 1',
                     'image': 'reveal_song01.png',
                     'description': 'The correct Billboard rank was position 8'
-                },
-                'song02': {
-                    'title': 'Song Ranking Task — Song 2',
-                    'image': 'reveal_song02.png',
-                    'description': 'The correct Billboard rank was position 2'
                 },
 
             }
@@ -316,40 +322,61 @@ class Results(Page):
                 <thead>
                     <tr>
                         <th scope="col" class="col-1 text-center">Question</th>
+                        <th scope="col" class="text-center">Report</th>
                         <th scope="col" class="col-1 text-center">% tokens correctly allocated</th>
                         <th scope="col" class="col-1 text-center">Earnings</th>
-                        <th scope="col" class="col-1 text-center">Earnings efficiency</th>
+                        <th scope="col" class="col-1 text-center">Efficiency</th>
                     </tr>
                 </thead>
         """
-        sum_accuracy = 0
-        sum_earnings = 0
+        sum_pre_earnings = 0
+        sum_post_earnings = 0
         sum_efficiency = 0
         for i in range(num_rounds):
             p = player.in_round(i+1)
-            # Use post_ beliefs for final results
-            acc = p.post_accuracy
-            earn = p.post_earnings
-            eff = p.post_efficiency
 
-            sum_accuracy += acc
-            sum_earnings += earn
-            sum_efficiency += eff
+            # ── Pre beliefs row ──────────────────────────────────
+            pre_acc = p.pre_accuracy
+            pre_earn = p.pre_earnings
+            pre_eff = p.pre_efficiency
+            sum_pre_earnings += pre_earn
+            sum_efficiency += pre_eff
+
             s += "<tr>"
-            s += "    <td class='text-center'>" + str(p.round_number) + "</td>"
-            s += "    <td class='text-center'>" + str(round(acc*100, 2)) + "%</td>"
-            s += "    <td class='text-center'>$" + str(round(earn, 2)) + "</td>"
-            s += "    <td class='text-center'>" + str(round(eff, 4)) + "</td>"
+            s += f"    <td class='text-center'>{p.round_number}</td>"
+            s += f"    <td class='text-center'>Report 1 (Before advice)</td>"
+            s += f"    <td class='text-center'>{round(pre_acc * 100, 2)}%</td>"
+            s += f"    <td class='text-center'>${round(pre_earn, 2)}</td>"
+            s += f"    <td class='text-center'>{round(pre_eff, 4)}</td>"
             s += "</tr>"
-        average_accuracy = sum_accuracy / num_rounds if num_rounds > 0 else 0
-        average_earnings = sum_earnings / num_rounds if num_rounds > 0 else 0
-        average_efficiency = sum_efficiency / num_rounds if num_rounds > 0 else 0
-        s += "    <tr>"
-        s += "        <td class='text-center'> AVERAGE</td>"
-        s += "        <td class='text-center'>" + str(round(average_accuracy*100, 2)) + "%</td>"
-        s += "        <td class='text-center'>$" + str(round(average_earnings, 2)) + "</td>"
-        s += "        <td class='text-center'>" + str(round(average_efficiency, 4)) + "</td>"
-        s += "    </tr>"
+
+            # ── Post beliefs row ─────────────────────────────────
+            post_acc = p.post_accuracy
+            post_earn = p.post_earnings
+            post_eff = p.post_efficiency
+            sum_post_earnings += post_earn
+            sum_efficiency += post_eff
+
+            s += "<tr class='table-light'>"
+            s += f"    <td class='text-center'>{p.round_number}</td>"
+            s += f"    <td class='text-center'>Report 2 (After advice)</td>"
+            s += f"    <td class='text-center'>{round(post_acc * 100, 2)}%</td>"
+            s += f"    <td class='text-center'>${round(post_earn, 2)}</td>"
+            s += f"    <td class='text-center'>{round(post_eff, 4)}</td>"
+            s += "</tr>"
+
+        total_reports = num_rounds * 2
+        sum_earnings = sum_pre_earnings + sum_post_earnings
+        avg_efficiency = sum_efficiency / total_reports if total_reports > 0 else 0
+        avg_earnings = sum_earnings / total_reports if total_reports > 0 else 0
+        avg_accuracy = (sum_efficiency * (player.alpha + player.beta)) / total_reports if total_reports > 0 else 0
+
+        s += "<tr class='table-secondary'>"
+        s += "    <td class='text-center' colspan='2'><strong>TOTAL</strong></td>"
+        s += f"   <td class='text-center'>—</td>"
+        s += f"   <td class='text-center'><strong>${round(sum_earnings, 2)}</strong></td>"
+        s += f"   <td class='text-center'>{round(avg_efficiency, 4)}</td>"
+        s += "</tr>"
         s += "</table>"
 
         # ── Payment summary ────────────────────────────────────────────
@@ -374,7 +401,12 @@ class Results(Page):
 
         endowment_remaining = max(round(endowment - total_advice_cost, 2), 0)
         total_task_earnings = round(sum_earnings, 2)
-        grand_total = round(total_task_earnings + participation_fee + endowment_remaining, 2)
+
+        # Use oTree's built-in payoff accumulation
+        participant_payoff = float(player.participant.payoff)
+        grand_total = round(
+            participant_payoff + participation_fee + endowment_remaining, 2
+        )
 
         return dict(
             my_table=s,

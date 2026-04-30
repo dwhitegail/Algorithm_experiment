@@ -25,7 +25,35 @@
             max-width: 1600px;
         }
 
-        .bins{}
+        .bins{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+         .bin-col {
+            width: 80px;
+            text-align: center;
+            flex: 0 0 80px;
+        }
+
+        .tokens {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 30px;
+            gap: 3px;
+        }
+
+        .token-text {
+            white-space: nowrap;
+            font-size: 12px;
+        }
+
+        .token-value {
+            font-weight: bold;
+        }
+
 
         .quantity {
             position: relative;
@@ -42,7 +70,7 @@
         }
 
         .quantity input {
-            width: 50px;
+            width: 60px;
             height: 120px;
             line-height: 1.65;
             float: left;
@@ -376,15 +404,17 @@
                 let txt_html;
 
                 // add divs with token allocations
-                txt_html = "";
-                txt_html += "<div class='col d-flex justify-content-center'>";
-                txt_html += "<div class='large'><span id='tokens_span_" + bin_num.toString() + "'>0</span> "+ tokens + "</div>";
+                txt_html += "<div class='bin-col'>";
+                txt_html += "<div class='tokens'>";
+                txt_html += "<span class='token-value' id='tokens_span_" + bin_num.toString() + "'>0</span>";
+                txt_html += "<span class='token-text'> " + tokens + "</span>";
+                txt_html += "</div>";
                 txt_html += "</div>";
                 $('#tokens_div').append(txt_html);
 
                 // add the updown spinner input widgets
                 txt_html = "";
-                txt_html += "<div class='quantity col d-flex justify-content-center' id='bin_" + bin_num.toString() + "'>";
+                txt_html += "<div class='quantity bin-col d-flex justify-content-center' id='bin_" + bin_num.toString() + "'>";
                 txt_html += "<input type='number' min='0' max='" + num_tokens.toString() + "' step='1' value='0'  disabled='disabled'>";
                 txt_html += "</div>"
                 $('#input_div').append(txt_html);

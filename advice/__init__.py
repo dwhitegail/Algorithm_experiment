@@ -316,6 +316,15 @@ class Results(Page):
     def vars_for_template(player: Player):
         num_rounds = C.NUM_ROUNDS
 
+        # ── Question label map ─────────────────────────────────────────
+        question_labels = {
+            'height01': 'Height Task — What is the height of this person?',
+            'weight01': 'Weight Task — What is the weight of this person?',
+            'urn01': 'Urns Task — What fraction of balls in the urn are blue?',
+            'song01': 'Song Task — What rank did this song place on the Billboard Hot 100?',
+
+        }
+
         # ── Performance table ──────────────────────────────────────────
         s = f"""
             <table class="table table-striped">
@@ -323,7 +332,7 @@ class Results(Page):
                     <tr>
                         <th scope="col" class="col-1 text-center">Question</th>
                         <th scope="col" class="text-center">Report</th>
-                        <th scope="col" class="col-1 text-center">% tokens correctly allocated</th>
+                        <th scope="col" class="col-1 text-center">% Points Earned</th>
                         <th scope="col" class="col-1 text-center">Earnings</th>
                         <th scope="col" class="col-1 text-center">Efficiency</th>
                     </tr>
@@ -335,17 +344,22 @@ class Results(Page):
         for i in range(num_rounds):
             p = player.in_round(i+1)
 
+            # Get descriptive label for this question
+            q_label = question_labels.get(p.qid, p.qid)
+
             # ── Pre beliefs row ──────────────────────────────────
             pre_acc = p.pre_accuracy
             pre_earn = p.pre_earnings
             pre_eff = p.pre_efficiency
+            pre_points = round(pre_acc * player.num_tokens, 1)  # ← tokens earned
             sum_pre_earnings += pre_earn
             sum_efficiency += pre_eff
 
             s += "<tr>"
-            s += f"    <td class='text-center'>{p.round_number}</td>"
+            s += f"    <td class='text-center'>{q_label}</td>"
             s += f"    <td class='text-center'>Report 1 (Before advice)</td>"
-            s += f"    <td class='text-center'>{round(pre_acc * 100, 2)}%</td>"
+            s += f"    <td class='text-center'>{pre_points} pts</td>"
+            #s += f"    <td class='text-center'>{round(pre_acc * 100, 2)}%</td>"
             s += f"    <td class='text-center'>${round(pre_earn, 2)}</td>"
             s += f"    <td class='text-center'>{round(pre_eff, 4)}</td>"
             s += "</tr>"
@@ -354,13 +368,15 @@ class Results(Page):
             post_acc = p.post_accuracy
             post_earn = p.post_earnings
             post_eff = p.post_efficiency
+            post_points = round(post_acc * player.num_tokens, 1)  # ← tokens earned
             sum_post_earnings += post_earn
             sum_efficiency += post_eff
 
             s += "<tr class='table-light'>"
-            s += f"    <td class='text-center'>{p.round_number}</td>"
+            s += f"    <td class='text-center'>{q_label}</td>"
             s += f"    <td class='text-center'>Report 2 (After advice)</td>"
-            s += f"    <td class='text-center'>{round(post_acc * 100, 2)}%</td>"
+            s += f"    <td class='text-center'>{post_points} pts</td>"
+            #s += f"    <td class='text-center'>{round(post_acc * 100, 2)}%</td>"
             s += f"    <td class='text-center'>${round(post_earn, 2)}</td>"
             s += f"    <td class='text-center'>{round(post_eff, 4)}</td>"
             s += "</tr>"

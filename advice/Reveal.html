@@ -3,33 +3,21 @@
 {% load static %}
 
 {% block title %}
-    Correct Answers
+    Verifiable Evidence
 {% endblock %}
 
 {% block content %}
 
-<p>Below are the correct answers for each task you completed.</p>
+<h4>
+    Below is the Verifiable Evidence indicating the correct responses for each task you completed.
+</h4>
 
 <hr>
 
 <!-- Height Task -->
 <div class="card mb-4">
     <div class="card-header">
-        <strong>Height Task</strong>
-    </div>
-    <div class="card-body text-center">
-        <img src="{% static 'reveal_height01.png' %}"
-             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
-        <p class="mt-2">
-            This image shows the correct answer for the height estimation task.
-        </p>
-    </div>
-</div>
-
-<!-- Weight Task -->
-<div class="card mb-4">
-    <div class="card-header">
-        <strong>Weight Task</strong>
+        <strong>WEIGHT TASK</strong>
     </div>
     <div class="card-body text-center">
         <img src="{% static 'reveal_weight01.png' %}"
@@ -40,16 +28,30 @@
     </div>
 </div>
 
+<!-- Weight Task -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>HEIGHT TASK</strong>
+    </div>
+    <div class="card-body text-center">
+        <img src="{% static 'reveal_height01.png' %}"
+             style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
+        <p class="mt-2">
+            This image shows the correct answer for the height estimation task.
+        </p>
+    </div>
+</div>
+
 <!-- Song Task 1 -->
 <div class="card mb-4">
     <div class="card-header">
-        <strong>Song Task 1</strong>
+        <strong>URNS TASK </strong>
     </div>
     <div class="card-body text-center">
-        <img src="{% static 'reveal_song01.png' %}"
+        <img src="{% static 'reveal_urn01.png' %}"
              style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
         <p class="mt-2">
-            This image shows the correct ranking for Song Task 1.
+            This image shows the correct proportion of blue balls in the urn.
         </p>
     </div>
 </div>
@@ -57,13 +59,13 @@
 <!-- Song Task 2 -->
 <div class="card mb-4">
     <div class="card-header">
-        <strong>Song Task 2</strong>
+        <strong>SONG TASK</strong>
     </div>
     <div class="card-body text-center">
-        <img src="{% static 'reveal_song02.png' %}"
+        <img src="{% static 'reveal_song01.png' %}"
              style="width:100%; max-width:700px; display:block; margin:0 auto 15px auto;">
         <p class="mt-2">
-            This image shows the correct ranking for Song Task 2.
+            This image shows the correct ranking for Song Task.
         </p>
     </div>
 </div>

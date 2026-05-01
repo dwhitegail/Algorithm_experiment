@@ -368,7 +368,11 @@ class Results(Page):
                     pre_bins.append({
                         'label': label,
                         'tokens': pre_tokens[j] if j < len(pre_tokens) else 0
-                    })
+                        if tokens > 0:  # ← only include if tokens > 0
+                            pre_bins.append({
+                                'label': label,
+                                'tokens': tokens
+                             })
 
             if p.post_beliefs:
                 post_tokens = json.loads(p.post_beliefs)
@@ -376,6 +380,11 @@ class Results(Page):
                     post_bins.append({
                         'label': label,
                         'tokens': post_tokens[j] if j < len(post_tokens) else 0
+                        if tokens > 0:  # ← only include if tokens > 0
+                            post_bins.append({
+                                'label': label,
+                                'tokens': tokens
+
                     })
 
             task_results.append({

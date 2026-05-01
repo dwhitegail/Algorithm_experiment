@@ -316,14 +316,77 @@ class Results(Page):
     def vars_for_template(player: Player):
         num_rounds = C.NUM_ROUNDS
 
-        # ── Question label map ─────────────────────────────────────────
-        question_labels = {
-            'height01': 'Height Task — What is the height of this person?',
-            'weight01': 'Weight Task — What is the weight of this person?',
-            'urn01': 'Urns Task — What fraction of balls in the urn are blue?',
-            'song01': 'Song Task — What rank did this song place on the Billboard Hot 100?',
+        # ── Question metadata map ──────────────────────────────────────
+        question_meta = {
+            'height01': {
+                'title': 'Estimation Task — Height 1',
+                'question': 'Please observe the photo and estimate the height of this person.',
+                'true_value': "< 5 feet",
 
+            },
+            'weight01': {
+                'title': 'Estimation Task — Weight 1',
+                'question': 'Estimate the weight of this person in the photograph.',
+                'true_value': '170–179 lbs',
+            },
+            'song01': {
+                'title': 'Estimation Task — Song 1',
+                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
+                'true_value': 'Position 8',
+            },
+            'song02': {
+                'title': 'Estimation Task — Song 2',
+                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
+                'true_value': 'Position 2',
+            },
+            'urn01': {
+                'title': 'Estimation Task — Urns',
+                'question': 'Please estimate the fraction of blue balls in the urn.',
+                'true_value': '60 blue / 40 orange',
+            },
         }
+
+        # ── Build per-task results ─────────────────────────────────────
+        task_results = []
+        for i in range(num_rounds):
+            p = player.in_round(i + 1)
+            qid = p.qid
+            meta = question_meta.get(qid, {
+                'title': f'Task {i + 1}',
+                'question': '',
+                'true_value': 'N/A',
+            })
+
+            # Parse pre beliefs tokens
+            pre_bins = []
+            post_bins = []
+            labels = json.loads(p.bin_labels)
+
+            if p.pre_beliefs:
+                pre_tokens = json.loads(p.pre_beliefs)
+                for j, label in enumerate(labels):
+                    pre_bins.append({
+                        'label': label,
+                        'tokens': pre_tokens[j] if j < len(pre_tokens) else 0
+                    })
+
+            if p.post_beliefs:
+                post_tokens = json.loads(p.post_beliefs)
+                for j, label in enumerate(labels):
+                    post_bins.append({
+                        'label': label,
+                        'tokens': post_tokens[j] if j < len(post_tokens) else 0
+                    })
+
+            task_results.append({
+                'title': meta['title'],
+                'question': meta['question'],
+                'true_value': meta['true_value'],
+                'pre_earnings': f"{p.pre_earnings:.2f}",
+                'post_earnings': f"{p.post_earnings:.2f}",
+                'pre_bins': pre_bins,
+                'post_bins': post_bins,
+            })
 
         # ── Performance table ──────────────────────────────────────────
         s = f"""
@@ -345,7 +408,8 @@ class Results(Page):
             p = player.in_round(i+1)
 
             # Get descriptive label for this question
-            q_label = question_labels.get(p.qid, p.qid)
+            q_label = question_meta.get(p.qid, {}).get('title', p.qid)
+            #q_label = question_meta.get(p.qid, p.qid)
 
             # ── Pre beliefs row ──────────────────────────────────
             pre_acc = p.pre_accuracy
@@ -427,6 +491,7 @@ class Results(Page):
         return dict(
             my_table=s,
             participation_fee=f"{participation_fee:.2f}",
+            task_results=task_results,
             endowment=f"{endowment:.2f}",
             total_advice_cost=f"{total_advice_cost:.2f}",
             advice_purchased_any=total_advice_cost > 0,
@@ -434,6 +499,8 @@ class Results(Page):
             endowment_remaining=f"{endowment_remaining:.2f}",
             total_task_earnings=f"{total_task_earnings:.2f}",
             grand_total=f"{grand_total:.2f}",
+            total_pre_earnings=f"{sum_pre_earnings:.2f}",
+            total_post_earnings=f"{sum_post_earnings:.2f}",
         )
 
 # FUNCTIONS

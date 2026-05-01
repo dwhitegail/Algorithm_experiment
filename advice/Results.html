@@ -6,10 +6,87 @@
 
 {% block content %}
 
-    <h5>Performance Summary</h5>
-    {{ my_table }}
+    <!-- Final Outcome Banner -->
+    <div class="card mb-4" style="background-color: #f0f4ff; border: none;">
+        <div class="card-body">
+            <h4 class="mb-0">Final Outcome</h4>
+            <small class="text-muted">Total Final Results and Payoffs</small>
+            <h2 class="mt-2"><strong>${{ grand_total }}</strong></h2>
+        </div>
+    </div>
+
+    <!-- Estimation Task Results -->
+    <h5>Estimation Task Results</h5>
+
+    <div class="row">
+        {% for task in task_results %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100" style="border-radius: 10px;">
+                <div class="card-body">
+
+                    <h6><strong>{{ task.title }}</strong></h6>
+                    <p class="text-muted" style="font-size: 0.85em; font-style: italic;">
+                        {{ task.question }}
+                    </p>
+
+                    <p><strong>True value:</strong> {{ task.true_value }}</p>
+
+                    <p>
+                        Payoff:
+                        <strong style="color: #2979D0;">${{ task.pre_earnings }}</strong>
+                        (Report 1) &nbsp;|&nbsp;
+                        <strong style="color: #2979D0;">${{ task.post_earnings }}</strong>
+                        (Report 2)
+                    </p>
+
+                    <hr>
+
+                    <!-- Report 1 token table -->
+                    <p class="mb-1"><small><strong>Report 1 — Before Advice</strong></small></p>
+                    <table class="table table-sm table-borderless mb-3">
+                        <thead>
+                            <tr>
+                                <th>Range</th>
+                                <th>Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bin in task.pre_bins %}
+                            <tr>
+                                <td>{{ bin.label }}</td>
+                                <td>{{ bin.tokens }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- Report 2 token table -->
+                    <p class="mb-1"><small><strong>Report 2 — After Advice</strong></small></p>
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Range</th>
+                                <th>Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bin in task.post_bins %}
+                            <tr>
+                                <td>{{ bin.label }}</td>
+                                <td>{{ bin.tokens }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
     <hr>
+
 
     <h5>Payment Summary</h5>
     <table class="table table-bordered" style="max-width: 500px;">
@@ -63,5 +140,7 @@
         </tbody>
 
     </table>
+
+
 
 {% endblock %}

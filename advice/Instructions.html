@@ -11,33 +11,37 @@
 
             <h4>Overview</h4>
             <p>
-                Welcome! In this experiment you will be asked to estimate
-                answers to a series of questions by allocating tokens for each task across
+                Welcome! In this experiment you will be asked to report your beliefs by
+                answering a series of questions. You will do so by allocating tokens for each task across
                 a set of possible answers.
             </p>
 
             <hr>
 
-            <h4>Your Tokens</h4>
+            <h4>Pre-beliefs</h4>
             <p>
-                You will be given <strong>{{ num_tokens }} tokens</strong>
-                per question. Allocate them across the bins to reflect
-                your belief about the correct answer. More tokens in a bin
-                means you are more confident the answer falls there. Your score determines
-                the probability of winning ${{ max_earnings }} for each
-                report. The best strategy is always to allocate tokens
-                honestly according to your true beliefs.
+                For each question, you will give an initial report of your belief about the correct answer
+                using a belief elicitation interface to allocate <strong>{{ num_tokens }} tokens</strong>
+               across 10 bins. More tokens in a bin means you are more confident the answer falls there.
+                Your score determines the probability of winning ${{ max_earnings }} for each
+                report. The best strategy is always to allocate tokens honestly according to your true beliefs.
             </p>
 
             <hr>
 
             <h4>Advice</h4>
             <p>
-                After completing the initial round for each question you may choose to
-                <strong>purchase advice</strong>. The cost of advice will be deducted from your endowment.
+                After completing the initial round for each question you may choose to <strong>purchase advice</strong>.
+                You will be randomly assigned to receive algorithmic or human advice.
+                The cost of advice will be deducted from your endowment.
             </p>
 
             <hr>
+            <h4>Post-beliefs</h4>
+            <p>
+                After receiving advice, you can update your report about your belief of the correct answer
+                to again allocate <strong>{{ num_tokens }} tokens</strong> across 10 bins.
+            </p>
 
             <h4>Payment</h4>
             <p>

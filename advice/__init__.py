@@ -342,7 +342,7 @@ class Results(Page):
             'urn01': {
                 'title': 'Estimation Task — Urns',
                 'question': 'Please estimate the fraction of blue balls in the urn.',
-                'true_value': '60 blue / 40 orange',
+                'true_value': '60% of the balls are blue',
             },
         }
 
@@ -365,27 +365,23 @@ class Results(Page):
             if p.pre_beliefs:
                 pre_tokens = json.loads(p.pre_beliefs)
                 for j, label in enumerate(labels):
-                    pre_bins.append({
-                        'label': label,
-                        'tokens': pre_tokens[j] if j < len(pre_tokens) else 0
-                        if tokens > 0:  # ← only include if tokens > 0
-                            pre_bins.append({
-                                'label': label,
-                                'tokens': tokens
-                             })
+                    tokens = pre_tokens[j] if j < len(pre_tokens) else 0
+                    if tokens > 0:
+                        pre_bins.append({
+                            'label': label,
+                            'tokens': tokens
+                        })
 
             if p.post_beliefs:
                 post_tokens = json.loads(p.post_beliefs)
                 for j, label in enumerate(labels):
-                    post_bins.append({
-                        'label': label,
-                        'tokens': post_tokens[j] if j < len(post_tokens) else 0
-                        if tokens > 0:  # ← only include if tokens > 0
-                            post_bins.append({
-                                'label': label,
-                                'tokens': tokens
+                    tokens = post_tokens[j] if j < len(post_tokens) else 0
+                    if tokens > 0:  # ← only include if tokens > 0
+                        post_bins.append({
+                            'label': label,
+                            'tokens': tokens
 
-                    })
+                        })
 
             task_results.append({
                 'title': meta['title'],

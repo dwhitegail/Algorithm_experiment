@@ -1,4 +1,5 @@
 {% extends "global/Page.html" %}
+{% load otree %}
 
 {% block title %}
     Your Results
@@ -20,7 +21,7 @@
 
     <div class="row">
         {% for task in task_results %}
-        <div class="col-md-4 mb-4">
+        <div class="col-md-6 mb-4">
             <div class="card h-100" style="border-radius: 10px;">
                 <div class="card-body">
 
@@ -32,11 +33,12 @@
                     <p><strong>True value:</strong> {{ task.true_value }}</p>
 
                     <p>
-                        Payoff:
+                        <strong>Payoff:</strong>
                         <strong style="color: #2979D0;">${{ task.pre_earnings }}</strong>
-                        (Report 1) &nbsp;|&nbsp;
+                        <small class="text-muted">(Report 1)</small>
+                        &nbsp;|&nbsp;
                         <strong style="color: #2979D0;">${{ task.post_earnings }}</strong>
-                        (Report 2)
+                        <small class="text-muted">(Report 2)</small>
                     </p>
 
                     <hr>

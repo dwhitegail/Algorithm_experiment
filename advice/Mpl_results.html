@@ -2,53 +2,177 @@
 {% load otree static %}
 
 {% block style %}
-    <style>
-        #my_table td {
-           text-align: center;
-        }
+<style>
+    .results-card {
+        max-width: 1100px;
+        margin: 0 auto;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
 
-        .selected {
-            background: darkseagreen !important;
-            font-weight: bold;
-        }
+    .results-header {
+        background: linear-gradient(135deg, #1f4e79, #2f6ea5);
+        color: white;
+        padding: 22px 28px;
+    }
 
-        .non_chosen_row {
-            opacity: 0.4;
+    .results-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .summary-box {
+        background: #f8fafc;
+        border-left: 5px solid #2f6ea5;
+        padding: 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    #my_table {
+        margin-top: 10px;
+    }
+
+    #my_table td {
+        text-align: center;
+        vertical-align: middle;
+        font-size: 1.05rem;
+        padding: 14px;
+        transition: all 0.25s ease;
+    }
+
+    .selected-buy {
+        background: #28a745 !important;
+        color: white;
+        font-weight: 700;
+    }
+
+    /* Light green highlight for chosen option */
+    .selected-choice {
+        background: #d4edda !important;
+        color: #155724;
+        font-weight: 700;
+    }
+
+    .winning-row {
+        outline: 3px solid #1f4e79;
+        outline-offset: -3px;
+    }
+
+    .non_chosen_row {
+        opacity: 0.35;
+    }
+
+    .payoff-banner {
+        background: #eaf7ea;
+        color: #1b5e20;
+        padding: 16px;
+        border-radius: 10px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .btn-next {
+        padding: 10px 26px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
         }
-    </style>
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
+
 
 {% block title %}
-    Results
+
 {% endblock %}
+
 
 {% block content %}
-    <p>
-        The randomly selected row was row {{ selected_row}}.
-    </p>
-    <p>
-        In this row, your choice was to
-        {% if is_purchase %}
-            <b>purchase advice for ${{ player.selected_value }}</b>.
-        {% else %}
-            <b>forego advice</b>.
-        {% endif %}
-    </p>
 
-    <table class="table table-bordered" id="my_table">
-        {% for r in rows %}
-            <tr class="{% if r.id != player.selected_row %}non_chosen_row{% endif %}">
-                <td id="L{{ r.id }}" class="{% if r.choice == 0 %}selected{% endif %}">
+<div class="results-card fade-in">
+
+    <div class="results-header">
+        <h2>Advice Purchase Decision Results</h2>
+    </div>
+
+    <div class="p-4">
+
+        <div class="summary-box">
+            <p class="mb-2">
+                <strong>Randomly selected row:</strong> Row {{ selected_row }}
+            </p>
+
+            <p class="mb-0">
+                <strong>Your decision:</strong>
+
+                {% if is_purchase %}
+                    Purchase advice for <strong>${{ player.selected_value }}</strong>
+                {% else %}
+                    Forego advice
+                {% endif %}
+            </p>
+        </div>
+
+
+        <table class="table table-bordered" id="my_table">
+
+            {% for r in rows %}
+            <tr class="
+                {% if r.id != selected_row %}non_chosen_row{% endif %}
+                {% if r.id == selected_row %}winning-row{% endif %}
+            ">
+
+                <!-- Buy Advice side -->
+                <td class="
+                    {% if r.id == selected_row and r.choice == 0 %}selected-choice{% endif %}
+                ">
                     {{ r.L }}
                 </td>
-                <td id="R{{ r.id }}" class="{% if r.choice == 1 %}selected{% endif %}">
+
+                <!-- Do Not Buy side -->
+                <td class="
+                     {% if r.id == selected_row and r.choice == 1 %}selected-choice{% endif %}
+                ">
                     {{ r.R }}
                 </td>
+
             </tr>
-        {% endfor %}
-    </table>
+            {% endfor %}
 
-    {% next_button %}
+        </table>
+
+
+        <div class="payoff-banner">
+            {% if is_purchase %}
+                Advice purchased for ${{ player.selected_value }}
+            {% else %}
+                No advice purchased in selected row
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            {% next_button %}
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
-
-

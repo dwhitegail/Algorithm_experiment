@@ -1,0 +1,37 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+    <div class="card mb-4" style="border: 2px solid #2979D0; border-radius: 10px;">
+        <div class="card-header" style="background-color: #2979D0; color: white;">
+            <h5 class="mb-0">Your Advice Assignment</h5>
+        </div>
+        <div class="card-body text-center py-4">
+
+            <h4 class="mb-3">
+                You have randomly been selected to receive
+                <strong style="color: #2979D0;">{{ advice_type }}</strong>
+            </h4>
+
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 20px auto;">
+                {{ advice_description }}
+            </p>
+
+            <hr>
+
+            <p class="mb-0">
+                On the next page you will decide how much you are willing to
+                <strong>pay for this advice</strong>.
+                If the randomly selected price row is one you agreed to pay,
+                you will receive the advice before updating your beliefs.
+            </p>
+
+        </div>
+    </div>
+
+    {% next_button %}
+
+{% endblock %}

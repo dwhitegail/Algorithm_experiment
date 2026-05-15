@@ -43,6 +43,13 @@
         transition: all 0.25s ease;
     }
 
+    .selected-outline {
+        /* Uses an inner shadow to bypass table border conflicts */
+        box-shadow: inset 0 0 0 4px #1f4e79 !important;
+    }
+
+
+
     .selected-buy {
         background: #28a745 !important;
         color: white;
@@ -54,11 +61,6 @@
         background: #d4edda !important;
         color: #155724;
         font-weight: 700;
-    }
-
-    .winning-row {
-        outline: 3px solid #1f4e79;
-        outline-offset: -3px;
     }
 
     .non_chosen_row {
@@ -117,7 +119,7 @@
 
         <div class="summary-box">
             <p class="mb-2">
-                <strong>Randomly selected row:</strong> Row {{ selected_row }}
+                <strong>Randomly selected row:</strong> Row {{ selected_row_display }}
             </p>
 
             <p class="mb-0">
@@ -135,22 +137,13 @@
         <table class="table table-bordered" id="my_table">
 
             {% for r in rows %}
-            <tr class="
-                {% if r.id != selected_row %}non_chosen_row{% endif %}
-                {% if r.id == selected_row %}winning-row{% endif %}
-            ">
+            <tr class="{% if r.id != selected_row %}non_chosen_row{% endif %}">
 
-                <!-- Buy Advice side -->
-                <td class="
-                    {% if r.id == selected_row and r.choice == 0 %}selected-choice{% endif %}
-                ">
+                <td class="{% if r.id == selected_row and is_purchase %}selected-choice{% endif %}">
                     {{ r.L }}
                 </td>
 
-                <!-- Do Not Buy side -->
-                <td class="
-                     {% if r.id == selected_row and r.choice == 1 %}selected-choice{% endif %}
-                ">
+                <td class="{% if r.id == selected_row and not is_purchase %}selected-choice{% endif %}">
                     {{ r.R }}
                 </td>
 
@@ -158,7 +151,6 @@
             {% endfor %}
 
         </table>
-
 
         <div class="payoff-banner">
             {% if is_purchase %}

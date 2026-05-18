@@ -43,7 +43,7 @@ class Player(BasePlayer):
 
     mpl_response = models.StringField()
     selected_row = models.IntegerField()
-    advice_purchased = models.BooleanField()
+    advice_purchased = models.BooleanField(initial=False)
     selected_value = models.FloatField()
 
     pre_BLP_draw = models.FloatField(initial=-1)
@@ -594,6 +594,13 @@ def creating_session(subsession: Subsession):
             else:
                 # Keep same treatment across all rounds
                 p.treatment = p.in_round(1).treatment
+
+            # ── Set defaults for 'none' treatment ──────────────────
+            if p.treatment == 'none':  # ← add this block
+                p.mpl_response = json.dumps([-999] * 7)
+                p.advice_purchased = False  # ← prevents None error
+                p.selected_value = 0.0
+                p.selected_row = 0
 
 
 

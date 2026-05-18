@@ -526,7 +526,7 @@ class Results(Page):
         total_advice_cost = 0
         for i in range(1, num_rounds + 1):
             p = player.in_round(i)
-            if p.advice_purchased:
+            if p.advice_purchased and p.treatment != 'none':
                 cost = p.selected_value
                 total_advice_cost += cost
                 advice_breakdown.append(

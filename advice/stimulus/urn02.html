@@ -1,0 +1,196 @@
+{% load otree %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is the proportion of blue balls in the Urn?</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        flex-direction: column; /* Stacks Card and Debug info vertically */
+        align-items: center;
+        padding: 20px;
+    }
+
+    .card {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 20px 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        max-width: 500px;
+        margin-bottom: 40px; /* Space for debug info at bottom */
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header h2 {
+        margin: 0;
+        font-size: 16px;
+        color: #000;
+    }
+
+    .header p {
+        margin: 2px 0 0 0;
+        font-size: 14px;
+        text-decoration: underline;
+    }
+
+    .main-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+    }
+
+    .urn-container {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /*!*.urn {*!*/
+    /*!*    width: 80px;*!*/
+    /*!*    height: 110px;*!*/
+    /*!*    background: linear-gradient(90deg, #141414 0%, #3c3c3c 50%, #141414 100%);*!*/
+    /*!*    border-radius: 4px 4px 15px 15px;*!*/
+    /*!*    margin-bottom: 10px;*!*/
+    /*!*    position: relative;*!*/
+    /*!*    border-top: 2px solid #555;*!*/
+    /*!*    box-shadow: 0 10px 20px rgba(0,0,0,0.3);*!*/
+    /*!*}*!*/
+
+    /*!* Reflection shine *!*/
+    /*.urn::after {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    top: 10%;*/
+    /*    left: 15%;*/
+    /*    width: 15%;*/
+    /*    height: 70%;*/
+    /*    background: rgba(255, 255, 255, 0.1);*/
+    /*    border-radius: 20px;*/
+    /*    filter: blur(2px);*/
+    /*}*/
+
+    /*.urn-mouth {*/
+    /*    position: absolute;*/
+    /*    top: -10px;*/
+    /*    left: 0;*/
+    /*    width: 100%;*/
+    /*    height: 20px;*/
+    /*    background: #222;*/
+    /*    border: 2px solid #444;*/
+    /*    border-radius: 50%;*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    align-items: center;*/
+    /*}*/
+
+    /*.mini-ball {*/
+    /*    width: 10px;*/
+    /*    height: 10px;*/
+    /*    border-radius: 50%;*/
+    /*    margin: 0 1px;*/
+    /*    border: 1px solid rgba(0,0,0,0.3);*/
+    /*}*/
+
+    table {
+        border-collapse: collapse;
+        width: 160px;
+    }
+
+    td {
+        border: 1px solid black;
+        padding: 4px 10px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    td:first-child { text-align: left; }
+
+    .ball {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin: 0 auto;
+        border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .blue { background-color: #4a5481; }
+    .orange { background-color: #a86241; }
+
+    .summary {
+        text-align: right;
+        font-size: 14px;
+        margin-top: 15px;
+        line-height: 1.5;
+    }
+
+    .text-blue { color: #4a5481; font-weight: bold; }
+    .text-orange { color: #a86241; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h4><strong>What is the proportion of blue balls in the Urn?</strong></h4>
+        <h2>Sequence of 20 Draws from an Urn with 100 Balls</h2>
+        <p>The Draws are with Replacement</p>
+    </div>
+
+    <div class="main-content">
+        <div class="urn-container">
+            <img src="{% static 'urn01.png' %}"
+                 style="width: 120px;
+                        height: auto;
+                        margin-bottom: 10px;">
+            <div>Total Balls in the <br>Urn = 100</div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <tr><td>Draw 1</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 2</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 3</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 4</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 5</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 6</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 7</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 8</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 9</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 10</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 11</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 12</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 13</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 14</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 15</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 16</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 17</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 18</td><td><div class="ball orange"></div></td></tr>
+                <tr><td>Draw 19</td><td><div class="ball blue"></div></td></tr>
+                <tr><td>Draw 20</td><td><div class="ball orange"></div></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="summary">
+        Number of <span class="text-blue">BLUE</span> drawn: <strong>8</strong><br>
+        Number of <span class="text-orange">ORANGE</span> drawn: <strong>12</strong><br>
+        <strong>Total Draws: 20</strong>
+    </div>
+</div>
+
+</body>
+</html>

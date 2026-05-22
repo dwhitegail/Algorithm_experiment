@@ -391,7 +391,12 @@ class Results(Page):
                 'true_value': 'Position 2',
             },
             'urn01': {
-                'title': 'Estimation Task — Urns',
+                'title': 'Estimation Task — Urns_Period 1',
+                'question': 'Please estimate the fraction of blue balls in the urn.',
+                'true_value': '60% of the balls are blue',
+            },
+            'urn02': {
+                'title': 'Estimation Task — Urns_Period 2',
                 'question': 'Please estimate the fraction of blue balls in the urn.',
                 'true_value': '60% of the balls are blue',
             },

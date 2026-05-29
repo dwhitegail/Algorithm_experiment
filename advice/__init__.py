@@ -15,6 +15,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 6
     PARTICIPATION_FEE = 10.00
     ENDOWMENT = 10.00
+    MAX_EARNINGS_PER_REPORT = 25.00
 
 
 class Subsession(BaseSubsession):
@@ -79,7 +80,7 @@ class Instructions(Page):
             num_tokens=player.num_tokens,
             participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
             endowment=f"{C.ENDOWMENT:.2f}",
-            max_earnings=10.00,   # match your hardwired BLP earnings
+            max_earnings=C.MAX_EARNINGS_PER_REPORT
         )
 
 class Pre_beliefs(Page):
@@ -636,7 +637,7 @@ def score_response(player: Player, response, draw):
 
     # The following lines are for BLP
     if draw <= score:
-        earnings = 10    # hardwired for $10 presently
+        earnings = C.MAX_EARNINGS_PER_REPORT,
     else:
         earnings = 0
     # BLP END -----------------------

@@ -637,7 +637,7 @@ def score_response(player: Player, response, draw):
 
     # The following lines are for BLP
     if draw <= score:
-        earnings = C.MAX_EARNINGS_PER_REPORT,
+        earnings = C.MAX_EARNINGS_PER_REPORT
     else:
         earnings = 0
     # BLP END -----------------------

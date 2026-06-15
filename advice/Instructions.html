@@ -1,7 +1,22 @@
 {% extends "global/Page.html" %}
+{% load otree %}
+
+{% block style %}
+<style>
+    /* Widen the main content area */
+    .otree-body {
+        max-width: 1000px !important;   /* ← increase this value to make wider */
+    }
+
+    /* Widen the card itself */
+    .card {
+        max-width: 100%;
+    }
+</style>
+{% endblock %}
 
 {% block title %}
-    Welcome to the Experiment
+    Welcome to the Experiment!
 {% endblock %}
 
 {% block content %}
@@ -11,60 +26,109 @@
 
             <h4>Overview</h4>
             <p>
-                Welcome! In this experiment you will be asked to report your beliefs by
-                answering a series of questions. You will do so by allocating tokens for each task across
-                a set of possible answers.
+                You are participating in a decision-making experiment. Your earnings will depend on the beliefs you report
+                across four tasks: a weight estimation task, a height estimation task, an urns task, and a song ranking task.
+                The weight and height tasks each contain one question; the urns and song ranking tasks each contain
+                two questions, for a total of six questions.
+                <br><br>
+                You will answer each question by allocating tokens across a set of possible answers.
+                <strong>AT THE START OF THE SESSION</strong>, you will RANDOMLY be assigned to receive advice from one of three groups:
+                <strong>Algorithmic Advice</strong> or <strong>Human Advice</strong>, or <strong>No Advice</strong>.
+
+                 <div class="text-center my-3">
+                <img src="{{ static 'advice.png' }}" class="img-fluid border" alt="Example of Advice Assignment">
+            </div>
+                There are 2 rounds for each question. Each question will start with round 1, after which you may or may not
+                purchase and receive advice. After which you can proceed to round 2. Some tasks feature multiple questions;
+                in those cases, you will complete round 1 for all questions in that task before moving on.
+
+
             </p>
 
             <hr>
 
-            <h4>Pre-beliefs</h4>
+            <h4>Round 1 - Initial or Pre-Beliefs</h4>
             <p>
-                For each question, you will give an initial report of your belief about the correct answer
-                using a belief elicitation interface to allocate <strong>{{ num_tokens }} tokens</strong>
-               across 10 bins. More tokens in a bin means you are more confident the answer falls there.
-                Your score determines the probability of winning ${{ max_earnings }} for each
-                report. The best strategy is always to allocate tokens honestly according to your true beliefs.
+                For each question, you will give a report of your initial belief about the correct answer. You will use
+                a slider interface like this below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
+                possible outcomes. Each interface has 10 bins.
+
+            <div class="text-center my-3">
+                <img src="{{ static 'interface.png' }}" class="img-fluid border" alt="Example of the Interface for token allocation">
+            </div>
+
+                Placing more tokens in a specific bin means you are more confident the answer falls in that range. Your accuracy determines the
+                probability of winning <strong>$25</strong> for each report. Therefore, your best strategy to maximize
+                your earnings is to always allocate your tokens honestly according to your true beliefs.
+
             </p>
 
             <hr>
 
-            <h4>Advice</h4>
+            <h4>Advice Phase</h4>
             <p>
-                After completing the initial round for each question you may choose to <strong>purchase advice</strong>.
-                You will be randomly assigned to receive algorithmic or human advice.
-                The cost of advice will be deducted from your endowment.
+                After completing Round 1, you will have the opportunity to <strong>purchase advice</strong> before making
+                your final decision. You can only purchase advice if you were assigned to the Algorithmic
+                or Human advice conditions. You will be shown a price list with varying costs for advice. You must make
+                a choice in every row about whether you want to buy the advice at that specific price.
+
+            <div class="text-center my-3">
+                <img src="{{ static 'price_list.png' }}" class="img-fluid border" alt="Example of the Price List">
+            </div>
+
+                If you purchase advice, the cost will be deducted from your $10.00 advice fund, called an endowment.
+                If you are in the No Advice group, you will simply wait for the next round to begin.
+                <br><br>
+
+
             </p>
 
             <hr>
-            <h4>Post-beliefs</h4>
+            <h4>Round 2 - Final or Post-beliefs</h4>
             <p>
-                After receiving advice, you can update your beliefs about the correct answer
-                to the stated question by once again allocating <strong>{{ num_tokens }} tokens</strong> across 10 bins.
+                After the advice phase, you will have the opportunity to update your beliefs. You will once again allocate
+                <strong>{{ num_tokens }} tokens</strong> across 10 bins. You may change your token allocation based on
+                the advice you received, or you may keep it exactly the same.
             </p>
 
             <h4>Payment</h4>
             <p>
-                Your payment consists of three parts:
+                Your total payment consists of three parts:
             </p>
             <ul>
                 <li>
                     <strong>Participation Fee:</strong>
-                    ${{ participation_fee }} — paid to everyone regardless
-                    of performance.
+                    You have already earned <strong>${{ participation_fee }}</strong> for agreeing to participate in this experiment,
+                    which will be paid in cash at the end of the session.
+
                 </li>
                 <li>
                     <strong>Endowment:</strong>
-                    ${{ endowment }} — given at the start. Reduced each
-                    time you purchase advice.
+                    You are given a <strong>${{ endowment }} </strong> endowment to cover the cost of purchasing advice across all 4 tasks.
+                    Any money left over in from your endowment at the end of the experiment is yours to keep.
                 </li>
                 <li>
                     <strong>Task Earnings:</strong>
-                    Based on how well you allocate your tokens you can earn up to
-                    ${{ max_earnings }} per report.
+                    At the end of the experiment, we will look at how accurately you allocated your tokens. Based on your
+                    score, you can earn up to <strong>$25</strong> per report. Remember, however, that only one task will randomly be
+                    selected for payment. Depending on the task chosen, you can earn a maximum of <strong>$50 to $100</strong>.
                 </li>
+            </ul>
+
+            <hr>
+
+            <h4>Lab Rules</h4>
+
+            <p>
+                Please put your cell phones on silent and securely put away all phones, laptops and other electronic devices.
+                Please do not talk with others seated nearby for the duration of the session. If at any point you have
+                a question, please raise your hand and a researcher will come to assist you.
+
+
 
             </p>
+
+
 
         </div>
     </div>

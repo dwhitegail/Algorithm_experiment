@@ -8896,7 +8896,7 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       CANVAS_INIT_ERROR = new Error('Could not initialize `canvas` element');
 
   /**
-   * Static canvas class
+   * _static canvas class
    * @class fabric.StaticCanvas
    * @mixes fabric.Collection
    * @mixes fabric.Observable

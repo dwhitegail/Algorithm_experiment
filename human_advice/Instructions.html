@@ -1,0 +1,89 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block style %}
+<style>
+    /* Widen the main content area */
+    .otree-body {
+        max-width: 1000px !important;   /* ← increase this value to make wider */
+    }
+
+    /* Widen the card itself */
+    .card {
+        max-width: 100%;
+    }
+
+      /* Increase paragraph font size */
+    p {
+        font-size: 1.2rem; /* adjust as needed */
+        line-height: 1.6;
+    }
+
+    h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    }
+
+</style>
+{% endblock %}
+
+{% block title %}
+    Welcome to the Experiment!
+{% endblock %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-body">
+
+            <h4>Overview</h4>
+            <p>
+                You are participating in a decision-making experiment. You will report your beliefs about certain things.
+                You will answer 16 questions by allocating 100 tokens for each question across a set of possible answers
+                Placing more tokens in a specific bin means you are more confident the answer falls in that range.
+
+            </p>
+
+            <hr>
+
+            <h4>Interface to report Beliefs</h4>
+            <p>
+                For each question, you will give a report about what you believe to be the correct answer. You will use
+                a slider interface like this below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
+                possible outcomes. Each interface has 10 bins.
+
+            <div class="text-center my-3">
+                <img src="{{ static 'interface.png' }}" class="img-fluid border" alt="Example of the Interface for token allocation">
+            </div>
+
+             </p>
+
+
+
+            <h4>Payment</h4>
+            <p>
+                You will receive a <strong>$40 participation payment</strong> for agreeing to participate in this experiment,
+                which will be paid in cash at the end of the session.
+            </p>
+
+            <hr>
+
+            <h4>Lab Rules</h4>
+
+            <p>
+                Please put your cell phones on silent and securely put away all phones, laptops and other electronic devices.
+                Please do not talk with others seated nearby for the duration of the session. If at any point you have
+                a question, please raise your hand and a researcher will come to assist you.
+
+
+
+            </p>
+
+
+
+        </div>
+    </div>
+
+    {% next_button %}
+
+{% endblock %}

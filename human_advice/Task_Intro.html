@@ -1,0 +1,89 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+<div class="card mb-4" style="
+    max-width: 750px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    overflow: hidden;">
+
+    <!-- Header -->
+    <div style="
+        background: linear-gradient(135deg, #1f4e79, #2f6ea5);
+        color: white;
+        padding: 28px 32px;">
+        <p style="margin: 0; font-size: 0.95em; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase;">
+            {{ task_number }}
+        </p>
+        <h2 style="margin: 6px 0 0 0; font-weight: 700; font-size: 1.6em;">
+            {{ icon }} {{ task_name }}
+        </h2>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body" style="padding: 32px;">
+
+        <!-- Introduction paragraph -->
+        <p style="
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #2c3e50;
+            margin-bottom: 24px;">
+            {{ intro }}
+        </p>
+
+        <!-- Tip box -->
+        {% if note %}
+        <div style="
+            background: #eaf4fb;
+            border-left: 5px solid #2979D0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;">
+            <p style="margin: 0; color: #1a5276; font-size: 0.95em;">
+                <strong>💡 {{ note }}</strong>
+            </p>
+        </div>
+        {% endif %}
+
+<!--        &lt;!&ndash; What to expect &ndash;&gt;-->
+<!--        <div style="-->
+<!--            background: #f8f9fa;-->
+<!--            border-radius: 8px;-->
+<!--            padding: 16px 20px;-->
+<!--            margin-bottom: 8px;">-->
+<!--            <p style="margin: 0 0 8px 0; font-weight: 700; color: #2c3e50;">-->
+<!--                What to expect:-->
+<!--            </p>-->
+<!--            <ul style="margin: 0; padding-left: 20px; color: #555; line-height: 1.8;">-->
+<!--                <li>You will have <strong>two rounds</strong>, one before and one after advice (if slated to receive advice).</li>-->
+<!--                <li>Each report pays up to <strong>${{ max_earnings }}</strong> based on accuracy.</li>-->
+<!--                <li>You may choose to <strong>purchase advice</strong> after round 1 (if slated to receive advice).</li>-->
+
+        <!-- What to expect — task specific -->
+        <div style="
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 8px;">
+            <p style="margin: 0 0 8px 0; font-weight: 700; color: #2c3e50;">
+                What to expect:
+            </p>
+            <ul style="margin: 0; padding-left: 20px; color: #555; line-height: 1.8;">
+                {% for item in Expectations %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+{% next_button %}
+

@@ -1,0 +1,83 @@
+{% extends "global/Page.html" %}
+
+{% block style %}
+<style>
+    .thankyou-container {
+        max-width: 850px;
+        margin: 80px auto;
+    }
+
+    .thankyou-card {
+        background: linear-gradient(135deg, #f8fbff, #eef5ff);
+        border-radius: 20px;
+        padding: 50px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        border: 1px solid #dce8f7;
+    }
+
+    .checkmark {
+        font-size: 70px;
+        color: #28a745;
+        margin-bottom: 15px;
+    }
+
+    .main-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1f3b64;
+        margin-bottom: 20px;
+    }
+
+    .thank-you {
+        font-size: 1.4rem;
+        color: #444;
+        margin-bottom: 30px;
+    }
+
+    .info-box {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 25px;
+        text-align: left;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        border-left: 5px solid #4a90e2;
+    }
+
+    .next-button-wrapper {
+        margin-top: 40px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="thankyou-container">
+    <div class="thankyou-card">
+
+        <div class="checkmark">✓</div>
+
+        <div class="main-title">
+            Experiment Completed
+        </div>
+
+        <div class="thank-you">
+            Thank you for participating in our study.  You have successfully completed all tasks. Your responses will
+            be used as human advice in a future decision-making experiment.
+
+         <div class="payment">
+            You will receive $40 as compensation for your time.
+            Please remain seated until your number is called, then proceed to the payment counter
+        </div>
+
+
+        <div class="next-button-wrapper">
+            {{ next_button }}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

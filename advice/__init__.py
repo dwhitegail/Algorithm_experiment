@@ -331,12 +331,13 @@ class Task_Intro(Page):
                 ),
                 'note': (
                     "Note: Consider the person's visible body type and height cues before allocating your tokens. "
-                    "Remember 1 pound (lb.) = 0.45 kilogram (kg) and 1 kilogram (kg.) = 2.2 pounds (lbs.)"
+                    "If you are more familiar with calculating weight using kilograms (kg), the conversion guide is"
+                    " 1 pound (lb.) = 0.45 kilogram (kg) and 1 kilogram (kg.) = 2.2 pounds (lbs.)"
                 ),
 
 
                 'Expectations': [
-                    "You will estimate weight in <strong>pounds (lbs.)</strong> across 10 bins from <strong>&lt;120 lbs</strong> to <strong>&gt;200 lbs</strong>.",
+                    "You will estimate weight in <strong>pounds (lbs.)</strong> across 10 bins from <strong>&lt;120 lbs</strong> to <strong>&ge;200 lbs</strong>.",
                     "You will make <strong>2 reports</strong> — one in round 1 before advice and the other in round 2.",
                     "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
                     "You may <strong>purchase advice</strong> between round 1 and round 2 if selected to receive advice.",
@@ -349,17 +350,19 @@ class Task_Intro(Page):
                 'task_name': 'Height Estimation',
                 'icon': '📏',
                 'intro': (
-                    "In this task, you will view a photograph of a real person and "
-                    "estimate their height in feet and inches. As before, you will "
-                    "express your beliefs by distributing tokens across height "
+                    "In this task, you will view <strong>1 photograph</strong> of a real person and "
+                    "estimate their height in feet and inches. You will "
+                    "express your beliefs by distributing <strong>100 tokens across 10 bins</strong> of successive height "
                     "intervals. Take your time and observe the "
-                    "photo carefully before making your allocation."
+                    "photo carefully before making your allocations."
                 ),
                 'note': (
                     "Note: Look for contextual cues in the photo — surrounding "
-                    "objects, posture, and proportions can all help you gauge height."
-                ),
+                    "objects, posture, and proportions can all help you gauge height. "
+                    "If you are more familiar with calculating height using centimeters (cm), the conversion guide is "
+                    "1 foot ≈ 30.48 centimeters (cm) and 1 inch = 2.54 cm. Recall that 12 inches = 1 foot. "
 
+                ),
 
                 'Expectations': [
                     "You will estimate height in <strong>feet and inches</strong> across 10 bins from <strong>Under 5'0\"</strong> to <strong>Over 7'0\"</strong>.",
@@ -377,14 +380,13 @@ class Task_Intro(Page):
                     "This task has an urn containing exactly 100 balls, "
                     "each either blue or orange. You do not know the exact mix. "
                     "Over two periods, you will observe a sequence of 20 draws for each period from the urn "
-                    "The draws are with with replacement, meaning each drawn ball is placed back in the urn before the next "
-                    "draw. After each period, you will report your beliefs about the "
+                    "After each period, you will report your beliefs about the "
                     "true percentage of blue balls by distributing tokens across "
                     "probability ranges."
                 ),
                 'note': (
-                    "Note: Pay close attention to the number of blue versus orange "
-                    "balls drawn in each period."
+                    "Note: The draws are with with replacement, meaning each drawn ball is placed back in the urn before the next "
+                    "draw."
                 ),
 
                 'Expectations': [

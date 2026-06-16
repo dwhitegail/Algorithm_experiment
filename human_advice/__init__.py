@@ -1,0 +1,427 @@
+import json
+import random
+from otree.api import *
+
+doc = """
+Human Advice Collection Experiment
+Collects belief distributions from subjects to use as human advice
+in the main algorithmic aversion experiment.
+No performance-based payment — flat $40 participation fee.
+"""
+
+
+class C(BaseConstants):
+    NAME_IN_URL = 'human_advice'
+    PLAYERS_PER_GROUP = None
+    NUM_ROUNDS = 18              #5 weight + 5 height + 2 urns + 5 songs
+    PARTICIPATION_FEE = 40.00
+    ENDOWMENT = 0.00            # no endowment needed — no advice to buy
+    MAX_EARNINGS_PER_REPORT = 0.00
+
+    # Which rounds belong to each task
+    WEIGHT_ROUNDS = [1, 2, 3, 4, 5]
+    HEIGHT_ROUNDS = [6, 7, 8, 9, 10]
+    URN_ROUNDS = [11, 12]
+    SONG_ROUNDS_SHORT = [13, 14, 15, 16, 17] # sessions 1 and 2
+    SONG_ROUNDS_LONG = [13, 14, 15, 16, 17, 18] #session 3
+
+    # First round of each task — show Task_Intro
+    TASK_INTRO_ROUNDS = [1, 6, 11, 13]
+
+
+class Subsession(BaseSubsession):
+    pass
+
+
+class Group(BaseGroup):
+    pass
+
+
+class Player(BasePlayer):
+    qid          = models.StringField()
+    alpha        = models.FloatField(initial=50.0)
+    beta         = models.FloatField(initial=50.0)
+    num_tokens   = models.IntegerField(initial=100)
+    color        = models.StringField()
+    bin_labels   = models.StringField()
+    layout       = models.StringField(initial='h')
+    beliefs      = models.StringField()    # single belief report per question
+
+
+# ── PAGES ──────────────────────────────────────────────────────────────────
+
+class Consent(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
+
+class Instructions(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            num_tokens=player.num_tokens,
+            participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
+            num_weight=len(C.WEIGHT_ROUNDS),
+            num_height=len(C.HEIGHT_ROUNDS),
+            num_urns=len(C.URN_ROUNDS),
+            num_songs=len(C.SONG_ROUNDS),
+            total_questions=C.NUM_ROUNDS,
+
+        )
+
+
+class Task_Intro(Page):
+    @staticmethod
+    def is_displayed(player):
+        # Show before first round of each task
+        # weight=1, height=2, urns=3, songs=5
+        return player.round_number in C.TASK_INTRO_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        questions = player.session.config['questions']
+        num_songs = len(questions) - 12  # total minus weight(5)+height(5)+urns(2)
+
+        intros = {
+            1: {
+                'task_number': 'Task 1 of 4',
+                'task_name':   'Weight Estimation',
+                'icon':        '⚖️',
+                'num_questions': len(C.WEIGHT_ROUNDS),
+                'intro': (
+                    "In this segment, you will view photographs of "
+                    f"<strong>{len(C.WEIGHT_ROUNDS)} different people</strong> "
+                    "and estimate each person's weight in pounds. For each photograph, "
+                    "distribute your tokens across the weight intervals to reflect "
+                    "how confident you are in each range."
+                ),
+                'note': (
+                    "Consider the person's visible body type, posture, height cues, "
+                    "and clothing before allocating your tokens."
+                ),
+                'Expectations': [
+                    f"You will see <strong>{len(C.WEIGHT_ROUNDS)} photographs</strong>, one at a time.",
+                    "Estimate weight in <strong>pounds (lbs.)</strong> across 10 bins for each photo "
+                    "The weight intervals are from <strong>&lt;120 lbs</strong> to <strong>&gt;200 lbs</strong>.",
+                    "You will be asked to report your beliefs about the weight of <strong>5 people</strong>.",
+
+                ],
+            },
+            6: {
+                'task_number': 'Task 2 of 4',
+                'task_name':   'Height Estimation',
+                'icon':        '📏',
+                'num_questions': len(C.HEIGHT_ROUNDS),
+                'intro': (
+                    "In this segment you will view photographs of "
+                    f"<strong>{len(C.HEIGHT_ROUNDS)} different people</strong> "
+                    "and estimate each person's height in feet and inches. "
+                    "As before, distribute your tokens across the height intervals "
+                    "to reflect your beliefs."
+                ),
+                'note': (
+                    "Look for contextual cues in the photo, surrounding "
+                    "objects, posture, and proportions can all help you gauge height."
+                ),
+                'Expectations': [
+                    f"You will see <strong>{len(C.HEIGHT_ROUNDS)} photographs</strong>, one at a time.",
+                    "Estimate height in <strong>feet and inches</strong> across 10 bins for each photo "
+                    "The height intervals from <strong>Under 5'0\"</strong> to <strong>Over 7'0\"</strong>.",
+                    "You will be asked to report your beliefs about the height of <strong>5 people</strong>.",
+
+                ],
+            },
+            11: {
+                'task_number': 'Task 3 of 4',
+                'task_name':   'Urns Task',
+                'icon':        '🏺',
+                'num_questions': len(C.URN_ROUNDS),
+                'intro': (
+                    "In this segment, you will consider one urn containing exactly 100 balls. Each ball is either blue or orange. "
+                    "You do not know the exact mix for the urn. "
+                    "You will observe 2 sequences of 20 draws from the same urn."
+                    "Each draw is made with replacement. After observing each sequence, "
+                    "you will report your beliefs about the true percentage of blue balls in the urn."
+                ),
+                'note': (
+                    "Draws with replacement means that each drawn ball is placed back in the urn "
+                    "before the next ball in drawn."
+                ),
+                'Expectations': [
+                    "There are <strong>2 sequences</strong> of 20 draws each.",
+                    "You will make <strong>1 report per sequence</strong>.",
+                    "Estimate the proportion of blue balls across <strong>10 bins</strong> (0–10% up to 91–100%).",
+
+                ],
+            },
+            13: {
+                'task_number': 'Task 4 of 4',
+                'task_name':   'Billboard Hot 100 Song Ranking',
+                'icon':        '🎵',
+                'num_questions': len(C.SONG_ROUNDS),
+                'intro': (
+                    f"In this segment you will predict the ranking of "
+                    f"<strong>{len(C.SONG_ROUNDS)} songs</strong> on the Billboard Hot 100 "
+                    "chart for specific weeks in 2025 and 2026. For each song, you will be "
+                    "shown its chart performance over the four preceding weeks."
+                ),
+                'note': (
+                    "The Billboard Hot 100 ranks songs from 1 to 100 based on sales, "
+                    "airplay, and streaming. Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher."
+                ),
+                'Expectations': [
+                     f"You will predict the ranking of <strong>{len(C.SONG_ROUNDS)} songs</strong>, one at a time.",
+                    "Predict each song's rank across <strong>10 bins, ranging from '1' to '10 or more'</strong>.",
+                    "You will be given a line chart showing the song's movement for the <strong> previous 4 weeks</strong>.",
+                ],
+            },
+        }
+
+        info = intros.get(player.round_number, {
+            'task_number': 'Next Task',
+            'task_name':   '',
+            'icon':        '📋',
+            'num_questions': 0,
+            'intro':       'Please proceed.',
+            'note':        '',
+            'Expectations': [],
+        })
+
+        return dict(
+            task_number=info['task_number'],
+            task_name=info['task_name'],
+            icon=info['icon'],
+            num_questions=info['num_questions'],
+            intro=info['intro'],
+            note=info['note'],
+            Expectations=info['Expectations'],
+        )
+
+
+class Beliefs(Page):
+    form_model  = 'player'
+    form_fields = ['beliefs']
+    template_name = 'human_advice/Beliefs.html'
+
+    @staticmethod
+    def is_displayed(player):
+        # Only show if there is a question for this round
+        questions = player.session.config['questions']
+        return player.round_number <= len(questions)  # ← handles 17 vs 18 rounds
+
+    # @staticmethod
+    # def before_next_page(player, timeout_happened):
+    #     response = json.loads(player.beliefs)
+    #     score, earnings, accuracy, efficiency = score_response(
+    #         player, response, player.BLP_draw)
+    #     player.score    = score
+    #     player.earnings = earnings
+    #     player.accuracy = accuracy
+    #     player.efficiency = efficiency
+    #     player.payoff += earnings
+
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        r = player.round_number
+        if r in C.WEIGHT_ROUNDS:
+            task_label = "Weight Estimation"
+            q_num = C.WEIGHT_ROUNDS.index(r) + 1
+            q_total = len(C.WEIGHT_ROUNDS)
+        elif r in C.HEIGHT_ROUNDS:
+            task_label = "Height Estimation"
+            q_num = C.HEIGHT_ROUNDS.index(r) + 1
+            q_total = len(C.HEIGHT_ROUNDS)
+        elif r in C.URN_ROUNDS:
+            task_label = "Urns Task"
+            q_num = C.URN_ROUNDS.index(r) + 1
+            q_total = len(C.URN_ROUNDS)
+        else:
+            task_label = "Song Ranking"
+            q_num = C.SONG_ROUNDS.index(r) + 1
+            q_total = len(C.SONG_ROUNDS)
+
+        return dict(
+            qid=player.qid,
+            stimulus_path=f"human_advice/stimulus/{player.qid}.html",
+            alpha=player.alpha,
+            beta=player.beta,
+            num_tokens=player.num_tokens,
+            color=json.loads(player.color),
+            bin_labels=json.loads(player.bin_labels),
+            task_label=task_label,
+            q_num=q_num,
+            q_total=q_total,
+        )
+
+
+class ThankYou(Page):
+    @staticmethod
+    def is_displayed(player):
+        questions = player.session.config['questions']
+        return player.round_number == len(questions)  # ← handles 17 vs 18 rounds
+
+        #return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
+        )
+
+
+class Payoff(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        num_rounds = C.NUM_ROUNDS
+
+        question_meta = {
+            'weight01': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
+            'weight02': {'title': 'Weight Estimation',  'true_value': "<120 pounds"},
+            'weight03': {'title': 'Weight Estimation',  'true_value': '120–129 lbs'},
+            'weight04': {'title': 'Weight Estimation',  'true_value': '140–149 lbs'},
+            'weight05': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
+            'weight06': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
+            'weight07': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
+            'weight08': {'title': 'Weight Estimation',  'true_value': '130–139 lbs'},
+            'weight09': {'title': 'Weight Estimation',  'true_value': '150–159 lbs'},
+            'weight10': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
+            'weight11': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
+            'weight12': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
+            'weight13': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
+            'weight14': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
+            'weight15': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
+            'height01': {'title': 'Height Estimation',  'true_value': "< 5 feet"},
+            'height02': {'title': 'Height Estimation', 'true_value': "5 feet 11 inches"},
+            'height03': {'title': 'Height Estimation', 'true_value': "5 feet 4 inches"},
+            'height04': {'title': 'Height Estimation', 'true_value': "5 feet 5 inches"},
+            'height05': {'title': 'Height Estimation', 'true_value': "5 feet 6 inches"},
+            'height06': {'title': 'Height Estimation', 'true_value': "5 feet 6 inches"},
+            'height07': {'title': 'Height Estimation', 'true_value': "5 feet 8 inches"},
+            'height08': {'title': 'Height Estimation', 'true_value': "6 feet"},
+            'height09': {'title': 'Height Estimation',  'true_value': "6 feet"},
+            'height10': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'height11': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'height12': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'height13': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'height14': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'height15': {'title': 'Height Estimation', 'true_value': "< 5 feet"},
+            'urn01':    {'title': 'Urns — Period 1',    'true_value': '60% blue balls'},
+            'urn02':    {'title': 'Urns — Period 2',    'true_value': '60% blue balls'},
+            'urn03': {'title': 'Urns — Period 1', 'true_value': '60% blue balls'},
+            'urn04': {'title': 'Urns — Period 2', 'true_value': '60% blue balls'},
+            'urn05': {'title': 'Urns — Period 1', 'true_value': '60% blue balls'},
+            'urn06': {'title': 'Urns — Period 2', 'true_value': '60% blue balls'},
+            'urn07': {'title': 'Urns — Period 1', 'true_value': '60% blue balls'},
+            'urn08': {'title': 'Urns — Period 2', 'true_value': '60% blue balls'},
+            'song01':   {'title': 'Song 1 Ranking',     'true_value': 'Position 8'},
+            'song02':   {'title': 'Song 2 Ranking',     'true_value': 'Position 2'},
+            'song03': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song04': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song05': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song06': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song07': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song08': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song09': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song10': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song11': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song12': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song13': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song14': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song15': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+            'song16': {'title': 'Song 2 Ranking', 'true_value': 'Position 2'},
+
+        }
+
+        task_results = []
+        total_earnings = 0
+
+        for i in range(1, num_rounds + 1):
+            p = player.in_round(i)
+            meta = question_meta.get(p.qid, {'title': p.qid, 'true_value': 'N/A'})
+            labels = json.loads(p.bin_labels)
+
+            bins = []
+            if p.beliefs:
+                tokens = json.loads(p.beliefs)
+                for j, label in enumerate(labels):
+                    t = tokens[j] if j < len(tokens) else 0
+                    if t > 0:
+                        bins.append({'label': label, 'tokens': t})
+
+            task_results.append({
+                'title':      meta['title'],
+                'true_value': meta['true_value'],
+                'earnings':   f"{p.earnings:.2f}",
+                'bins':       bins,
+            })
+            total_earnings += p.earnings
+
+        participation_fee = C.PARTICIPATION_FEE
+        grand_total = round(total_earnings + participation_fee, 2)
+
+        return dict(
+            task_results=task_results,
+            total_earnings=f"{total_earnings:.2f}",
+            participation_fee=f"{participation_fee:.2f}",
+            grand_total=f"{grand_total:.2f}",
+        )
+
+
+# ── FUNCTIONS ──────────────────────────────────────────────────────────────
+
+def creating_session(subsession: Subsession):
+    questions = subsession.session.config['questions']
+
+    if subsession.round_number <= len(questions):
+        for p in subsession.get_players():
+            question_data = questions[subsession.round_number - 1]
+            p.qid        = str(question_data[0])
+            p.bin_labels = json.dumps(question_data[1])
+            p.color      = json.dumps(['#6495ED'])
+
+            layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'h'
+            p.layout = 'h' if layout_input in ['h', 'horizontal'] else 'v'
+
+            #p.BLP_draw = round(random.uniform(0, 100), 2)
+
+
+def score_response(player: Player, response, draw):
+    num_bins = len(response)
+    for i in range(num_bins):
+        response[i] = response[i] / player.num_tokens
+
+    def ScoringRule(cb):
+        SS = sum(r * r for r in response)
+        return player.alpha + player.beta * ((2 * response[cb]) - SS)
+
+    player.correct_bin = int(
+        player.session.config['questions'][player.subsession.round_number - 1][2]
+    ) - 1
+
+    score    = round(ScoringRule(player.correct_bin), 2)
+    earnings = C.MAX_EARNINGS_PER_REPORT if draw <= score else 0
+    accuracy  = response[player.correct_bin]
+    efficiency = earnings / (player.alpha + player.beta)
+
+    return score, earnings, accuracy, efficiency
+
+
+# ── PAGE SEQUENCE ──────────────────────────────────────────────────────────
+page_sequence = [
+    Consent,
+    Instructions,
+    Task_Intro,
+    Beliefs,
+    ThankYou,
+
+]

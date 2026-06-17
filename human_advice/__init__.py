@@ -111,10 +111,9 @@ class Task_Intro(Page):
                     "and clothing before allocating your tokens."
                 ),
                 'Expectations': [
-                    f"You will see <strong>{len(C.WEIGHT_ROUNDS)} photographs</strong>, one at a time.",
-                    "Estimate weight in <strong>pounds (lbs.)</strong> across 10 bins for each photo "
-                    "The weight intervals are from <strong>&lt;120 lbs</strong> to <strong>&gt;200 lbs</strong>.",
-                    "You will be asked to report your beliefs about the weight of <strong>5 people</strong>.",
+                    f"You will observe <strong>{len(C.WEIGHT_ROUNDS)} photographs</strong> of individuals, one at a time.",
+                    "For each photo you will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong>by allocating 100 tokens across 10 bins.",
+                    "The weight intervals are from <strong>&lt;120 lbs</strong> to <strong>&ge;200 lbs</strong>.",
 
                 ],
             },
@@ -150,7 +149,7 @@ class Task_Intro(Page):
                 'intro': (
                     "In this segment, you will consider one urn containing exactly 100 balls. Each ball is either blue or orange. "
                     "You do not know the exact mix for the urn. "
-                    "You will observe 2 sequences of 20 draws from the same urn."
+                    "You will observe 2 sequences of 20 draws from the same urn. "
                     "Each draw is made with replacement. After observing each sequence, "
                     "you will report your beliefs about the true percentage of blue balls in the urn."
                 ),
@@ -160,7 +159,7 @@ class Task_Intro(Page):
                 ),
                 'Expectations': [
                     "There are <strong>2 sequences</strong> of 20 draws each.",
-                    "You will make <strong>1 report per sequence</strong>.",
+                    "You will make <strong>1 report per sequence</strong>, by allocating 100 tokens",
                     "Estimate the proportion of blue balls across <strong>10 bins</strong> (0–10% up to 91–100%).",
 
                 ],
@@ -216,6 +215,7 @@ class Beliefs(Page):
 
     @staticmethod
     def is_displayed(player):
+        questions = player.session.config['questions']
         # Only show if there is a question for this round
         return player.round_number <= len(questions)  # ← handles 17 vs 18 rounds
 
@@ -253,8 +253,9 @@ class Beliefs(Page):
             q_total = len(C.URN_ROUNDS)
         else:
             task_label = "Song Ranking"
-            q_num = C.SONG_ROUNDS.index(r) + 1
-            q_total = len(C.song_rounds)
+            q_num = song_rounds.index(r) + 1
+            q_total = len(song_rounds)
+
 
         return dict(
             qid=player.qid,

@@ -63,14 +63,20 @@ class Instructions(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        # Calculate song count dynamically from session config
+        questions = player.session.config['questions']
+        num_songs = len(questions) - len(C.WEIGHT_ROUNDS) - len(C.HEIGHT_ROUNDS) - len(C.URN_ROUNDS)
+
         return dict(
             num_tokens=player.num_tokens,
             participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
             num_weight=len(C.WEIGHT_ROUNDS),
             num_height=len(C.HEIGHT_ROUNDS),
             num_urns=len(C.URN_ROUNDS),
-            num_songs=len(C.SONG_ROUNDS),
-            total_questions=C.NUM_ROUNDS,
+            num_songs=num_songs,  # ← dynamic, not C.SONG_ROUNDS
+            total_questions=len(questions),  # ← dynamic, not C.NUM_ROUNDS
+            #num_songs=len(C.SONG_ROUNDS),
+            #total_questions=C.NUM_ROUNDS,
 
         )
 
@@ -163,10 +169,10 @@ class Task_Intro(Page):
                 'task_number': 'Task 4 of 4',
                 'task_name':   'Billboard Hot 100 Song Ranking',
                 'icon':        '🎵',
-                'num_questions': len(C.SONG_ROUNDS),
+                'num_questions': num_songs,
                 'intro': (
                     f"In this segment you will predict the ranking of "
-                    f"<strong>{len(C.SONG_ROUNDS)} songs</strong> on the Billboard Hot 100 "
+                    f"<strong>{num_songs} songs</strong> on the Billboard Hot 100 "
                     "chart for specific weeks in 2025 and 2026. For each song, you will be "
                     "shown its chart performance over the four preceding weeks."
                 ),
@@ -175,7 +181,7 @@ class Task_Intro(Page):
                     "airplay, and streaming. Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher."
                 ),
                 'Expectations': [
-                     f"You will predict the ranking of <strong>{len(C.SONG_ROUNDS)} songs</strong>, one at a time.",
+                     f"You will predict the ranking of <strong>{num_songs} songs</strong>, one at a time.",
                     "Predict each song's rank across <strong>10 bins, ranging from '1' to '10 or more'</strong>.",
                     "You will be given a line chart showing the song's movement for the <strong> previous 4 weeks</strong>.",
                 ],
@@ -211,7 +217,6 @@ class Beliefs(Page):
     @staticmethod
     def is_displayed(player):
         # Only show if there is a question for this round
-        questions = player.session.config['questions']
         return player.round_number <= len(questions)  # ← handles 17 vs 18 rounds
 
     # @staticmethod
@@ -229,6 +234,11 @@ class Beliefs(Page):
     def vars_for_template(player: Player):
 
         r = player.round_number
+        questions = player.session.config['questions']
+
+        # Calculate song rounds dynamically
+        song_rounds = list(range(13, len(questions) + 1))
+
         if r in C.WEIGHT_ROUNDS:
             task_label = "Weight Estimation"
             q_num = C.WEIGHT_ROUNDS.index(r) + 1
@@ -244,7 +254,7 @@ class Beliefs(Page):
         else:
             task_label = "Song Ranking"
             q_num = C.SONG_ROUNDS.index(r) + 1
-            q_total = len(C.SONG_ROUNDS)
+            q_total = len(C.song_rounds)
 
         return dict(
             qid=player.qid,
@@ -423,5 +433,4 @@ page_sequence = [
     Task_Intro,
     Beliefs,
     ThankYou,
-
 ]

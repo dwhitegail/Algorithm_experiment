@@ -6,33 +6,62 @@
         max-width: 850px;
         margin: 80px auto;
     }
-
     .thankyou-card {
-        background: linear-gradient(135deg, #f8fbff, #eef5ff);
-        border-radius: 20px;
-        padding: 50px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        border: 1px solid #dce8f7;
+    background: linear-gradient(135deg, #f8fbff, #eef5ff);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid #dce8f7;
+    text-align: left;
     }
+
+    .main-title {
+    font-size: 3rem;   /* larger */
+    font-weight: 700;
+    color: #1f3b64;
+    margin-bottom: 30px;
+    text-align: center;
+    }
+
 
     .checkmark {
         font-size: 70px;
         color: #28a745;
         margin-bottom: 15px;
+        text-align: center;
     }
 
-    .main-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1f3b64;
-        margin-bottom: 20px;
-    }
 
-    .thank-you {
+       .thank-you {
         font-size: 1.4rem;
         color: #444;
         margin-bottom: 30px;
+    }
+
+
+    .thank-you-text {
+    font-size: 1.5rem;
+    line-height: 1.8;
+    color: #333;
+    }
+
+    .summary-box h4 {
+    margin-top: 30px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f3b64;
+    margin-bottom: 15px;
+    }
+
+    .summary-box ul {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    }
+
+    .payment-box {
+    margin-top: 25px;
+    font-size: 1.4rem;
+    line-height: 1.8;
     }
 
     .info-box {
@@ -58,27 +87,47 @@
 <div class="thankyou-container">
     <div class="thankyou-card">
 
-        <div class="checkmark">✓</div>
+        <div class="checkmark">🎉</div>
 
         <div class="main-title">
             Experiment Completed
         </div>
 
-        <div class="thank-you">
-            Thank you for participating in our study.  You have successfully completed all tasks. Your responses will
-            be used as human advice in a future decision-making experiment.
 
-         <div class="payment">
-            You will receive $40 as compensation for your time.
-            Please remain seated until your number is called, then proceed to the payment counter
-        </div>
-
-
-        <div class="next-button-wrapper">
-            {{ next_button }}
-        </div>
-
+    <div class="thank-you-text">
+        Thank you for participating in our study.
+        You have successfully completed all tasks and your responses have been recorded.
+        Your judgments will be used as human advice in a future decision-making experiment.
     </div>
+
+
+    <div class="summary-box">
+        <h4>What You Completed</h4>
+        <ul>
+            <li>Weight Estimation Tasks</li>
+            <li>Height Estimation Tasks</li>
+            <li>Urn Probability Assessment Tasks</li>
+            <li>Billboard Hot 100 Ranking Forecasts</li>
+        </ul>
+    </div>
+
+    <div class="payment-box">
+        Your c<strong>ompensation</strong> for this session is <strong>$40</strong><br>
+        Please remain seated until your participant number is called,
+        then proceed to the payment counter.
+    </div>
+
+<!--    <div class="next-button-wrapper">-->
+<!--        {{ next_button }}-->
+<!--    </div>-->
+
+</div>
+
 </div>
 
 {% endblock %}
+
+
+
+
+

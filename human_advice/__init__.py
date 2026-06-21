@@ -100,11 +100,11 @@ class Task_Intro(Page):
                 'icon':        '⚖️',
                 'num_questions': len(C.WEIGHT_ROUNDS),
                 'intro': (
-                    "In this segment, you will view photographs of "
+                    "In this task, you will view photographs of "
                     f"<strong>{len(C.WEIGHT_ROUNDS)} different people</strong> "
-                    "and estimate each person's weight in pounds. For each photograph, "
+                    "and estimate their weight in pounds. For each photograph, "
                     "distribute your tokens across the weight intervals to reflect "
-                    "how confident you are in each range."
+                    "how confident you are."
                 ),
                 'note': (
                     "Consider the person's visible body type, posture, height cues, "
@@ -112,8 +112,8 @@ class Task_Intro(Page):
                 ),
                 'Expectations': [
                     f"You will observe <strong>{len(C.WEIGHT_ROUNDS)} photographs</strong> of individuals, one at a time.",
-                    "For each photo you will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong>by allocating 100 tokens across 10 bins.",
-                    "The weight intervals are from <strong>&lt;120 lbs</strong> to <strong>&ge;200 lbs</strong>.",
+                    "For each photo you will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating 100 tokens across 10 bins.",
+                    "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than 200 lbs</strong>.",
 
                 ],
             },
@@ -123,20 +123,21 @@ class Task_Intro(Page):
                 'icon':        '📏',
                 'num_questions': len(C.HEIGHT_ROUNDS),
                 'intro': (
-                    "In this segment you will view photographs of "
+                    "In this task you will view photographs of "
                     f"<strong>{len(C.HEIGHT_ROUNDS)} different people</strong> "
-                    "and estimate each person's height in feet and inches. "
+                    "and estimate their height in feet and inches. "
                     "As before, distribute your tokens across the height intervals "
                     "to reflect your beliefs."
                 ),
                 'note': (
                     "Look for contextual cues in the photo, surrounding "
-                    "objects, posture, and proportions can all help you gauge height."
+                    "objects, posture, and proportions can all help you gauge height." 
+                    "For example, the height interval <strong>5'0\" - 5'2\"</strong> represents 5 feet 0 inches to 5 feet 2 inches."
                 ),
                 'Expectations': [
                     f"You will see <strong>{len(C.HEIGHT_ROUNDS)} photographs</strong>, one at a time.",
                     "Estimate height in <strong>feet and inches</strong> across 10 bins for each photo "
-                    "The height intervals from <strong>Under 5'0\"</strong> to <strong>Over 7'0\"</strong>.",
+                    "The height intervals from <strong>Under 5 feet</strong> to <strong>Over 7 feet</strong>.",
                     "You will be asked to report your beliefs about the height of <strong>5 people</strong>.",
 
                 ],
@@ -147,20 +148,29 @@ class Task_Intro(Page):
                 'icon':        '🏺',
                 'num_questions': len(C.URN_ROUNDS),
                 'intro': (
-                    "In this segment, you will consider one urn containing exactly 100 balls. Each ball is either blue or orange. "
-                    "You do not know the exact mix for the urn. "
-                    "You will observe 2 sequences of 20 draws from the same urn. "
-                    "Each draw is made with replacement. After observing each sequence, "
-                    "you will report your beliefs about the true percentage of blue balls in the urn."
+                    "An urn contains exactly <strong>100 balls</strong> — each ball is either "
+                    "<strong>blue</strong> or <strong>orange</strong>. "
+                    "You do not know how many of each color are in the urn. "
+                    "You will be shown <strong>20 draws</strong> from the urn. "
+                    "These 20 draws are a <strong>sample</strong> — a small peek at what is inside. "
+                    "Your role is to use this sample to report your beliefs about the total percentage of "
+                    "<strong>the blue balls</strong> in the urn. "
+                    "You will do this <strong>twice</strong>, observing a new sample of 20 draws each time, "
+                    "from the same urn and reporting your beliefs after each one."
                 ),
                 'note': (
-                    "Draws with replacement means that each drawn ball is placed back in the urn "
-                    "before the next ball in drawn."
+                    "A <strong>draw</strong> means one ball is randomly selected from the urn, its color "
+                    "is recorded, and then it is placed <strong>back</strong> into the urn before the next draw. "
+                    "This process of each ball being placed back into the urn before the next ball is draws is called 'draws with replacement'. "
+                    "The 20 draws are a sample — they give you clues, but the percentage of blue balls "
+                    "in the sample is not necessarily the same as in the full urn."
                 ),
                 'Expectations': [
-                    "There are <strong>2 sequences</strong> of 20 draws each.",
-                    "You will make <strong>1 report per sequence</strong>, by allocating 100 tokens",
-                    "Estimate the proportion of blue balls across <strong>10 bins</strong> (0–10% up to 91–100%).",
+                    "You will be shown <strong>2 samples</strong> of 20 draws each.",
+                    "After each sample, allocate your <strong>100 tokens</strong> across 10 bins to reflect "
+                    "your beliefs about the percentage of blue balls <strong>in the full urn</strong>.",
+                    "The bins range from <strong>0–10% blue</strong> up to <strong>91–100% blue</strong>.",
+                    "Place more tokens on the ranges you think are most likely.",
 
                 ],
             },
@@ -170,18 +180,17 @@ class Task_Intro(Page):
                 'icon':        '🎵',
                 'num_questions': num_songs,
                 'intro': (
-                    f"In this segment you will predict the ranking of "
-                    f"<strong>{num_songs} songs</strong> on the Billboard Hot 100 "
-                    "chart for specific weeks in 2025 and 2026. For each song, you will be "
-                    "shown its chart performance over the four preceding weeks."
+                    f"In this task, you will estimate what the ranking of "f"<strong>{num_songs} songs on the Billboard Hot 100 "
+                    "chart were </strong>for the weeks of <strong>March 29, 2025 and August 30, 2025.</strong> For each song, you will be "
+                    "shown its chart performance over the <strong>four preceding weeks.</strong>"
                 ),
                 'note': (
                     "The Billboard Hot 100 ranks songs from 1 to 100 based on sales, "
                     "airplay, and streaming. Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher."
                 ),
                 'Expectations': [
-                     f"You will predict the ranking of <strong>{num_songs} songs</strong>, one at a time.",
-                    "Predict each song's rank across <strong>10 bins, ranging from '1' to '10 or more'</strong>.",
+                     f"You will estimate the ranking of <strong>{num_songs} songs</strong>, one at a time.",
+                    "Estimate each song's rank across <strong>10 bins, ranging from '1' to '10 or more'</strong>.",
                     "You will be given a line chart showing the song's movement for the <strong> previous 4 weeks</strong>.",
                 ],
             },
@@ -300,13 +309,13 @@ class Payoff(Page):
             'weight02': {'title': 'Weight Estimation',  'true_value': "<120 pounds"},
             'weight03': {'title': 'Weight Estimation',  'true_value': '120–129 lbs'},
             'weight04': {'title': 'Weight Estimation',  'true_value': '140–149 lbs'},
-            'weight05': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
-            'weight06': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
+            'weight05': {'title': 'Weight Estimation',  'true_value': "≥200 pounds"},
+            'weight06': {'title': 'Weight Estimation',  'true_value': "≥200 pounds"},
             'weight07': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
             'weight08': {'title': 'Weight Estimation',  'true_value': '130–139 lbs'},
             'weight09': {'title': 'Weight Estimation',  'true_value': '150–159 lbs'},
             'weight10': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
-            'weight11': {'title': 'Weight Estimation',  'true_value': ">=200 pounds"},
+            'weight11': {'title': 'Weight Estimation',  'true_value': "≥200 pounds"},
             'weight12': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
             'weight13': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},
             'weight14': {'title': 'Weight Estimation',  'true_value': '160–169 lbs'},

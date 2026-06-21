@@ -5,7 +5,8 @@
 <style>
     /* Widen the main content area */
     .otree-body {
-        max-width: 1000px !important;   /* ← increase this value to make wider */
+    max-width: 1400px !important;
+    width: 95% !important;
     }
 
     /* Widen the card itself */
@@ -39,8 +40,9 @@
             <h4>Overview</h4>
             <p>
                 You are participating in a decision-making experiment. You will report your beliefs about certain things.
-                You will answer 16 questions by allocating 100 tokens for each question across a set of possible answers
-                Placing more tokens in a specific bin means you are more confident the answer falls in that range.
+                You will answer <strong>17 -18 questions</strong> by allocating tokens for each question across a set of possible answers.
+                The possible answers are grouped into categories, called "bins". Placing more tokens in a specific
+                bin means you are more confident that the true answer falls in that range.
 
             </p>
 
@@ -49,36 +51,38 @@
             <h4>Interface to report Beliefs</h4>
             <p>
                 For each question, you will give a report about what you believe to be the correct answer. You will use
-                a slider interface like this below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
-                possible outcomes. Each interface has 10 bins.
+                a slider interface as illustrated in the example below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
+                possible outcomes in <strong>10 bins</strong>. For this example, you would report your beliefs about what percentage
+                of the earth's surface is covered in water. The first bin has an interval of 0% to 10%, the second bin
+                has an interval of 11%-20%, and so on.  The 10th bin represents the outcome of 91%-100%. The tokens you allocate
+                to each bin will reflect your beliefs about the percentage of the earth's surface is covered in water.<br><br>
+
+                You must allocate all 100 tokens. As you allocate tokens by adjusting sliders, the points displayed
+                on the screen will change. The more you allocate to a particular range, the higher the points will be.
 
             <div class="text-center my-3">
-                <img src="{{ static 'interface.png' }}" class="img-fluid border" alt="Example of the Interface for token allocation">
+                <img src="{{ static 'interface.png' }}"
+                     style="width: 1200px; max-width: 100%; border: 1px solid #ccc;"
+                     alt="Example of the Interface for token allocation">
             </div>
 
              </p>
 
-
-
             <h4>Payment</h4>
             <p>
-                You will receive a <strong>$40 participation payment</strong> for agreeing to participate in this experiment,
-                which will be paid in cash at the end of the session.
+                You will receive a <strong>$40 participation payment</strong> for taking part in this experiment.
+                The payment will be provided in cash at the conclusion of the session.
             </p>
 
             <hr>
 
             <h4>Lab Rules</h4>
 
-            <p>
-                Please put your cell phones on silent and securely put away all phones, laptops and other electronic devices.
-                Please do not talk with others seated nearby for the duration of the session. If at any point you have
-                a question, please raise your hand and a researcher will come to assist you.
-
-
-
-            </p>
-
+            <ul style="font-size: 1.15em; line-height: 1.8;">
+                <li>Please put your cell phones on silent and securely put away all phones, laptops, and other electronic devices.</li>
+                <li>Please do not talk with others seated nearby for the duration of the session.</li>
+                <li>If at any point you have a question, please raise your hand and an experimenter will come to assist you.</li>
+            </ul>
 
 
         </div>

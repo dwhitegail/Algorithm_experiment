@@ -3,55 +3,109 @@
 
 {% block style %}
 <style>
+
     .otree-body {
-        max-width: 1000px !important;
+        max-width: 1300px !important;    /* ← increase to make wider */
     }
+
+    /* Increase paragraph and list text size only — headings stay the same */
+    .otree-body p,
+    .otree-body li,
+    .otree-body ul {
+        font-size: 1.15em;      /* ← adjust this value to taste */
+        line-height: 1.8;
+    }
+
+    table {
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table td {
+    font-size: 1.4em;      /* makes Title, PI, etc. larger */
+    padding: 8px 0;
+}
+
+table td:first-child {
+    font-weight: bold;
+    width: 380px;          /* forces a wide label column */
+    padding-right: 30px;   /* space between label and value */
+    white-space: nowrap;   /* prevents wrapping */
+}
+
+table td:last-child {
+    padding-left: 10px;
+}
+
 </style>
 {% endblock %}
 
-{% block title %}Informed Consent{% endblock %}
-
 {% block content %}
 
-<div style="max-width:900px; margin:auto; line-height:1.6; font-size:16px;">
+<h4 style="text-align:center; margin-bottom:30px;">
+    Georgia State University <br> Informed Consent
+</h4>
 
-<h2 style="text-align:center;">Consent to Participate in Research</h2>
+<table>
+    <tr>
+        <td>Title:</td>
+        <td>Beliefs on Decision-Making Tasks</td>
+    </tr>
+    <tr>
+        <td>Principal Investigator:</td>
+        <td>Glenn Harrison, Maurice R. Greenberg
+School of Risk Science and Center for the
+Economic Analysis of Risk, Georgia State University</td>
+    </tr>
+    <tr>
+        <td>Student Principal Investigator:</td>
+        <td> Gail Dennis-White, Maurice R. Greenberg
+School of Risk Science, Georgia State University</td>
+    </tr>
+</table>
 
-<p>
-You are invited to participate in a research study about decision-making and judgments under uncertainty.
-Please read the information below carefully before deciding whether to participate.
-</p>
+
+<br><br>
 
 <h4>Purpose of the Study</h4>
 <p>
-The purpose of this study is to better understand how individuals make decisions and evaluate information with augmented decision-making tools.
-If you agree to participate, you will complete some decision-making tasks and answer related questions.
-Completing all the tasks is expected to take approximately 30–45 minutes.
+You are invited to participate in a research study about decision-making and judgments under uncertainty. The purpose of
+this study is to better understand how individuals make decisions and evaluate information. Your role in the study will
+last no more than 150 minutes today. If you decide to take part, you will complete a computerized experiment consisting
+of four decision tasks with related questions. Before starting a task, you will be given instructions that describe the task
+in greater detail. The decision tasks should take you less than 90 minutes. You will move through the tasks at your own
+pace and not interact with other participants. <br><br>
+
+During the experiment you are not to speak with other participants. If you have a question, please raise your hand and an
+experimenter will come to speak with you. You must silence your phone and not use it for the duration of the experiment.
+You are not permitted to eat or drink in the computer laboratory. You must be at least 18 years of age to participate in
+this experiment.
 </p>
 
-<h4>Voluntary Participation and Risks</h4>
+<h4>Compensation</h4>
 <p>
-Your participation is completely voluntary. You may stop participating at any time without penalty.
-This study involves minimal risk, no greater than risks encountered in everyday life.
+You will receive $5 for showing up for this study. You will also earn an additional amount of money for completing the
+decision tasks.
+
 </p>
 
-<h4>Benefits and Compensation</h4>
+<h4>Voluntary Participation</h4>
 <p>
-You may not receive any direct personal benefit from participating in this study. However, your participation may help
-    researchers better understand decision-making behavior, particularly in contexts involving algorithmic or AI-assisted tools.
-    As compensation for your time, you will receive a participation payment.
+Your participation is completely voluntary. You may stop participating at any time without penalty. If you do not complete
+all parts of the experiment, then you will only receive $5. You must complete the full experiment to receive any additional
+money from the decision tasks.
 
 </p>
 
 <h4>Confidentiality</h4>
 <p>
-Your responses will be kept confidential to the extent permitted by law.
-No personally identifying information will be reported in research findings.
+Your responses will be kept confidential to the extent permitted by law. No personally identifying information will be
+reported in research findings.
 </p>
 
 <h4>Contact Information</h4>
 <p>
-If you have questions about this study, please contact the research team at gdenniswhite1@gsu.edu
+If you have questions about this study, please contact Glenn Harrison at gharrison@gsu.edu
 </p>
 
 <h4>Consent Statement</h4>

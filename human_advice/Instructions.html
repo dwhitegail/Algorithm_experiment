@@ -41,7 +41,7 @@
             <p>
                 You are participating in a decision-making experiment. You will report your beliefs about certain things.
                 You will answer <strong>17 -18 questions</strong> by allocating tokens for each question across a set of possible answers.
-                The possible answers are grouped into categories, called "bins". Placing more tokens in a specific
+                The possible answers are grouped into categories, called <strong>"bins"</strong>. Placing more tokens in a specific
                 bin means you are more confident that the true answer falls in that range.
 
             </p>
@@ -53,36 +53,53 @@
                 For each question, you will give a report about what you believe to be the correct answer. You will use
                 a slider interface as illustrated in the example below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
                 possible outcomes in <strong>10 bins</strong>. For this example, you would report your beliefs about what percentage
-                of the earth's surface is covered in water. The first bin has an interval of 0% to 10%, the second bin
+                of the Earth's surface is covered in water. The first bin has an interval of 0% to 10%, the second bin
                 has an interval of 11%-20%, and so on.  The 10th bin represents the outcome of 91%-100%. The tokens you allocate
                 to each bin will reflect your beliefs about the percentage of the earth's surface is covered in water.<br><br>
 
-                You must allocate all 100 tokens. As you allocate tokens by adjusting sliders, the points displayed
-                on the screen will change. The more you allocate to a particular range, the higher the points will be.
+                You must allocate all 100 tokens.
 
             <div class="text-center my-3">
                 <img src="{{ static 'interface.png' }}"
-                     style="width: 1200px; max-width: 100%; border: 1px solid #ccc;"
+                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
                      alt="Example of the Interface for token allocation">
             </div>
 
              </p>
 
-            <h4>Payment</h4>
+            <h4>Allocation</h4>
             <p>
-                You will receive a <strong>$40 participation payment</strong> for taking part in this experiment.
-                The payment will be provided in cash at the conclusion of the session.
+                Suppose you think there is a fair chance that the percentage of the Earth's surface that is covered in
+                water is between 55%-75%, then as seen in this example, you might allocate 30 tokens to the interval
+                corresponding to 51%-60%, 30 tokens to 61%-70%, and 40 tokens to the 71%-80% interval. After you have made
+                your selection, confirm your choices by clicking on the <strong>Submit</strong> button.
+                This display illustrates that if the percentage of the Earth's surface that is covered in water fell in
+                the interval 71%-80%, you would earn 73 points, which would later be translated into cash payments.
+
+            <div class="text-center my-3">
+                <img src="{{ static 'interface2.png' }}"
+                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
+                     alt="Example of the Interface for token allocation">
+            </div>
             </p>
 
-            <hr>
+            <h4>Payment</h4>
+            <p>
+                Only one report will be randomly selected for payment. Each report pays between <strong>$0 and $50</strong> and your points
+                determine your chance of earning $50. The more points you earn, the higher your chance of earning $50.
+                The earnings from the report randomly selected for payment will be added to your <strong>$5 show-up fee</strong>. This
+                will be displayed at the end of the session. All payments are provided in cash.
+            </p>
 
-            <h4>Lab Rules</h4>
+<!--            <hr>-->
 
-            <ul style="font-size: 1.15em; line-height: 1.8;">
-                <li>Please put your cell phones on silent and securely put away all phones, laptops, and other electronic devices.</li>
-                <li>Please do not talk with others seated nearby for the duration of the session.</li>
-                <li>If at any point you have a question, please raise your hand and an experimenter will come to assist you.</li>
-            </ul>
+<!--            <h4>Lab Rules</h4>-->
+
+<!--            <ul style="font-size: 1.15em; line-height: 1.8;">-->
+<!--                <li>Please put your cell phones on silent and securely put away all phones, laptops, and other electronic devices.</li>-->
+<!--                <li>Please do not talk with others seated nearby for the duration of the session.</li>-->
+<!--                <li>If at any point you have a question, please raise your hand and an experimenter will come to assist you.</li>-->
+<!--            </ul>-->
 
 
         </div>

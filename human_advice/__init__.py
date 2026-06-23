@@ -102,18 +102,20 @@ class Task_Intro(Page):
                 'intro': (
                     "In this task, you will view photographs of "
                     f"<strong>{len(C.WEIGHT_ROUNDS)} different people</strong> "
-                    "and estimate their weight in pounds. For each photograph, "
-                    "distribute your tokens across the weight intervals to reflect "
-                    "how confident you are."
+                    "and estimate their weight in pounds (lbs.). For each photograph, "
+                    "place the tokens in the bin or bins that you think represents the correct answer(s). "
+                    "Bin 1 represents a weight of less than 120 lbs., bin 2 represents an interval of 120-129 lbs., bin 3, 130-139 lbs, and so on. "
+                    "Bin 10 represents the interval of greater than or equal to 200 lbs."
                 ),
                 'note': (
                     "Consider the person's visible body type, posture, height cues, "
-                    "and clothing before allocating your tokens."
+                    "and clothing before allocating your tokens. If you are more familiar with calculating weight using "
+                    "kilograms (kg), the conversion guide is 1 pound (lb.) ≈ 0.45 kilogram (kg) and 1 kilogram (kg.) ≈ 2.2 pounds (lbs.)."
                 ),
                 'Expectations': [
                     f"You will observe <strong>{len(C.WEIGHT_ROUNDS)} photographs</strong> of individuals, one at a time.",
-                    "For each photo you will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating 100 tokens across 10 bins.",
-                    "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than 200 lbs</strong>.",
+                    "For each photograph you will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating <strong>100 tokens across 10 bins.</strong>",
+                    "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than or equal to  200 lbs</strong>.",
 
                 ],
             },
@@ -132,12 +134,14 @@ class Task_Intro(Page):
                 'note': (
                     "Look for contextual cues in the photo, surrounding "
                     "objects, posture, and proportions can all help you gauge height." 
-                    "For example, the height interval <strong>5'0\" - 5'2\"</strong> represents 5 feet 0 inches to 5 feet 2 inches."
+                    "For example, the height interval <strong>5'0\" - 5'2\"</strong> represents 5 feet 0 inches to 5 feet 2 inches. "
+                    "If you are more familiar with calculating height using centimeters (cm), the conversion guide is "
+                    "1 foot ≈ 30.48 centimeters (cm) and 1 inch ≈ 2.54 cm. Recall that 12 inches = 1 foot."
                 ),
                 'Expectations': [
                     f"You will see <strong>{len(C.HEIGHT_ROUNDS)} photographs</strong>, one at a time.",
                     "Estimate height in <strong>feet and inches</strong> across 10 bins for each photo "
-                    "The height intervals from <strong>Under 5 feet</strong> to <strong>Over 7 feet</strong>.",
+                    "The height intervals from <strong>Under 5 feet (5'0\")</strong> to <strong>Over 7 feet (7'0\")</strong>.",
                     "You will be asked to report your beliefs about the height of <strong>5 people</strong>.",
 
                 ],
@@ -148,29 +152,34 @@ class Task_Intro(Page):
                 'icon':        '🏺',
                 'num_questions': len(C.URN_ROUNDS),
                 'intro': (
-                    "An urn contains exactly <strong>100 balls</strong> — each ball is either "
+                    "An urn contains exactly <strong>100 balls</strong>. Each ball is either "
                     "<strong>blue</strong> or <strong>orange</strong>. "
-                    "You do not know how many of each color are in the urn. "
-                    "You will be shown <strong>20 draws</strong> from the urn. "
-                    "These 20 draws are a <strong>sample</strong> — a small peek at what is inside. "
-                    "Your role is to use this sample to report your beliefs about the total percentage of "
-                    "<strong>the blue balls</strong> in the urn. "
-                    "You will do this <strong>twice</strong>, observing a new sample of 20 draws each time, "
-                    "from the same urn and reporting your beliefs after each one."
+                    "You do not know how many of each color are inside the urn. "
+                    "Because there are exactly 100 balls, the <strong>percentage</strong> of blue balls "
+                    "is exactly equal to the actual <strong>number</strong> of blue balls. "
+                    "So if you think there are 30 blue balls then the percentage of blue balls in the urn is 30%."
+                    "<br><br>"
+                    
+                    "You will be given <strong>a sample of 20 draws</strong> from this urn. "
+                    "This <strong>sample</strong> is a small peek inside the urn. "
+                    "Your role is to use this sample to estimate the total percentage of "
+                    "<strong>blue balls</strong> in the full urn. "
+                    "You will get <strong>2 samples</strong>. First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
+                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting again."
+
                 ),
                 'note': (
                     "A <strong>draw</strong> means one ball is randomly selected from the urn, its color "
                     "is recorded, and then it is placed <strong>back</strong> into the urn before the next draw. "
-                    "This process of each ball being placed back into the urn before the next ball is draws is called 'draws with replacement'. "
-                    "The 20 draws are a sample — they give you clues, but the percentage of blue balls "
+                    "Remember, your 20 draws are just a sample — they give you clues, but the percentage of blue balls "
                     "in the sample is not necessarily the same as in the full urn."
                 ),
                 'Expectations': [
-                    "You will be shown <strong>2 samples</strong> of 20 draws each.",
-                    "After each sample, allocate your <strong>100 tokens</strong> across 10 bins to reflect "
-                    "your beliefs about the percentage of blue balls <strong>in the full urn</strong>.",
-                    "The bins range from <strong>0–10% blue</strong> up to <strong>91–100% blue</strong>.",
-                    "Place more tokens on the ranges you think are most likely.",
+                    "You will be shown <strong>2 separate samples</strong> of 20 draws each.",
+                    "After each sample, allocate your <strong>100 tokens</strong> across <strong>10 bins</strong> to reflect "
+                    "your beliefs about the <strong>percentage of blue balls in the full urn</strong>.",
+                    "The bins are in 10% increments with bin 1 ranging from <strong>0–10% </strong> up to bin 10 ranging from <strong>91–100% </strong>.",
+                    "Place the tokens in the bin or bins you think has the correct answer.",
 
                 ],
             },

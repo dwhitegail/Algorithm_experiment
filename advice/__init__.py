@@ -74,6 +74,7 @@ class Player(BasePlayer):
     pre_efficiency = models.FloatField(initial=0)
     post_efficiency = models.FloatField(initial=0)
     display_round = models.IntegerField(initial=1)
+    al_advice_source = models.IntegerField(initial=0)  # 0=Claude, 1=Gemini, 2=ChatGPT
 
 
 # PAGES
@@ -257,6 +258,7 @@ class Advice(Page):
         return dict(
             advice_path=advice_path,
             treatment=player.treatment,
+            al_advice_source=player.al_advice_source,  # ← pass index to template
         )
 
 
@@ -802,6 +804,11 @@ def creating_session(subsession: Subsession):
             else:
                 # Keep same treatment across all rounds
                 p.treatment = p.in_round(1).treatment
+
+            if subsession.round_number == 1:
+                p.al_advice_source = random.randint(0, 2)  # 0=Claude, 1=Gemini, 2=ChatGPT
+            else:
+                p.al_advice_source = p.in_round(1).al_advice_source
 
             # ── Set defaults for 'none' treatment ──────────────────
             if p.treatment == 'none':  # ← add this block

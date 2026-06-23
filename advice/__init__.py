@@ -130,7 +130,7 @@ class Pre_beliefs(Page):
     def vars_for_template(player: Player):
         return dict(
             qid=player.qid,
-            stimulus_path=f"advice/stimulus/{player.qid}.html",
+            stimulus_path=f"advice/shared_stimulus/{player.qid}.html",
 
             alpha=player.alpha,
             beta=player.beta,

@@ -26,21 +26,23 @@
 
             <h4>Overview</h4>
             <p>
-                You are participating in a decision-making experiment. Your earnings will depend on the beliefs you report
-                across four tasks: a weight estimation task, a height estimation task, an urns task, and a song ranking task.
-                The weight and height tasks each contain one question; the urns and song ranking tasks each contain
-                two questions, for a total of six questions.
+                You are participating in a decision-making experiment. You will report your beliefs about certain things.
+                Your earnings will depend on the beliefs you report across four tasks: a weight estimation task, a height
+                estimation task, an urns task, and a song ranking task. The weight and height tasks each contain one question;
+                the urns and song ranking tasks each contain two questions, for a <strong>total of six questions</strong>.
+
+                You will answer each question by allocating tokens across a set of possible answers. The possible answers are grouped in categories called "bins".
+
                 <br><br>
-                You will answer each question by allocating tokens across a set of possible answers.
                 <strong>AT THE START OF THE SESSION</strong>, you will RANDOMLY be assigned to receive advice from one of three groups:
                 <strong>Algorithmic Advice</strong> or <strong>Human Advice</strong>, or <strong>No Advice</strong>.
 
                  <div class="text-center my-3">
                 <img src="{{ static 'advice.png' }}" class="img-fluid border" alt="Example of Advice Assignment">
             </div>
-                There are 2 rounds for each question. Each question will start with round 1, after which you may or may not
-                purchase and receive advice. After which you can proceed to round 2. Some tasks feature multiple questions;
-                in those cases, you will complete round 1 for all questions in that task before moving on.
+                There are 2 rounds for each question. Each question will start with round 1. After you have completed round 1, you may or may not
+                purchase and receive advice. Then you can proceed to round 2. Some tasks feature multiple questions;
+                in those cases, you will complete round 1 for all questions in that task before moving on to round 2.
 
 
             </p>
@@ -49,18 +51,40 @@
 
             <h4>Round 1 - Initial or Pre-Beliefs</h4>
             <p>
-                For each question, you will give a report of your initial belief about the correct answer. You will use
-                a slider interface like this below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
-                possible outcomes. Each interface has 10 bins.
+                For each question, you will give a report about what you believe to be the correct answer. You will use
+                a slider interface as illustrated in the example below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
+                possible outcomes in <strong>10 bins</strong>. For this example, you would report your beliefs about what percentage
+                of the Earth's surface is covered in water. The first bin has an interval of 0% to 10%, the second bin
+                has an interval of 11%-20%, and so on.  The 10th bin represents the outcome of 91%-100%. The tokens you allocate
+                to each bin will reflect your beliefs about the percentage of the earth's surface is covered in water.<br><br>
+
+                You must allocate all 100 tokens.
 
             <div class="text-center my-3">
                 <img src="{{ static 'interface.png' }}" class="img-fluid border" alt="Example of the Interface for token allocation">
             </div>
 
-                Placing more tokens in a specific bin means you are more confident the answer falls in that range. Your accuracy determines the
-                probability of winning <strong>$25</strong> for each report. Therefore, your best strategy to maximize
-                your earnings is to always allocate your tokens honestly according to your true beliefs.
+               The more tokens you place on the correct outcome, the more points you earn. You will receive a cash payment
+                based on the points you earn for reporting your beliefs. Each report pays between <strong>$0 and $50</strong>. For each report,
+                your points determine your chance of earning $50. The more points you earn, the higher your chance of earning $50.
+                Therefore, your best strategy to maximize your earnings is to always allocate your tokens honestly according to your true beliefs.
 
+            </p>
+
+            <h6>Allocation</h6>
+            <p>
+                Suppose you think there is a fair chance that the percentage of the Earth's surface that is covered in
+                water is between 55%-75%, then as seen in this example, you might allocate 30 tokens to the interval
+                corresponding to 51%-60%, 30 tokens to 61%-70%, and 40 tokens to the 71%-80% interval. After you have made
+                your selection, confirm your choices by clicking on the <strong>Submit</strong> button.
+                This display illustrates that if the percentage of the Earth's surface that is covered in water fell in
+                the interval 71%-80%, you would earn 73 points, which would later be translated into cash payments.
+
+            <div class="text-center my-3">
+                <img src="{{ static 'interface2.png' }}"
+                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
+                     alt="Example of the Interface for token allocation">
+            </div>
             </p>
 
             <hr>
@@ -77,7 +101,7 @@
             </div>
 
                 If you purchase advice, the cost will be deducted from your $10.00 advice fund, called an endowment.
-                If you are in the No Advice group, you will simply wait for the next round to begin.
+                If you are in the No Advice group, you will simply move to round 2.
                 <br><br>
 
 
@@ -110,19 +134,19 @@
                 <li>
                     <strong>Task Earnings:</strong>
                     At the end of the experiment, we will look at how accurately you allocated your tokens. Based on your
-                    score, you can earn up to <strong>$25</strong> per report. Remember, however, that only one task will randomly be
-                    selected for payment. Depending on the task chosen, you can earn a maximum of <strong>$50 to $100</strong>.
+                    score, you can earn up to <strong>$50</strong> per report. Remember, however, that only <strong>one report</strong> will randomly be
+                    selected for payment.
                 </li>
             </ul>
 
             <hr>
 
-            <h4>Lab Rules</h4>
+<!--            <h4>Lab Rules</h4>-->
 
-            <p>
-                Please put your cell phones on silent and securely put away all phones, laptops and other electronic devices.
-                Please do not talk with others seated nearby for the duration of the session. If at any point you have
-                a question, please raise your hand and a researcher will come to assist you.
+<!--            <p>-->
+<!--                Please put your cell phones on silent and securely put away all phones, laptops and other electronic devices.-->
+<!--                Please do not talk with others seated nearby for the duration of the session. If at any point you have-->
+<!--                a question, please raise your hand and a researcher will come to assist you.-->
 
 
 

@@ -14,9 +14,9 @@ class C(BaseConstants):
     NAME_IN_URL = 'human_advice'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 18              #5 weight + 5 height + 2 urns + 5 songs
-    PARTICIPATION_FEE = 40.00
+    PARTICIPATION_FEE = 10
     ENDOWMENT = 0.00            # no endowment needed — no advice to buy
-    MAX_EARNINGS_PER_REPORT = 0.00
+    MAX_EARNINGS_PER_REPORT = 50
 
     # Which rounds belong to each task
     WEIGHT_ROUNDS = [1, 2, 3, 4, 5]
@@ -96,13 +96,13 @@ class Task_Intro(Page):
         intros = {
             1: {
                 'task_number': 'Task 1 of 4',
-                'task_name':   'Weight Estimation',
+                'task_name':   'Weight Reporting Beliefs about Weight',
                 'icon':        '⚖️',
                 'num_questions': len(C.WEIGHT_ROUNDS),
                 'intro': (
                     "In this task, you will view photographs of "
                     f"<strong>{len(C.WEIGHT_ROUNDS)} different people</strong> "
-                    "and estimate their weight in pounds (lbs.). For each photograph, "
+                    "and report your beliefs about their weight in pounds (lbs.). For each photograph, "
                     "place the tokens in the bin or bins that you think represents the correct answer(s). "
                     "Bin 1 represents a weight of less than 120 lbs., bin 2 represents an interval of 120-129 lbs., bin 3, 130-139 lbs, and so on. "
                     "Bin 10 represents the interval of greater than or equal to 200 lbs."
@@ -121,15 +121,15 @@ class Task_Intro(Page):
             },
             6: {
                 'task_number': 'Task 2 of 4',
-                'task_name':   'Height Estimation',
+                'task_name':   'Reporting Beliefs about Height',
                 'icon':        '📏',
                 'num_questions': len(C.HEIGHT_ROUNDS),
                 'intro': (
                     "In this task you will view photographs of "
-                    f"<strong>{len(C.HEIGHT_ROUNDS)} different people</strong> "
-                    "and estimate their height in feet and inches. "
-                    "As before, distribute your tokens across the height intervals "
-                    "to reflect your beliefs."
+                    f"<strong>{len(C.HEIGHT_ROUNDS)} different people</strong> and report your beliefs about their height in feet and inches. "
+                    "As before, distribute your tokens across the height intervals to reflect your beliefs. "
+                    "Bin 1 represents a height of less than 5 feet, bin 2 represents an interval from 5 feet to 5 feet, 2 inches, and so on. "
+                    "Bin 10 represents the interval of greater than or equal to 7 feet."
                 ),
                 'note': (
                     "Look for contextual cues in the photo, surrounding "
@@ -140,9 +140,8 @@ class Task_Intro(Page):
                 ),
                 'Expectations': [
                     f"You will see <strong>{len(C.HEIGHT_ROUNDS)} photographs</strong>, one at a time.",
-                    "Estimate height in <strong>feet and inches</strong> across 10 bins for each photo "
-                    "The height intervals from <strong>Under 5 feet (5'0\")</strong> to <strong>Over 7 feet (7'0\")</strong>.",
-                    "You will be asked to report your beliefs about the height of <strong>5 people</strong>.",
+                    "For each photo, report your beliefs about their heights in <strong>feet and inches</strong> across 10 bins.",
+                    "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Over 7 feet (7'0\")</strong>.",
 
                 ],
             },
@@ -160,12 +159,12 @@ class Task_Intro(Page):
                     "So if you think there are 30 blue balls then the percentage of blue balls in the urn is 30%."
                     "<br><br>"
                     
-                    "You will be given <strong>a sample of 20 draws</strong> from this urn. "
-                    "This <strong>sample</strong> is a small peek inside the urn. "
-                    "Your role is to use this sample to estimate the total percentage of "
+                    "You will be given <strong>2 samples of 20 draws each</strong>. "
+                    "A <strong>sample</strong> is just a small peek inside the urn. "
+                    "Your role is to use each sample to report your beliefs about the total percentage of "
                     "<strong>blue balls</strong> in the full urn. "
-                    "You will get <strong>2 samples</strong>. First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
-                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting again."
+                    "First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
+                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting your beliefs again."
 
                 ),
                 'note': (
@@ -189,19 +188,32 @@ class Task_Intro(Page):
                 'icon':        '🎵',
                 'num_questions': num_songs,
                 'intro': (
-                    f"In this task, you will estimate what the ranking of "f"<strong>{num_songs} songs on the Billboard Hot 100 "
-                    "chart were </strong>for the weeks of <strong>March 29, 2025 and August 30, 2025.</strong> For each song, you will be "
-                    "shown its chart performance over the <strong>four preceding weeks.</strong>"
+                    f"In this task, you will be asked to report your beliefs about the ranking of "f"<strong>{num_songs} songs on the Billboard Hot 100 "
+                    "chart </strong>for the weeks of <strong>March 29, 2025 and August 30, 2025.</strong> For each song, you will be "
+                    "shown its chart performance over the <strong>four preceding weeks.</strong> "
+                    "As in the other tasks, you will report your beliefs by distributing tokens across "
+                    "possible ranking bins. Bin 1 corresponds to the song being ranked #1 for that week! "
+                    "Bin 2 corresponds to the song being ranked  #2 for that week and so on. Bin 10 represents that the song placed 10th "
+                    "or higher on the chart for that week!"
                 ),
                 'note': (
-                    "The Billboard Hot 100 ranks songs from 1 to 100 based on sales, "
-                    "airplay, and streaming. Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher."
+                    "Note: The Billboard Hot 100 is the definitive weekly ranking of the most popular songs in the United States, "
+                    "based on a combination of record sales, radio airplay, and how frequently people stream songs online.  "
+                    "It includes music from all genres (pop, rock, country, rap, etc.). "
+
                 ),
+
                 'Expectations': [
-                     f"You will estimate the ranking of <strong>{num_songs} songs</strong>, one at a time.",
-                    "Estimate each song's rank across <strong>10 bins, ranging from '1' to '10 or more'</strong>.",
-                    "You will be given a line chart showing the song's movement for the <strong> previous 4 weeks</strong>.",
-                ],
+                    "You will report your beliefs about the ranking of <strong>2 songs</strong>.",
+                    "You will see each song's Billboard chart performance for <strong>4 weeks prior</strong>.",
+                    "You will complete <strong>Round 1 for both songs</strong> before the advice phase.",
+                    "After the advice phase, you will complete <strong>Round 2 for both songs</strong>.",
+                    "Rank each song using <strong>10 bins</strong>: Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher.",
+                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
+                    "You may <strong>purchase advice once</strong> — after completing round 1 for both songs.",
+
+                 ],
+
             },
         }
 
@@ -277,7 +289,7 @@ class Beliefs(Page):
 
         return dict(
             qid=player.qid,
-            stimulus_path=f"human_advice/stimulus/{player.qid}.html",
+            stimulus_path=f"shared_stimulus/{player.qid}.html",
             alpha=player.alpha,
             beta=player.beta,
             num_tokens=player.num_tokens,

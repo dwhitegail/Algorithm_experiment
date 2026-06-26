@@ -15,7 +15,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 10
     PARTICIPATION_FEE = 10
     ENDOWMENT = 10
-    MAX_EARNINGS_PER_REPORT = 25
+    MAX_EARNINGS_PER_REPORT = 50
 
     # Define which rounds are pre vs post for each task
     WEIGHT_PRE_ROUND = 1
@@ -96,8 +96,8 @@ class Instructions(Page):
     def vars_for_template(player: Player):
         return dict(
             num_tokens=player.num_tokens,
-            participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
-            endowment=f"{C.ENDOWMENT:.2f}",
+            participation_fee=f"{C.PARTICIPATION_FEE:.0f}",
+            endowment=f"{C.ENDOWMENT:.0f}",
             max_earnings=C.MAX_EARNINGS_PER_REPORT
         )
 
@@ -130,7 +130,7 @@ class Pre_beliefs(Page):
     def vars_for_template(player: Player):
         return dict(
             qid=player.qid,
-            stimulus_path=f"advice/shared_stimulus/{player.qid}.html",
+            stimulus_path=f"shared_stimulus/{player.qid}.html",
 
             alpha=player.alpha,
             beta=player.beta,
@@ -292,7 +292,7 @@ class Post_beliefs(Page):
     def vars_for_template(player: Player):
         return dict(
             qid=player.qid,
-            stimulus_path=f"advice/stimulus/{player.qid}.html",
+            stimulus_path=f"shared_stimulus/{player.qid}.html",
 
             alpha=player.alpha,
             beta=player.beta,
@@ -320,15 +320,16 @@ class Task_Intro(Page):
         intros = {
             1: {
                 'task_number': 'Task 1',
-                'task_name': 'Weight Estimation',
+                'task_name': 'Reporting Beliefs about Weight',
                 'icon': '⚖️',
                 'intro': (
                     "In this task, you will view <strong>1 photograph</strong> of a "
-                    "real person and asked to estimate their weight in pounds. "
-                    "You will allocate <strong>100 tokens</strong> across a range of weight intervals "
-                    " to reflect how confident you are in each possibility. "
-                    " The more tokens you place on the correct interval, "
-                    " the higher your potential earnings. Think carefully, "
+                    "real person and asked to report your beliefs about their weight in pounds. "
+                    "You will allocate <strong>100 tokens</strong> across a range of weight intervals in <strong>10 bins</strong>. " 
+                    "Place the tokens in the bin or bins that you think represents the correct answer(s). "
+                    "Bin 1 represents a weight of less than 120 lbs., bin 2 represents an interval of 120-129 lbs., bin 3, 130-139 lbs, and so on. "
+                    "Bin 10 represents the interval of greater than or equal to 200 lbs."
+                    " The more tokens you place on the correct interval, the higher your potential earnings. Think carefully, "
                     "every token counts!"
                 ),
                 'note': (
@@ -339,24 +340,26 @@ class Task_Intro(Page):
 
 
                 'Expectations': [
-                    "You will estimate weight in <strong>pounds (lbs.)</strong> across 10 bins from <strong>&lt;120 lbs</strong> to <strong>&ge;200 lbs</strong>.",
-                    "You will make <strong>2 reports</strong> — one in round 1 before advice and the other in round 2.",
+                    "You will observe <strong>1 photograph</strong> of an individuals.",
+                    "You will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating <strong>100 tokens across 10 bins.</strong>",
+                    "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than or equal to  200 lbs</strong>.",
                     "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
                     "You may <strong>purchase advice</strong> between round 1 and round 2 if selected to receive advice.",
-                    "Maximum possible earnings for this task: <strong>${}</strong>.".format(C.MAX_EARNINGS_PER_REPORT * 2),
+
                 ],
             },
 
             2: {
                 'task_number': 'Task 2',
-                'task_name': 'Height Estimation',
+                'task_name': 'Reporting Beliefs about Height',
                 'icon': '📏',
                 'intro': (
                     "In this task, you will view <strong>1 photograph</strong> of a real person and "
-                    "estimate their height in feet and inches. You will "
-                    "express your beliefs by distributing <strong>100 tokens across 10 bins</strong> of successive height "
-                    "intervals. Take your time and observe the "
-                    "photo carefully before making your allocations."
+                    "report your beliefs about their height in feet and inches. You will express your beliefs by distributing <strong>100 tokens across 10 bins</strong> of successive height "
+                    "intervals. "
+                    "Bin 1 represents a height of less than 5 feet, bin 2 represents an interval from 5 feet to 5 feet, 2 inches, and so on. "
+                    "Bin 10 represents the interval of greater than or equal to 7 feet. "
+                    "Take your time and observe the photo carefully before making your allocations."
                 ),
                 'note': (
                     "Note: Look for contextual cues in the photo — surrounding "
@@ -367,40 +370,47 @@ class Task_Intro(Page):
                 ),
 
                 'Expectations': [
-                    "You will estimate height in <strong>feet and inches</strong> across 10 bins from <strong>Under 5'0\"</strong> to <strong>Over 7'0\"</strong>.",
-                    "You will make <strong>2 reports</strong> — Round 1 before advice and Round 2 after.",
+                    "You will be asked to report your beliefs about the height in <strong>feet and inches</strong> of <strong>1 person</strong>.",
+                    "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Over 7 feet (7'0\")</strong>.",
                     "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
                     "You may <strong>purchase advice</strong> between Round 1 and Round 2 if selected to receive advice.",
-                    "Maximum possible earnings for this task: <strong>${}</strong>.".format(C.MAX_EARNINGS_PER_REPORT * 2),
+
                 ],
             },
             3: {
                 'task_number': 'Task 3',
-                'task_name': 'Urns Task — What is the percentage of blue balls in the urn',
+                'task_name': 'Urns Task — What is the percentage of blue balls in the urn?',
                 'icon': '🏺',
                 'intro': (
-                    "This task has an urn containing exactly 100 balls, "
-                    "each either blue or orange. You do not know the exact mix. "
-                    "Over two periods, you will observe a sequence of 20 draws for each period from the urn "
-                    "After each period, you will report your beliefs about the "
-                    "true percentage of blue balls by distributing tokens across "
-                    "probability ranges."
+                    "This task has an urn containing exactly <strong>100 balls</strong>. Each ball is either "
+                    "<strong>blue</strong> or <strong>orange</strong>. "
+                    "You do not know how many of each color are inside the urn. "
+                    "Because there are exactly 100 balls, the <strong>percentage</strong> of blue balls "
+                    "is exactly equal to the actual <strong>number</strong> of blue balls. "
+                    "So if you think there are 30 blue balls then the percentage of blue balls in the urn is 30%."
+                    "<br><br>"
+                    
+                    "You will be given <strong>2 samples of 20 draws each</strong> from this urn. "
+                    "A <strong>sample</strong> is just a small peek inside the urn. "
+                    "Your role is to use each sample to estimate the total percentage of "
+                    "<strong>blue balls</strong> in the full urn. "
+                    "First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
+                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting again."
+
                 ),
                 'note': (
-                    "Note: The draws are with with replacement, meaning each drawn ball is placed back in the urn before the next "
-                    "draw."
+                    "A <strong>draw</strong> means one ball is randomly selected from the urn, its color "
+                    "is recorded, and then it is placed <strong>back</strong> into the urn before the next draw. "
+                    "Remember, your 20 draws are just a sample — they give you clues, but the percentage of blue balls "
+                    "in the sample is not necessarily the same as in the full urn."
                 ),
-
                 'Expectations': [
-                    "There are <strong>2 questions</strong> for this task.",
-                    "You will complete <strong>Round 1 for both periods</strong> before the advice phase.",
-                    "After the advice phase, you will complete <strong>Round 2 for both periods</strong>.",
-                    "Estimate the proportion of blue balls across <strong>10 bins</strong> (0–10% up to 91–100%).",
-                    "Total reports for this task: <strong>4</strong> (2 periods × 2 rounds).",
-                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
-                    "You may <strong>purchase advice once</strong> — it applies to both periods.",
-                    "Maximum possible earnings for this task: <strong>${}</strong>.".format(
-                        C.MAX_EARNINGS_PER_REPORT * 4),
+                    "You will be shown <strong>2 separate samples</strong> of 20 draws each.",
+                    "After each sample, allocate your <strong>100 tokens</strong> across <strong>10 bins</strong> to reflect "
+                    "your beliefs about the <strong>percentage of blue balls in the full urn</strong>.",
+                    "The bins are in 10% increments with bin 1 ranging from <strong>0–10% </strong> up to bin 10 ranging from <strong>91–100% </strong>.",
+                    "Place the tokens in the bin or bins you think has the correct answer.",
+
                 ],
             },
             7: {
@@ -408,13 +418,14 @@ class Task_Intro(Page):
                 'task_name': 'Billboard Hot 100 Song Ranking',
                 'icon': '🎵',
                 'intro': (
-                    "In this task, you will be asked to predict the ranking of two songs "
-                    "on the Billboard Hot 100 chart for a given week.  "
+                    "In this task, you will be asked to report your beliefs about the <strong>ranking</strong> of <strong>two songs</strong> "
+                    "on the <strong>Billboard Hot 100 chart</strong> for a given week.  "
                     "You will be shown each song's chart performance over the four preceding weeks "
-                    "before making your prediction. "
-                    "As in the other tasks, you will express your forecast by distributing tokens across "
-                    "possible ranking bins. Bin 1 corresponds to the song being #1 for that week! "
-                    "Bin 2 corresponds to the song being #2 for that week and so on. Bin 10 says the song placed 10th "
+                    "before making your decision. "
+                    "<br>" "<br>"
+                    "As in the other tasks, you will express your judgement by distributing <strong>100 tokens across</strong> "
+                    "possible ranking bins. Bin 1 corresponds to the song being ranked #1 for that week! "
+                    "Bin 2 corresponds to the song being ranked #2 for that week and so on. Bin 10 represents that the song placed 10th "
                     "or higher on the chart for that week!"
                 ),
                 'note': (
@@ -425,16 +436,14 @@ class Task_Intro(Page):
                 ),
 
                 'Expectations': [
-                    "There are <strong>2 songs</strong> to predict.",
-                    "You will see each song's Billboard chart performance over the <strong>4 weeks prior</strong> to August 30, 2025.",
+                    "You will report your beliefs about the ranking of <strong>2 songs</strong>.",
+                    "You will see each song's Billboard chart performance for <strong>4 weeks prior</strong>.",
                     "You will complete <strong>Round 1 for both songs</strong> before the advice phase.",
                     "After the advice phase, you will complete <strong>Round 2 for both songs</strong>.",
-                    "Predict each song's rank across <strong>10 bins</strong>: Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher.",
-                    "Total reports for this task: <strong>4</strong> (2 songs × 2 rounds).",
+                    "Rank each song using <strong>10 bins</strong>: Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher.",
                     "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
-                    "You may <strong>purchase advice once</strong> — it applies to both songs.",
-                    "Maximum possible earnings for this task: <strong>${}</strong>.".format(
-                        C.MAX_EARNINGS_PER_REPORT * 4),
+                    "You may <strong>purchase advice once</strong> — after completing round 1 for both songs.",
+
                 ],
             },
         }

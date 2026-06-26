@@ -46,6 +46,12 @@ class Player(BasePlayer):
     bin_labels   = models.StringField()
     layout       = models.StringField(initial='h')
     beliefs      = models.StringField()    # single belief report per question
+    score = models.FloatField(initial=0)
+    earnings = models.FloatField(initial=0)
+    accuracy = models.FloatField(initial=0)
+    efficiency = models.FloatField(initial=0)
+
+    BLP_draw = models.FloatField(initial=-1)
 
 
 # ── PAGES ──────────────────────────────────────────────────────────────────
@@ -69,7 +75,8 @@ class Instructions(Page):
 
         return dict(
             num_tokens=player.num_tokens,
-            participation_fee=f"{C.PARTICIPATION_FEE:.2f}",
+            participation_fee=f"{C.PARTICIPATION_FEE:.0f}",
+            max_earnings=f"{C.MAX_EARNINGS_PER_REPORT:.0f}",
             num_weight=len(C.WEIGHT_ROUNDS),
             num_height=len(C.HEIGHT_ROUNDS),
             num_urns=len(C.URN_ROUNDS),
@@ -249,16 +256,16 @@ class Beliefs(Page):
         # Only show if there is a question for this round
         return player.round_number <= len(questions)  # ← handles 17 vs 18 rounds
 
-    # @staticmethod
-    # def before_next_page(player, timeout_happened):
-    #     response = json.loads(player.beliefs)
-    #     score, earnings, accuracy, efficiency = score_response(
-    #         player, response, player.BLP_draw)
-    #     player.score    = score
-    #     player.earnings = earnings
-    #     player.accuracy = accuracy
-    #     player.efficiency = efficiency
-    #     player.payoff += earnings
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        response = json.loads(player.beliefs)
+        score, earnings, accuracy, efficiency = score_response(
+            player, response, player.BLP_draw)
+        player.score    = score
+        player.earnings = earnings
+        player.accuracy = accuracy
+        player.efficiency = efficiency
+        player.payoff += earnings
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -298,6 +305,7 @@ class Beliefs(Page):
             task_label=task_label,
             q_num=q_num,
             q_total=q_total,
+            display_round=1,
         )
 
 
@@ -319,11 +327,13 @@ class ThankYou(Page):
 class Payoff(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == C.NUM_ROUNDS
+        questions = player.session.config['questions']
+        return player.round_number == len(questions)
 
     @staticmethod
     def vars_for_template(player: Player):
-        num_rounds = C.NUM_ROUNDS
+        questions = player.session.config['questions']
+        num_rounds = len(questions)
 
         question_meta = {
             'weight01': {'title': 'Weight Estimation',  'true_value': '170–179 lbs'},
@@ -384,8 +394,6 @@ class Payoff(Page):
         }
 
         task_results = []
-        total_earnings = 0
-
         for i in range(1, num_rounds + 1):
             p = player.in_round(i)
             meta = question_meta.get(p.qid, {'title': p.qid, 'true_value': 'N/A'})
@@ -400,19 +408,34 @@ class Payoff(Page):
                         bins.append({'label': label, 'tokens': t})
 
             task_results.append({
+                'round': i,
                 'title':      meta['title'],
                 'true_value': meta['true_value'],
                 'earnings':   f"{p.earnings:.2f}",
                 'bins':       bins,
+                'qid': p.qid,
             })
-            total_earnings += p.earnings
+
+
+        # ── Randomly select ONE round for payment ──────────────────
+        # Use participant label as seed so it's consistent if page reloads
+        import random as _random
+        rng = _random.Random(player.participant.code)
+        selected_round = rng.randint(1, num_rounds)
+        selected_player = player.in_round(selected_round)
+        selected_earnings = selected_player.earnings
+        selected_title = question_meta.get(
+            selected_player.qid, {'title': selected_player.qid}
+        )['title']
 
         participation_fee = C.PARTICIPATION_FEE
-        grand_total = round(total_earnings + participation_fee, 2)
+        grand_total = round(selected_earnings + participation_fee, 2)
 
         return dict(
             task_results=task_results,
-            total_earnings=f"{total_earnings:.2f}",
+            selected_round=selected_round,
+            selected_title=selected_title,
+            selected_earnings=f"{selected_earnings:.2f}",
             participation_fee=f"{participation_fee:.2f}",
             grand_total=f"{grand_total:.2f}",
         )
@@ -433,7 +456,7 @@ def creating_session(subsession: Subsession):
             layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'h'
             p.layout = 'h' if layout_input in ['h', 'horizontal'] else 'v'
 
-            #p.BLP_draw = round(random.uniform(0, 100), 2)
+            p.BLP_draw = round(random.uniform(0, 100), 2)
 
 
 def score_response(player: Player, response, draw):
@@ -464,4 +487,5 @@ page_sequence = [
     Task_Intro,
     Beliefs,
     ThankYou,
+    Payoff
 ]

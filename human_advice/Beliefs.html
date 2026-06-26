@@ -211,7 +211,7 @@
         console.log ('QUESTION = ' + qid.toString());
         let color = '#6495ED';
         let bin_labels = {{bin_labels}};
-        console.log("BIN LABELS:", bin_labels);
+        console.log(bin_labels);
         let num_bins = bin_labels.length;
         let response = new Array(num_bins);
         let scores = new Array(num_bins);
@@ -282,6 +282,7 @@
 
             $('#round_text').text(    'Round ' + {{subsession.round_number}});
 
+            $('#round_text').text('Round ' + {{display_round}});
 
             $('#submit_text').text(submit);
 

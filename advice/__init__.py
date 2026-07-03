@@ -329,7 +329,7 @@ class Task_Intro(Page):
                     "Place the tokens in the bin or bins that you think represents the correct answer(s). "
                     "Bin 1 represents a weight of less than 120 lbs., bin 2 represents an interval of 120-129 lbs., bin 3, 130-139 lbs, and so on. "
                     "Bin 10 represents the interval of greater than or equal to 200 lbs."
-                    " The more tokens you place on the correct interval, the higher your potential earnings. Think carefully, "
+                    " The more tokens you place in the correct bin, the higher your potential earnings. Think carefully, "
                     "every token counts!"
                 ),
                 'note': (
@@ -392,7 +392,7 @@ class Task_Intro(Page):
                     
                     "You will be given <strong>2 samples of 20 draws each</strong> from this urn. "
                     "A <strong>sample</strong> is just a small peek inside the urn. "
-                    "Your role is to use each sample to estimate the total percentage of "
+                    "Your role is to use each sample to report your beliefs about the total percentage of "
                     "<strong>blue balls</strong> in the full urn. "
                     "First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
                     "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting again."
@@ -423,7 +423,7 @@ class Task_Intro(Page):
                     "You will be shown each song's chart performance over the four preceding weeks "
                     "before making your decision. "
                     "<br>" "<br>"
-                    "As in the other tasks, you will express your judgement by distributing <strong>100 tokens across</strong> "
+                    "As in the other tasks, you will report your beliefs by distributing <strong>100 tokens across</strong> "
                     "possible ranking bins. Bin 1 corresponds to the song being ranked #1 for that week! "
                     "Bin 2 corresponds to the song being ranked #2 for that week and so on. Bin 10 represents that the song placed 10th "
                     "or higher on the chart for that week!"
@@ -575,41 +575,122 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         num_rounds = C.NUM_ROUNDS
+        chosen_qids = [
+            player.participant.vars['chosen_weight'],
+            player.participant.vars['chosen_height'],
+            player.participant.vars['chosen_urn1'],
+            player.participant.vars['chosen_urn2'],
+            player.participant.vars['chosen_urn1'],  # post
+            player.participant.vars['chosen_urn2'],  # post
+            player.participant.vars['chosen_song1'],
+            player.participant.vars['chosen_song2'],
+            player.participant.vars['chosen_song1'],  # post
+            player.participant.vars['chosen_song2'],  # post
+        ]
 
-        # ── Question metadata map ──────────────────────────────────────
-        question_meta = {
-            'height01': {
-                'title': 'Estimation Task — Height 1',
-                'question': 'Please observe the photo and estimate the height of this person.',
-                'true_value': "< 5 feet",
+        # # ── Question metadata map ──────────────────────────────────────
+        # question_meta = {
+        #     'height01': {
+        #         'title': 'Estimation Task — Height 1',
+        #         'question': 'Please observe the photo and estimate the height of this person.',
+        #         'true_value': "< 5 feet",
+        #
+        #     },
+        #     'weight01': {
+        #         'title': 'Estimation Task — Weight 1',
+        #         'question': 'Estimate the weight of this person in the photograph.',
+        #         'true_value': '170–179 lbs',
+        #     },
+        #     'song01': {
+        #         'title': 'Estimation Task — Song 1',
+        #         'question': 'Please estimate the Billboard Hot 100 rank of this song.',
+        #         'true_value': 'Position 8',
+        #     },
+        #     'song02': {
+        #         'title': 'Estimation Task — Song 2',
+        #         'question': 'Please estimate the Billboard Hot 100 rank of this song.',
+        #         'true_value': 'Position 2',
+        #     },
+        #     'urn01': {
+        #         'title': 'Estimation Task — Urns_Period 1',
+        #         'question': 'Please estimate the fraction of blue balls in the urn.',
+        #         'true_value': '60% of the balls are blue',
+        #     },
+        #     'urn02': {
+        #         'title': 'Estimation Task — Urns_Period 2',
+        #         'question': 'Please estimate the fraction of blue balls in the urn.',
+        #         'true_value': '60% of the balls are blue',
+        #     },
+        # }
 
-            },
-            'weight01': {
-                'title': 'Estimation Task — Weight 1',
-                'question': 'Estimate the weight of this person in the photograph.',
-                'true_value': '170–179 lbs',
-            },
-            'song01': {
-                'title': 'Estimation Task — Song 1',
-                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
-                'true_value': 'Position 8',
-            },
-            'song02': {
-                'title': 'Estimation Task — Song 2',
-                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
-                'true_value': 'Position 2',
-            },
-            'urn01': {
-                'title': 'Estimation Task — Urns_Period 1',
-                'question': 'Please estimate the fraction of blue balls in the urn.',
-                'true_value': '60% of the balls are blue',
-            },
-            'urn02': {
-                'title': 'Estimation Task — Urns_Period 2',
-                'question': 'Please estimate the fraction of blue balls in the urn.',
-                'true_value': '60% of the balls are blue',
-            },
+        question_meta = {}
+
+        # Weight questions
+        weight_true_values = {
+            'weight01': '170–179 lbs', 'weight02': '<120 lbs',
+            'weight03': '120–129 lbs', 'weight04': '140–149 lbs',
+            'weight05': '≥200 lbs', 'weight06': '≥200 lbs',
+            'weight07': '170–179 lbs', 'weight08': '130–139 lbs',
+            'weight09': '150–159 lbs', 'weight10': '170–179 lbs',
+            'weight11': '≥200 lbs', 'weight12': '160–169 lbs',
+            'weight13': '160–169 lbs', 'weight14': '160–169 lbs',
+            'weight15': '160–169 lbs',
         }
+        for qid, tv in weight_true_values.items():
+            question_meta[qid] = {
+                'title': f'Weight Task — {qid}',
+                'question': 'Estimate the weight of this person in the photograph.',
+                'true_value': tv,
+            }
+
+        # Height questions
+        height_true_values = {
+            'height01': "< 5'0\"", 'height02': "5'9\"–5'11\"",
+            'height03': "5'3\"–5'5\"", 'height04': "5'3\"–5'5\"",
+            'height05': "5'6\"–5'8\"", 'height06': "5'6\"–5'8\"",
+            'height07': "5'6\"–5'8\"", 'height08': "5'9\"–5'11\"",
+            'height09': "6'0\"–6'2\"", 'height10': "6'0\"–6'2\"",
+            'height11': "< 5'0\"", 'height12': "6'0\"–6'2\"",
+            'height13': "6'0\"–6'2\"", 'height14': "6'3\"–6'5\"",
+            'height15': "5'6\"–5'8\"",
+        }
+        for qid, tv in height_true_values.items():
+            question_meta[qid] = {
+                'title': f'Height Task — {qid}',
+                'question': 'Please observe the photo and estimate the height of this person.',
+                'true_value': tv,
+            }
+
+        # Urn questions
+        urn_true_values = {
+            'urn01': '51%–60% blue', 'urn02': '51%–60% blue',
+            'urn03': '41%–50% blue', 'urn04': '41%–50% blue',
+            'urn05': '31%–40% blue', 'urn06': '31%–40% blue',
+        }
+        for qid, tv in urn_true_values.items():
+            question_meta[qid] = {
+                'title': f'Urns Task — {qid}',
+                'question': 'Please estimate the percentage of blue balls in the urn.',
+                'true_value': tv,
+            }
+
+        # Song questions
+        song_true_values = {
+            'song01': 'Position 8', 'song02': 'Position 2',
+            'song03': 'Position 8', 'song04': 'Position 1',
+            'song05': 'Position 7', 'song06': 'Position 9',
+            'song07': 'Position 10', 'song08': 'Position 3',
+            'song09': 'Position 5', 'song10': 'Position 10',
+            'song11': 'Position 10', 'song12': 'Position 4',
+            'song13': 'Position 6', 'song14': 'Position 7',
+            'song15': 'Position 10', 'song16': 'Position 10',
+        }
+        for qid, tv in song_true_values.items():
+            question_meta[qid] = {
+                'title': f'Song Ranking Task — {qid}',
+                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
+                'true_value': tv,
+            }
 
         # ── Build per-task results ─────────────────────────────────────
         task_results = []
@@ -627,26 +708,42 @@ class Results(Page):
             post_bins = []
             labels = json.loads(p.bin_labels)
 
-            if p.pre_beliefs:
+            # if p.pre_beliefs:
+            #     pre_tokens = json.loads(p.pre_beliefs)
+            #     for j, label in enumerate(labels):
+            #         tokens = pre_tokens[j] if j < len(pre_tokens) else 0
+            #         if tokens > 0:
+            #             pre_bins.append({
+            #                 'label': label,
+            #                 'tokens': tokens
+            #             })
+            #
+            # if p.post_beliefs:
+            #     post_tokens = json.loads(p.post_beliefs)
+            #     for j, label in enumerate(labels):
+            #         tokens = post_tokens[j] if j < len(post_tokens) else 0
+            #         if tokens > 0:  # ← only include if tokens > 0
+            #             post_bins.append({
+            #                 'label': label,
+            #                 'tokens': tokens
+            #
+            #             })
+
+            # In the task_results loop — replace the post_beliefs section:
+            if p.field_maybe_none('post_beliefs'):
+                post_tokens = json.loads(p.post_beliefs)
+                for j, label in enumerate(labels):
+                    tokens = post_tokens[j] if j < len(post_tokens) else 0
+                    if tokens > 0:
+                        post_bins.append({'label': label, 'tokens': tokens})
+
+            # Same for pre_beliefs:
+            if p.field_maybe_none('pre_beliefs'):
                 pre_tokens = json.loads(p.pre_beliefs)
                 for j, label in enumerate(labels):
                     tokens = pre_tokens[j] if j < len(pre_tokens) else 0
                     if tokens > 0:
-                        pre_bins.append({
-                            'label': label,
-                            'tokens': tokens
-                        })
-
-            if p.post_beliefs:
-                post_tokens = json.loads(p.post_beliefs)
-                for j, label in enumerate(labels):
-                    tokens = post_tokens[j] if j < len(post_tokens) else 0
-                    if tokens > 0:  # ← only include if tokens > 0
-                        post_bins.append({
-                            'label': label,
-                            'tokens': tokens
-
-                        })
+                        pre_bins.append({'label': label, 'tokens': tokens})
 
             task_results.append({
                 'title': meta['title'],
@@ -729,6 +826,45 @@ class Results(Page):
         s += "</tr>"
         s += "</table>"
 
+        # ── Random payment selection ───────────────────────────────────────────
+        import random as _random
+
+        # All rounds that have actual belief reports
+        pre_belief_rounds = [1, 2, 3, 4, 7, 8]
+        post_belief_rounds = [1, 2, 5, 6, 9, 10]
+
+        # Build list of all valid (round, report_type) pairs
+        all_reports = []
+        for r in pre_belief_rounds:
+            p_r = player.in_round(r)
+            if p_r.field_maybe_none('pre_beliefs'):
+                all_reports.append({
+                    'round': r,
+                    'type': 'pre',
+                    'earnings': p_r.pre_earnings,
+                    'qid': p_r.qid,
+                })
+
+        for r in post_belief_rounds:
+            p_r = player.in_round(r)
+            if p_r.field_maybe_none('post_beliefs'):
+                all_reports.append({
+                    'round': r,
+                    'type': 'post',
+                    'earnings': p_r.post_earnings,
+                    'qid': p_r.qid,
+                })
+
+        # Use participant code as seed for reproducibility
+        rng = _random.Random(player.participant.code)
+        selected_report = rng.choice(all_reports)
+        selected_earnings = selected_report['earnings']
+        selected_label = (
+            f"Round {selected_report['round']} — "
+            f"{'Report 1 (Before Advice)' if selected_report['type'] == 'pre' else 'Report 2 (After Advice)'} — "
+            f"{selected_report['qid']}"
+        )
+
         # ── Payment summary ────────────────────────────────────────────
         participation_fee = C.PARTICIPATION_FEE
         endowment = C.ENDOWMENT
@@ -758,6 +894,12 @@ class Results(Page):
             participant_payoff + participation_fee + endowment_remaining, 2
         )
 
+        # ── Grand total calculation ────────────────────────────────────
+        endowment_remaining = max(round(endowment - total_advice_cost, 2), 0)
+        grand_total = round(
+            selected_earnings + participation_fee + endowment_remaining, 2
+        )
+
         return dict(
             my_table=s,
             participation_fee=f"{participation_fee:.2f}",
@@ -771,81 +913,113 @@ class Results(Page):
             grand_total=f"{grand_total:.2f}",
             total_pre_earnings=f"{sum_pre_earnings:.2f}",
             total_post_earnings=f"{sum_post_earnings:.2f}",
+            selected_report_label=selected_label,
+            selected_earnings=f"{selected_earnings:.2f}",
         )
 
 # FUNCTIONS
 
 def creating_session(subsession: Subsession):
-    print('hello world')
     questions = subsession.session.config['questions']
-    print(questions)
 
-    if subsession.round_number <= len(questions):
-        for p in subsession.get_players():
-            question_data = questions[subsession.round_number - 1]
-            p.qid = str(question_data[0])
-            # p.question = "Please allocate your tokens based on your belief."
-            # ── Set display round label ────────────────────────────
-            # Pre-beliefs rounds show "Round 1"
-            # Post-beliefs rounds show "Round 2"
-            # All other rounds (MPL, advice etc) show nothing
-            p.display_round = 1  # default — overridden below for post rounds
+    # ── Define question pools ──────────────────────────────────────
+    weight_questions = [q for q in questions if q[0].startswith('weight')]
+    height_questions = [q for q in questions if q[0].startswith('height')]
 
-            labels = question_data[1]
+    urn_pairs = [
+        [q for q in questions if q[0] in ['urn01', 'urn02']],
+        [q for q in questions if q[0] in ['urn03', 'urn04']],
+        [q for q in questions if q[0] in ['urn05', 'urn06']],
+    ]
+    urn_pairs = [pair for pair in urn_pairs if len(pair) == 2]
 
-            p.bin_labels = json.dumps(labels)
-            p.color = json.dumps(['#6495ED'])
+    song_questions = [q for q in questions if q[0].startswith('song')]
+    song_pairs = [
+        song_questions[i:i + 2]
+        for i in range(0, len(song_questions) - 1, 2)
+    ]
+    song_pairs = [pair for pair in song_pairs if len(pair) == 2]
 
-            # Layout logic: Normalize to 'h' or 'v'
-            layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'v'
-            if layout_input in ['h', 'horizontal']:
-                p.layout = 'h'
-            else:
-                p.layout = 'v'
+    for p in subsession.get_players():
 
-            p.pre_BLP_draw = round(random.uniform(0, 100), 2)
-            p.post_BLP_draw = round(random.uniform(0, 100), 2)
+        # ── Assign random questions ONCE in round 1 ───────────────
+        if subsession.round_number == 1:
+            chosen_weight    = random.choice(weight_questions)
+            chosen_height    = random.choice(height_questions)
+            chosen_urn_pair  = random.choice(urn_pairs)
+            chosen_song_pair = random.choice(song_pairs)
 
-            # ── Randomly assign treatment ──────────────────────────
-            # Only assign once in round 1, carry forward to other rounds
-            if subsession.round_number == 1:
-                p.treatment = random.choice(['algorithmic', 'human', 'none'])
-            else:
-                # Keep same treatment across all rounds
-                p.treatment = p.in_round(1).treatment
+            p.participant.vars['chosen_weight'] = chosen_weight[0]
+            p.participant.vars['chosen_height'] = chosen_height[0]
+            p.participant.vars['chosen_urn1']   = chosen_urn_pair[0][0]
+            p.participant.vars['chosen_urn2']   = chosen_urn_pair[1][0]
+            p.participant.vars['chosen_song1']  = chosen_song_pair[0][0]
+            p.participant.vars['chosen_song2']  = chosen_song_pair[1][0]
+        else:
+            # In rounds 2-10, read from participant.vars set in round 1
+            pass    # participant.vars already set — just read below
 
-            if subsession.round_number == 1:
-                p.al_advice_source = random.randint(0, 2)  # 0=Claude, 1=Gemini, 2=ChatGPT
-            else:
-                p.al_advice_source = p.in_round(1).al_advice_source
+        # ── Build round-to-qid map from participant.vars ───────────
+        # (safe to read in all rounds since round 1 always runs first)
+        round_to_qid = {
+            1:  p.participant.vars['chosen_weight'],
+            2:  p.participant.vars['chosen_height'],
+            3:  p.participant.vars['chosen_urn1'],
+            4:  p.participant.vars['chosen_urn2'],
+            5:  p.participant.vars['chosen_urn1'],   # ← post urn1
+            6:  p.participant.vars['chosen_urn2'],   # ← post urn2
+            7:  p.participant.vars['chosen_song1'],
+            8:  p.participant.vars['chosen_song2'],
+            9:  p.participant.vars['chosen_song1'],  # ← post song1
+            10: p.participant.vars['chosen_song2'],  # ← post song2
+        }
 
-            # ── Set defaults for 'none' treatment ──────────────────
-            if p.treatment == 'none':  # ← add this block
-                p.mpl_response = json.dumps([-999] * 7)
-                p.advice_purchased = False  # ← prevents None error
-                p.selected_value = 0.0
-                p.selected_row = 0
+        chosen_qid = round_to_qid[subsession.round_number]  # ← now always defined
 
-            # Defaults for rounds that skip MPL
-            # (urn/song pre-rounds 2, and all post rounds)
-            if subsession.round_number not in [1, 2, 4, 8]:
-                p.mpl_response = json.dumps([-999] * 7)
-                p.selected_value = 0.0
-                p.selected_row = 0
+        # ── Find full question data ────────────────────────────────
+        question_data = next(q for q in questions if q[0] == chosen_qid)
 
-                # Carry advice decision forward from the relevant MPL round
-                if subsession.round_number in [3]:
-                    # urn01 pre — no MPL yet, default to False
-                    p.advice_purchased = False
-                elif subsession.round_number in [5, 6]:
-                    # urn post rounds — carry from round 4 MPL
-                    p.advice_purchased = p.in_round(4).advice_purchased
-                elif subsession.round_number in [7]:
-                    # song01 pre — no MPL yet, default to False
-                    p.advice_purchased = False
-                elif subsession.round_number in [9, 10]:
-                    # song post rounds — carry from round 8 MPL
-                    p.advice_purchased = p.in_round(8).advice_purchased
+        p.qid        = str(question_data[0])
+        p.bin_labels = json.dumps(question_data[1])
+        p.color      = json.dumps(['#6495ED'])
+        p.display_round = 1
+
+        layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'h'
+        p.layout = 'h' if layout_input in ['h', 'horizontal'] else 'v'
+
+        p.pre_BLP_draw  = round(random.uniform(0, 100), 2)
+        p.post_BLP_draw = round(random.uniform(0, 100), 2)
+
+        # ── Treatment assignment ───────────────────────────────────
+        if subsession.round_number == 1:
+            p.treatment        = random.choice(['algorithmic', 'human', 'none'])
+            p.al_advice_source = random.randint(0, 2)
+        else:
+            p.treatment        = p.in_round(1).treatment
+            p.al_advice_source = p.in_round(1).al_advice_source
+
+        # ── Defaults for none treatment ────────────────────────────
+        if p.treatment == 'none':
+            p.mpl_response     = json.dumps([-999] * 7)
+            p.advice_purchased = False
+            p.selected_value   = 0.0
+            p.selected_row     = 0
+
+        # ── Defaults for non-MPL rounds ────────────────────────────
+        if subsession.round_number not in [1, 2, 4, 8]:
+            p.mpl_response   = json.dumps([-999] * 7)
+            p.selected_value = 0.0
+            p.selected_row   = 0
+
+            if subsession.round_number == 3:
+                p.advice_purchased = False
+            elif subsession.round_number in [5, 6]:
+                p.advice_purchased = p.in_round(4).advice_purchased
+            elif subsession.round_number == 7:
+                p.advice_purchased = False
+            elif subsession.round_number in [9, 10]:
+                p.advice_purchased = p.in_round(8).advice_purchased
+
 
 
 
@@ -865,7 +1039,11 @@ def score_response(player: Player, response, draw):
         score = player.alpha + player.beta * ((2 * response[cb]) - SS)
         return score
 
-    player.correct_bin = int(player.session.config['questions'][player.subsession.round_number-1][2]) - 1
+    #player.correct_bin = int(player.session.config['questions'][player.subsession.round_number-1][2]) - 1
+    qid = player.qid
+    questions = player.session.config['questions']
+    question_data = next(q for q in questions if q[0] == qid)
+    player.correct_bin = int(question_data[2]) - 1
 
     # BLP START -----------------------
     # This part of code must handle both BLP and non-BLP cases. For now it is fixed for BLP

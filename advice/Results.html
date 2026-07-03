@@ -17,77 +17,148 @@
     </div>
 
     <!-- Estimation Task Results -->
-    <h5>Estimation Task Results</h5>
+    <h5>Belief Reporting Task Results</h5>
 
-    <div class="row">
-        {% for task in task_results %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100" style="border-radius: 10px;">
-                <div class="card-body">
 
-                    <h6><strong>{{ task.title }}</strong></h6>
-                    <p class="text-muted" style="font-size: 0.85em; font-style: italic;">
-                        {{ task.question }}
-                    </p>
+{% for task in task_results %}
 
-                    <p><strong>True value:</strong> {{ task.true_value }}</p>
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
 
-                    <p>
-                        <strong>Payoff:</strong>
-                        <strong style="color: #2979D0;">${{ task.pre_earnings }}</strong>
-                        <small class="text-muted">(Report 1)</small>
-                        &nbsp;|&nbsp;
-                        <strong style="color: #2979D0;">${{ task.post_earnings }}</strong>
-                        <small class="text-muted">(Report 2)</small>
-                    </p>
+        <h4 class="text-primary mb-1">{{ task.title }}</h4>
 
-                    <hr>
+        <p class="text-muted mb-3">
+            {{ task.question }}
+        </p>
 
-                    <!-- Report 1 token table -->
-                    <p class="mb-1"><small><strong>Report 1 — Before Advice</strong></small></p>
-                    <table class="table table-sm table-borderless mb-3">
-                        <thead>
-                            <tr>
-                                <th>Range</th>
-                                <th>Tokens</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="alert alert-light border">
+            <strong>Correct Answer:</strong>
+            {{ task.true_value }}
+        </div>
+
+        <div class="row">
+
+            <!-- BEFORE ADVICE -->
+            <div class="col-md-6">
+
+                <div class="card border-primary mb-3">
+
+                    <div class="card-header bg-primary text-white">
+                        Report 1 (Before Advice)
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-sm">
+
+                            <thead>
+                                <tr>
+                                    <th>Range</th>
+                                    <th class="text-end">Tokens</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
                             {% for bin in task.pre_bins %}
-                            <tr>
-                                <td>{{ bin.label }}</td>
-                                <td>{{ bin.tokens }}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{ bin.label }}</td>
+                                    <td class="text-end">{{ bin.tokens }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">
+                                        Not Applicable
+                                    </td>
+                                </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
 
-                    <!-- Report 2 token table -->
-                    <p class="mb-1"><small><strong>Report 2 — After Advice</strong></small></p>
-                    <table class="table table-sm table-borderless">
-                        <thead>
-                            <tr>
-                                <th>Range</th>
-                                <th>Tokens</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for bin in task.post_bins %}
-                            <tr>
-                                <td>{{ bin.label }}</td>
-                                <td>{{ bin.tokens }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+
+                        </table>
+
+                        <hr>
+
+                        <h6 class="text-success">
+                            Earnings: ${{ task.pre_earnings }}
+                        </h6>
+
+                    </div>
 
                 </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
 
-    <hr>
+            </div>
+
+            <!-- AFTER ADVICE -->
+            <div class="col-md-6">
+
+                <div class="card border-success mb-3">
+
+                    <div class="card-header bg-success text-white">
+                        Report 2 (After Advice)
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-sm">
+
+                            <thead>
+                                <tr>
+                                    <th>Range</th>
+                                    <th class="text-end">Tokens</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                            {% for bin in task.post_bins %}
+                                <tr>
+                                    <td>{{ bin.label }}</td>
+                                    <td class="text-end">{{ bin.tokens }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">
+                                        Not Applicable
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                        <hr>
+
+                        <h6 class="text-success">
+                            Earnings: ${{ task.post_earnings }}
+                        </h6>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endfor %}
+
+
+    <!-- Randomly selected report banner -->
+<div class="alert alert-success mt-4">
+    <h5>🎲 Randomly Selected Report for Payment</h5>
+    <p class="mb-1"><strong>Selected:</strong> {{ selected_report_label }}</p>
+    <p class="mb-0">
+        Task earnings: <strong>${{ selected_earnings }}</strong> +
+        Show-up fee: <strong>${{ participation_fee }}</strong> +
+        Remaining endowment: <strong>${{ endowment_remaining }}</strong> =
+        <strong style="font-size:1.2em;">${{ grand_total }}</strong>
+    </p>
+</div>
 
 
     <h5>Payment Summary</h5>
@@ -106,13 +177,13 @@
                 <td class="text-right"><strong>${{ total_task_earnings }}</strong></td>
             </tr>
             <tr class="table-light">
-                <td>Participation Fee <small class="text-muted">(one-time)</small></td>
+                <td>Show-up Fee <small class="text-muted">(one-time)</small></td>
                 <td class="text-right">${{ participation_fee }}</td>
-            </tr>
-            <tr class="table-light">
-                <td>Endowment <small class="text-muted">(one-time)</small></td>
-                <td class="text-right">${{ endowment }}</td>
-            </tr>
+<!--            </tr>-->
+<!--            <tr class="table-light">-->
+<!--                <td>Endowment <small class="text-muted">(one-time)</small></td>-->
+<!--                <td class="text-right">${{ endowment }}</td>-->
+<!--            </tr>-->
             {% if advice_purchased_any %}
             <tr class="text-danger">
                  <td>

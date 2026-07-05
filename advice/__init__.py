@@ -656,7 +656,7 @@ class Results(Page):
         }
         for qid, tv in height_true_values.items():
             question_meta[qid] = {
-                'title': f'Height Task — {qid}',
+                'title': 'Height Task',
                 'question': 'Please observe the photo and estimate the height of this person.',
                 'true_value': tv,
             }
@@ -669,7 +669,7 @@ class Results(Page):
         }
         for qid, tv in urn_true_values.items():
             question_meta[qid] = {
-                'title': f'Urns Task — {qid}',
+                'title': 'Urns Task',
                 'question': 'Please estimate the percentage of blue balls in the urn.',
                 'true_value': tv,
             }
@@ -687,26 +687,126 @@ class Results(Page):
         }
         for qid, tv in song_true_values.items():
             question_meta[qid] = {
-                'title': f'Song Ranking Task — {qid}',
+                'title': 'Song Ranking Task',
                 'question': 'Please estimate the Billboard Hot 100 rank of this song.',
                 'true_value': tv,
             }
 
+        def get_bins(belief_str, labels):
+            if not belief_str:
+                return []
+            tokens = json.loads(belief_str)
+            return [
+                {'label': labels[j], 'tokens': tokens[j]}
+                for j in range(len(labels))
+                if j < len(tokens) and tokens[j] > 0
+            ]
+
         # ── Build per-task results ─────────────────────────────────────
         task_results = []
-        for i in range(num_rounds):
-            p = player.in_round(i + 1)
-            qid = p.qid
-            meta = question_meta.get(qid, {
-                'title': f'Task {i + 1}',
-                'question': '',
-                'true_value': 'N/A',
-            })
 
-            # Parse pre beliefs tokens
-            pre_bins = []
-            post_bins = []
-            labels = json.loads(p.bin_labels)
+        # ── Task 1: Weight (pre=round1, post=round1) ──────────────────
+        p_pre = player.in_round(1)
+        p_post = player.in_round(1)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Weight Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Weight Task',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+
+        # ── Task 2: Height (pre=round2, post=round2) ──────────────────
+        p_pre = player.in_round(2)
+        p_post = player.in_round(2)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Height Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Height Task',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+
+        # ── Task 3: Urn Sample 1 (pre=round3, post=round5) ────────────
+        p_pre = player.in_round(3)
+        p_post = player.in_round(5)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Urns Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Urns Task — Sample 1',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+
+        # ── Task 4: Urn Sample 2 (pre=round4, post=round6) ────────────
+        p_pre = player.in_round(4)
+        p_post = player.in_round(6)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Urns Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Urns Task — Sample 2',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+
+        # ── Task 5: Song 1 (pre=round7, post=round9) ──────────────────
+        p_pre = player.in_round(7)
+        p_post = player.in_round(9)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Song Ranking Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Song Ranking — Song 1',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+
+        # ── Task 6: Song 2 (pre=round8, post=round10) ─────────────────
+        p_pre = player.in_round(8)
+        p_post = player.in_round(10)
+        labels = json.loads(p_pre.bin_labels)
+        meta = question_meta.get(p_pre.qid, {'title': 'Song Ranking Task', 'question': '', 'true_value': 'N/A'})
+        task_results.append({
+            'title': 'Song Ranking — Song 2',
+            'question': meta['question'],
+            'true_value': meta['true_value'],
+            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
+            'post_earnings': f"{p_post.post_earnings:.2f}",
+            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
+            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
+        })
+        # for i in range(num_rounds):
+        #     p = player.in_round(i + 1)
+        #     qid = p.qid
+        #     meta = question_meta.get(qid, {
+        #         'title': f'Task {i + 1}',
+        #         'question': '',
+        #         'true_value': 'N/A',
+        #     })
+        #
+        #     # Parse pre beliefs tokens
+        #     pre_bins = []
+        #     post_bins = []
+        #     labels = json.loads(p.bin_labels)
 
             # if p.pre_beliefs:
             #     pre_tokens = json.loads(p.pre_beliefs)
@@ -729,31 +829,31 @@ class Results(Page):
             #
             #             })
 
-            # In the task_results loop — replace the post_beliefs section:
-            if p.field_maybe_none('post_beliefs'):
-                post_tokens = json.loads(p.post_beliefs)
-                for j, label in enumerate(labels):
-                    tokens = post_tokens[j] if j < len(post_tokens) else 0
-                    if tokens > 0:
-                        post_bins.append({'label': label, 'tokens': tokens})
+            # # In the task_results loop — replace the post_beliefs section:
+            # if p.field_maybe_none('post_beliefs'):
+            #     post_tokens = json.loads(p.post_beliefs)
+            #     for j, label in enumerate(labels):
+            #         tokens = post_tokens[j] if j < len(post_tokens) else 0
+            #         if tokens > 0:
+            #             post_bins.append({'label': label, 'tokens': tokens})
+            #
+            # # Same for pre_beliefs:
+            # if p.field_maybe_none('pre_beliefs'):
+            #     pre_tokens = json.loads(p.pre_beliefs)
+            #     for j, label in enumerate(labels):
+            #         tokens = pre_tokens[j] if j < len(pre_tokens) else 0
+            #         if tokens > 0:
+            #             pre_bins.append({'label': label, 'tokens': tokens})
 
-            # Same for pre_beliefs:
-            if p.field_maybe_none('pre_beliefs'):
-                pre_tokens = json.loads(p.pre_beliefs)
-                for j, label in enumerate(labels):
-                    tokens = pre_tokens[j] if j < len(pre_tokens) else 0
-                    if tokens > 0:
-                        pre_bins.append({'label': label, 'tokens': tokens})
-
-            task_results.append({
-                'title': meta['title'],
-                'question': meta['question'],
-                'true_value': meta['true_value'],
-                'pre_earnings': f"{p.pre_earnings:.2f}",
-                'post_earnings': f"{p.post_earnings:.2f}",
-                'pre_bins': pre_bins,
-                'post_bins': post_bins,
-            })
+            # task_results.append({
+            #     'title': meta['title'],
+            #     'question': meta['question'],
+            #     'true_value': meta['true_value'],
+            #     'pre_earnings': f"{p.pre_earnings:.2f}",
+            #     'post_earnings': f"{p.post_earnings:.2f}",
+            #     'pre_bins': pre_bins,
+            #     'post_bins': post_bins,
+            # })
 
         # ── Performance table ──────────────────────────────────────────
         s = f"""
@@ -762,7 +862,7 @@ class Results(Page):
                     <tr>
                         <th scope="col" class="col-1 text-center">Question</th>
                         <th scope="col" class="text-center">Report</th>
-                        <th scope="col" class="col-1 text-center">% Points Earned</th>
+                        <th scope="col" class="col-1 text-center">% Tokens on Correct Bin</th>
                         <th scope="col" class="col-1 text-center">Earnings</th>
                         <th scope="col" class="col-1 text-center">Efficiency</th>
                     </tr>
@@ -771,23 +871,45 @@ class Results(Page):
         sum_pre_earnings = 0
         sum_post_earnings = 0
         sum_efficiency = 0
-        for i in range(num_rounds):
-            p = player.in_round(i+1)
 
-            # Get descriptive label for this question
-            q_label = question_meta.get(p.qid, {}).get('title', p.qid)
-            #q_label = question_meta.get(p.qid, p.qid)
+        # Each tuple: (pre_round, post_round, display_label)
+        task_pairs = [
+            (1, 1, 'Weight Task'),
+            (2, 2, 'Height Task'),
+            (3, 5, 'Urns Task — Sample 1'),
+            (4, 6, 'Urns Task — Sample 2'),
+            (7, 9, 'Song Ranking — Song 1'),
+            (8, 10, 'Song Ranking — Song 2'),
+        ]
 
-            # ── Pre beliefs row ──────────────────────────────────
-            pre_acc = p.pre_accuracy
-            pre_earn = p.pre_earnings
-            pre_eff = p.pre_efficiency
-            pre_points = round(pre_acc * player.num_tokens, 1)  # ← tokens earned
+        for pre_r, post_r, label in task_pairs:
+            p_pre = player.in_round(pre_r)
+            p_post = player.in_round(post_r)
+
+            pre_acc = p_pre.pre_accuracy
+            pre_earn = p_pre.pre_earnings
+            pre_eff = p_pre.pre_efficiency
+            pre_points = round(pre_acc * player.num_tokens, 1)
             sum_pre_earnings += pre_earn
             sum_efficiency += pre_eff
 
+        # for i in range(num_rounds):
+        #     p = player.in_round(i+1)
+        #
+        #     # Get descriptive label for this question
+        #     q_label = question_meta.get(p.qid, {}).get('title', p.qid)
+        #     #q_label = question_meta.get(p.qid, p.qid)
+
+            # # ── Pre beliefs row ──────────────────────────────────
+            # pre_acc = p.pre_accuracy
+            # pre_earn = p.pre_earnings
+            # pre_eff = p.pre_efficiency
+            # pre_points = round(pre_acc * player.num_tokens, 1)  # ← tokens earned
+            # sum_pre_earnings += pre_earn
+            # sum_efficiency += pre_eff
+
             s += "<tr>"
-            s += f"    <td class='text-center'>{q_label}</td>"
+            s += f"    <td class='text-center'>{label}</td>"
             s += f"    <td class='text-center'>Report 1 (Before advice)</td>"
             s += f"    <td class='text-center'>{pre_points} pts</td>"
             #s += f"    <td class='text-center'>{round(pre_acc * 100, 2)}%</td>"
@@ -795,16 +917,23 @@ class Results(Page):
             s += f"    <td class='text-center'>{round(pre_eff, 4)}</td>"
             s += "</tr>"
 
-            # ── Post beliefs row ─────────────────────────────────
-            post_acc = p.post_accuracy
-            post_earn = p.post_earnings
-            post_eff = p.post_efficiency
-            post_points = round(post_acc * player.num_tokens, 1)  # ← tokens earned
+            # # ── Post beliefs row ─────────────────────────────────
+            # post_acc = p.post_accuracy
+            # post_earn = p.post_earnings
+            # post_eff = p.post_efficiency
+            # post_points = round(post_acc * player.num_tokens, 1)  # ← tokens earned
+            # sum_post_earnings += post_earn
+            # sum_efficiency += post_eff
+
+            post_acc = p_post.post_accuracy
+            post_earn = p_post.post_earnings
+            post_eff = p_post.post_efficiency
+            post_points = round(post_acc * player.num_tokens, 1)
             sum_post_earnings += post_earn
             sum_efficiency += post_eff
 
             s += "<tr class='table-light'>"
-            s += f"    <td class='text-center'>{q_label}</td>"
+            s += f"    <td class='text-center'>{label}</td>"
             s += f"    <td class='text-center'>Report 2 (After advice)</td>"
             s += f"    <td class='text-center'>{post_points} pts</td>"
             #s += f"    <td class='text-center'>{round(post_acc * 100, 2)}%</td>"
@@ -812,7 +941,7 @@ class Results(Page):
             s += f"    <td class='text-center'>{round(post_eff, 4)}</td>"
             s += "</tr>"
 
-        total_reports = num_rounds * 2
+        total_reports = 12
         sum_earnings = sum_pre_earnings + sum_post_earnings
         avg_efficiency = sum_efficiency / total_reports if total_reports > 0 else 0
         avg_earnings = sum_earnings / total_reports if total_reports > 0 else 0

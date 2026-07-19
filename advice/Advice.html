@@ -1,11 +1,7 @@
-{% block title %}
-    Your Advice
-{% endblock %}
+{% extends "global/Page.html" %}
+{% load otree %}
 
 {% block content %}
-    {{ include advice_path | safe }}
-
-    <br><br>
-
+    {% include advice_path with qid=qid %}
     {% next_button %}
 {% endblock %}

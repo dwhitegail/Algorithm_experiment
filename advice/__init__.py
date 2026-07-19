@@ -33,6 +33,26 @@ class C(BaseConstants):
     SONG_POST_ROUNDS = [9, 10]
     SONG_MPL_ROUND = 7
 
+    SONG_TITLES = {
+        'song01': "Daisies - Justin Bieber",
+        'song02': "Ordinary - Alex Warren",
+        'song03': "Love Me Not - Ravyn Lenae" ,
+        'song04': "Golden - HUNTR/X:EJAE, Audrey Nuna & REI AMI",
+        'song05': "Lose Control - Teddy Swims",
+        'song06': "Just In Case - Morgan Wallen",
+        'song07': "A Bar Song (Tipsy)- Shaboozey",
+        'song08': "What I Want -Morgan Wallen ft. Tate McRae",
+        'song09': "Soda Pop - Saja Boys",
+        'song10': "Luther - Kendrick Lamar",
+        'song11': "Die with a Smile -Lady Gaga and Bruno Mars",
+        'song12': "Your Idol - Saja Boys",
+        'song13': "Not Like Us - Kendrick Lamar",
+        'song14': "Birds of a Feather - Billie Ellish",
+        'song15': "APT - ROSE and Bruno Mars",
+        'song16': "TV OFF - Kendrick Lamar ft. Lefty Gunplay",
+
+    }
+
 
 class Subsession(BaseSubsession):
     pass
@@ -253,12 +273,56 @@ class Advice(Page):
     def vars_for_template(player: Player):
         # Route to correct intervention based on treatment
         suffix = 'AL' if player.treatment == 'algorithmic' else 'H'
-        advice_path = f"advice/intervention/{player.qid}_{suffix}.html"
+
+        qid = player.qid
+
+        # Song title (save BEFORE changing qid)
+        song_title = C.SONG_TITLES.get(qid, "")
+
+        if suffix == 'AL':
+            # ── ALGORITHMIC advice routing ─────────────────────────
+            if qid.startswith('weight'):
+                advice_qid = qid  # weight01_AL.html, weight02_AL.html, etc.
+
+            elif qid.startswith('height'):
+                advice_qid = qid  # height01_AL.html, height02_AL.html, etc.
+
+            elif qid.startswith('urn'):
+                # urn01/02 → urn01_AL, urn03/04 → urn03_AL, urn05/06 → urn05_AL
+                urn_pair_map = {'urn02': 'urn01', 'urn04': 'urn03', 'urn06': 'urn05'}
+                advice_qid = urn_pair_map.get(qid, qid)
+
+            elif qid.startswith('song'):
+                advice_qid = 'song'  # song_AL.html for all songs
+
+            else:
+                advice_qid = qid
+
+        else:
+            # ── HUMAN advice routing ───────────────────────────────
+            if qid.startswith('weight'):
+                advice_qid = 'weight'  # weight_H.html for all weight questions
+
+            elif qid.startswith('height'):
+                advice_qid = 'height'  # height_H.html for all height questions
+
+            elif qid.startswith('urn'):
+                advice_qid = 'urn'  # urn_H.html for all urns
+
+            elif qid.startswith('song'):
+                advice_qid = 'song'  # song_H.html for all songs
+
+            else:
+                advice_qid = qid
+
+        advice_path = f"advice/intervention/{advice_qid}_{suffix}.html"
 
         return dict(
             advice_path=advice_path,
             treatment=player.treatment,
             al_advice_source=player.al_advice_source,  # ← pass index to template
+            qid=player.qid,
+            song_title=song_title,
         )
 
 
@@ -638,7 +702,7 @@ class Results(Page):
         }
         for qid, tv in weight_true_values.items():
             question_meta[qid] = {
-                'title': f'Weight Task — {qid}',
+                'title': 'Weight Task',
                 'question': 'Estimate the weight of this person in the photograph.',
                 'true_value': tv,
             }
@@ -664,8 +728,8 @@ class Results(Page):
         # Urn questions
         urn_true_values = {
             'urn01': '51%–60% blue', 'urn02': '51%–60% blue',
-            'urn03': '41%–50% blue', 'urn04': '41%–50% blue',
-            'urn05': '31%–40% blue', 'urn06': '31%–40% blue',
+            'urn03': '31%–40% blue', 'urn04': '31%–40% blue',
+            'urn05': '21%–30% blue', 'urn06': '21%–30% blue',
         }
         for qid, tv in urn_true_values.items():
             question_meta[qid] = {
@@ -677,12 +741,12 @@ class Results(Page):
         # Song questions
         song_true_values = {
             'song01': 'Position 8', 'song02': 'Position 2',
-            'song03': 'Position 8', 'song04': 'Position 1',
+            'song03': 'Position 6', 'song04': 'Position 1',
             'song05': 'Position 7', 'song06': 'Position 9',
             'song07': 'Position 10', 'song08': 'Position 3',
             'song09': 'Position 5', 'song10': 'Position 10',
             'song11': 'Position 10', 'song12': 'Position 4',
-            'song13': 'Position 6', 'song14': 'Position 7',
+            'song13': 'Position 8', 'song14': 'Position 7',
             'song15': 'Position 10', 'song16': 'Position 10',
         }
         for qid, tv in song_true_values.items():

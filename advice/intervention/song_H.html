@@ -1,0 +1,49 @@
+{% load otree %}
+
+<div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <h5 style="color: #1a5276;">👥 Human Advice — Song Ranking Task</h5>
+    <p style="color: #1a5276; margin-bottom: 0;">
+        Based on the aggregated reporting distribution from 40 undergraduate participants
+        similar to you who completed a previous version of this study, the histogram below
+        shows the reported Billboard Hot 100 ranking for this song.
+    </p>
+</div>
+
+<!-- Song title -->
+<h4 style="text-align:center; margin:20px 0;">
+    {{ song_title }}
+</h4>
+
+{% if qid == 'song01' %}
+    <img src="{% static 'song01_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song02' %}
+    <img src="{% static 'song02_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song03' %}
+    <img src="{% static 'song03_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song04' %}
+    <img src="{% static 'song04_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song05' %}
+    <img src="{% static 'song05_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song06' %}
+    <img src="{% static 'song06_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song07' %}
+    <img src="{% static 'song07_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song08' %}
+    <img src="{% static 'song08_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song09' %}
+    <img src="{% static 'song09_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song10' %}
+    <img src="{% static 'song10_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song11' %}
+    <img src="{% static 'song11_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song12' %}
+    <img src="{% static 'song12_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song13' %}
+    <img src="{% static 'song13_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song14' %}
+    <img src="{% static 'song14_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song15' %}
+    <img src="{% static 'song15_hist.png' %}" style="max-width: 100%; height: auto;">
+{% elif qid == 'song16' %}
+    <img src="{% static 'song16_hist.png' %}" style="max-width: 100%; height: auto;">
+{% endif %}

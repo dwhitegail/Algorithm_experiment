@@ -1,0 +1,30 @@
+{% load otree %}
+
+<div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <h5 style="color: #1a5276;">👥 Human Advice — Urns Task</h5>
+    <p style="color: #1a5276; margin-bottom: 0;">
+        Based on the aggregated reporting distribution from 40 undergraduate participants
+        similar to you who completed a previous version of this study, the histogram below
+        shows the reported percentage of blue balls for this urn.
+    </p>
+</div>
+
+{% if qid == 'urn01' %}
+    <img src="{% static 'urn01_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% elif qid == 'urn02' %}
+    <img src="{% static 'urn02_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% elif qid == 'urn03' %}
+    <img src="{% static 'urn03_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% elif qid == 'urn04' %}
+    <img src="{% static 'urn04_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% elif qid == 'urn05' %}
+    <img src="{% static 'urn05_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% elif qid == 'urn06' %}
+    <img src="{% static 'urn06_hist.png' %}" style="max-width: 100%; height: auto;">
+
+{% endif %}

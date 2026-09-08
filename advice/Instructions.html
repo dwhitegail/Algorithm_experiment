@@ -40,9 +40,9 @@
                  <div class="text-center my-3">
                 <img src="{{ static 'advice.png' }}" class="img-fluid border" alt="Example of Advice Assignment">
             </div>
-                There are 2 rounds for each question. Each question will start with round 1. After you have completed round 1, you may or may not
-                purchase and receive advice. Then you can proceed to round 2. Some tasks feature multiple questions;
-                in those cases, you will complete round 1 for all questions in that task before moving on to round 2.
+                For each question you will complete two reporting rounds. Each question will start with round 1.
+                After you have completed round 1, you may or may not purchase and receive advice. Then you can proceed to round 2.
+                Some tasks feature multiple questions; in those cases, you will complete round 1 for all questions in that task before moving on to round 2.
 
 
             </p>
@@ -54,9 +54,10 @@
                 For each question, you will give a report about what you believe to be the correct answer. You will use
                 a slider interface as illustrated in the example below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
                 possible outcomes in <strong>10 bins</strong>. For this example, you would report your beliefs about what percentage
-                of the Earth's surface is covered in water. The first bin has an interval of 0% to 10%, the second bin
-                has an interval of 11%-20%, and so on.  The 10th bin represents the outcome of 91%-100%. The tokens you allocate
-                to each bin will reflect your beliefs about the percentage of the earth's surface is covered in water.<br><br>
+                of the Earth's surface is covered in water. The first bin corresponds to your belief that the percentage of the Earth's surface covered in water is between
+                0% to 10%, the second bin corresponds to your belief that the percentage of water covering is between 11%-20%, and so on.
+                The 10th bin represents the outcome of 91%-100%. The tokens you allocate to each bin will reflect your beliefs about
+                the percentage of the earth's surface is covered in water.<br><br>
 
                 You must allocate all 100 tokens.
 
@@ -73,17 +74,28 @@
 
             <h6>Allocation</h6>
             <p>
-                Suppose you think there is a fair chance that the percentage of the Earth's surface that is covered in
-                water is between 55%-75%, then as seen in this example, you might allocate 30 tokens to the interval
-                corresponding to 51%-60%, 30 tokens to 61%-70%, and 40 tokens to the 71%-80% interval. After you have made
-                your selection, confirm your choices by clicking on the <strong>Submit</strong> button.
+                To illustrate how you use these sliders, suppose you think there is a fair chance that the percentage of
+                the Earth's surface that is covered in water is between 55%-75%. Then you might allocate the 100 tokens in the following way:
+                30 tokens to the interval to 51%-60%, 30 tokens to the interval 61%-70%, and 40 tokens to the 71%-80% interval.
+                After you have made your selection, confirm your choices by clicking on the <strong>Submit</strong> button.<br><br>
+
+                As you allocate tokens by using the ∧ and ∨ buttons to move tokens up or down, the number of points
+                displayed above each bar will update automatically. These points determine your earnings if the bar selected
+                corresponds to the correct outcome. If you earn 100 points, you will receive $50 with 100% certainty.
+                But if you earn 0 points, you will receive $0 with certainty.<br><br>
+
+
                 This display illustrates that if the percentage of the Earth's surface that is covered in water fell in
-                the interval 71%-80%, you would earn 73 points, which would later be translated into cash payments.
+                the interval 71%-80%, you would earn 73 points. So, you would have a 73% chance of earning $50 rather than $0.
+                You would earn less than 73 points for any other outcome. You would earn 63 points if the percentage of water
+                covering is between 61% and 70%, You would also earn 63 points if the outcome is between 51% and 60%.
+                Since the points are translated into cash payments, it is important to consider each question carefully
+                and report your beliefs as accurately as possible.
 
             <div class="text-center my-3">
                 <img src="{{ static 'interface2.png' }}"
                      style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
-                     alt="Example of the Interface for token allocation">
+                     alt="Example of the Interface after initial token allocation">
             </div>
             </p>
 
@@ -91,7 +103,7 @@
 
             <h4>Advice Phase</h4>
             <p>
-                After completing Round 1, you will have the opportunity to <strong>purchase advice</strong> before making
+                After completing Round 1, you may have the opportunity to <strong>purchase advice</strong> before making
                 your final decision. You can only purchase advice if you were assigned to the Algorithmic
                 or Human advice conditions. You will be shown a price list with varying costs for advice. You must make
                 a choice in every row about whether you want to buy the advice at that specific price.
@@ -112,7 +124,22 @@
             <p>
                 After the advice phase, you will have the opportunity to update your beliefs. You will once again allocate
                 <strong>{{ num_tokens }} tokens</strong> across 10 bins. You may change your token allocation based on
-                the advice you received, or you may keep it exactly the same.
+                the advice you received, or you may keep it exactly the same. Suppose after receiving advice you decided
+                to put all of your eggs in one basket and allocate all 100 tokens to the interval corresponding to the percentage
+                of the Earth's surface covered in water between 71% and 80%. Then you would have the earnings points shown below.
+
+               <div class="text-center my-3">
+                <img src="{{ static 'interface3.png' }}"
+                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
+                     alt="Example of the Interface after final token allocation">
+            </div>
+
+                Note the “good news” and “bad news” here. If the percentage of the Earth's surface covered in water is
+                indeed between 71% and 80%, you earn the maximum payoff, which is $50. But the true percentage of water
+                covering is 66%, then would have earned nothing in this task. It is up to you to balance the strength of
+                your personal beliefs with the possibility of them being wrong. After you have completed all the tasks,
+                the correct answers will be shown on the final screen.
+
             </p>
 
             <h4>Payment</h4>
@@ -122,19 +149,19 @@
             <ul>
                 <li>
                     <strong>Participation Fee:</strong>
-                    You have already earned <strong>$10 show-up fee</strong> for agreeing to participate in this experiment,
+                    You have already earned a <strong>$10 show-up fee</strong> for agreeing to participate in this experiment,
                     which will be paid in cash at the end of the session.
 
                 </li>
                 <li>
                     <strong>Endowment:</strong>
                     You are given a <strong>${{ endowment }} </strong> endowment to cover the cost of purchasing advice across all 4 tasks.
-                    Any money left over in from your endowment at the end of the experiment is yours to keep.
+                    Any money left over from your endowment at the end of the experiment is yours to keep.
                 </li>
                 <li>
                     <strong>Task Earnings:</strong>
-                    At the end of the experiment, we will look at how accurately you allocated your tokens. Based on your
-                    score, you can earn up to <strong>$50</strong> per report. Remember, however, that only <strong>one report</strong> will randomly be
+                    At the end of the experiment, the ground truth will be compared to your token allocations to determine accuracy. Based on your
+                    score, you can earn up to <strong>$50</strong> per report. Remember, however, that only <strong>ONE report</strong> will randomly be
                     selected for payment.
                 </li>
             </ul>

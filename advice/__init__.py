@@ -182,8 +182,8 @@ class Preview_Advice(Page):
         elif player.treatment == 'human':
             advice_type = "Human Advice"
             advice_description = (
-                "This advice is based on the aggregated average estimates "
-                "of 40 other subjects like you who completed this task "
+                "This advice is based on the aggregated average "
+                "of 30 other subjects like you who completed this task "
                 "in a previous study."
             )
 
@@ -275,6 +275,26 @@ class Advice(Page):
         suffix = 'AL' if player.treatment == 'algorithmic' else 'H'
 
         qid = player.qid
+
+        # Song titles lookup
+        song_titles = {
+            'song01': 'Daisies — Justin Bieber',
+            'song02': 'Ordinary — Alex Warren',
+            'song03': 'Love Me Not — Ravyn Lenae',
+            'song04': 'Golden — HUNTR/X',
+            'song05': 'Lose Control — Teddy Swims',
+            'song06': 'Just In Case — Morgan Wallen',
+            'song07': 'A Bar Song (Tipsy) — Shaboozey',
+            'song08': 'What I Want — Morgan Wallen ft. Tate McRae',
+            'song09': 'Soda Pop — Saja Boys',
+            'song10': 'Luther — Kendrick Lamar & SZA',
+            'song11': 'Die With A Smile — Lady Gaga & Bruno Mars',
+            'song12': 'Your Idol — Saja Boys',
+            'song13': 'Not Like Us — Kendrick Lamar',
+            'song14': 'Birds of a Feather — Billie Eilish',
+            'song15': 'APT. — ROSÉ and Bruno Mars',
+            'song16': 'TV OFF — Kendrick Lamar ft. Lefty Gunplay',
+        }
 
         # Song title (save BEFORE changing qid)
         song_title = C.SONG_TITLES.get(qid, "")
@@ -383,7 +403,7 @@ class Task_Intro(Page):
 
         intros = {
             1: {
-                'task_number': 'Task 1',
+                'task_number': 'Task 1 of 4',
                 'task_name': 'Reporting Beliefs about Weight',
                 'icon': '⚖️',
                 'intro': (
@@ -414,7 +434,7 @@ class Task_Intro(Page):
             },
 
             2: {
-                'task_number': 'Task 2',
+                'task_number': 'Task 2 of 4',
                 'task_name': 'Reporting Beliefs about Height',
                 'icon': '📏',
                 'intro': (
@@ -442,7 +462,7 @@ class Task_Intro(Page):
                 ],
             },
             3: {
-                'task_number': 'Task 3',
+                'task_number': 'Task 3 of 4',
                 'task_name': 'Urns Task — What is the percentage of blue balls in the urn?',
                 'icon': '🏺',
                 'intro': (
@@ -460,10 +480,11 @@ class Task_Intro(Page):
                     "<strong>blue balls</strong> in the full urn. "
                     "First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
                     "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting again."
+                    "The draws are with replacement"
 
                 ),
                 'note': (
-                    "A <strong>draw</strong> means one ball is randomly selected from the urn, its color "
+                    "A <strong>draw with replacement</strong> means one ball is randomly selected from the urn, its color "
                     "is recorded, and then it is placed <strong>back</strong> into the urn before the next draw. "
                     "Remember, your 20 draws are just a sample — they give you clues, but the percentage of blue balls "
                     "in the sample is not necessarily the same as in the full urn."
@@ -478,7 +499,7 @@ class Task_Intro(Page):
                 ],
             },
             7: {
-                'task_number': 'Task 4',
+                'task_number': 'Task 4 of 4',
                 'task_name': 'Billboard Hot 100 Song Ranking',
                 'icon': '🎵',
                 'intro': (

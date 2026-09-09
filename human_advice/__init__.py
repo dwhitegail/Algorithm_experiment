@@ -104,7 +104,7 @@ class Task_Intro(Page):
         intros = {
             1: {
                 'task_number': 'Task 1 of 4',
-                'task_name':   'Weight Reporting Beliefs about Weight',
+                'task_name':   'Reporting Beliefs about Weight',
                 'icon':        '⚖️',
                 'num_questions': len(C.WEIGHT_ROUNDS),
                 'intro': (
@@ -141,21 +141,21 @@ class Task_Intro(Page):
                 ),
                 'note': (
                     "Look for contextual cues in the photo, surrounding "
-                    "objects, posture, and proportions can all help you gauge height." 
-                    "For example, the height interval <strong>5'0\" - 5'2\"</strong> represents 5 feet 0 inches to 5 feet 2 inches. "
+                    "objects, posture, and proportions can all help you gauge height. " 
+                    "The height interval <strong>5'0\" - 5'2\"</strong> represents 5 feet 0 inches to 5 feet 2 inches. "
                     "If you are more familiar with calculating height using centimeters (cm), the conversion guide is "
                     "1 foot ≈ 30.48 centimeters (cm) and 1 inch ≈ 2.54 cm. Recall that 12 inches = 1 foot."
                 ),
                 'Expectations': [
                     f"You will see <strong>{len(C.HEIGHT_ROUNDS)} photographs</strong>, one at a time.",
                     "For each photo, report your beliefs about their heights in <strong>feet and inches</strong> across 10 bins.",
-                    "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Over 7 feet (7'0\")</strong>.",
+                    "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Greater than or equal to 7 feet (7'0\")</strong>.",
 
                 ],
             },
             11: {
                 'task_number': 'Task 3 of 4',
-                'task_name':   'Urns Task',
+                'task_name':   'Urns Task — What is the percentage of blue balls in the urn?',
                 'icon':        '🏺',
                 'num_questions': len(C.URN_ROUNDS),
                 'intro': (
@@ -172,16 +172,17 @@ class Task_Intro(Page):
                     "Your role is to use each sample to report your beliefs about the total percentage of "
                     "<strong>blue balls</strong> in the full urn. "
                     "First, you will <strong>observe a 20-draw sample,</strong> report your beliefs, "
-                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting your beliefs again."
-
+                    "and then <strong>observe a second 20-draw sample</strong> from the exact <strong>same urn</strong> before reporting your beliefs again. "
+                    "The draws are with replacement."
                 ),
                 'note': (
-                    "A <strong>draw</strong> means one ball is randomly selected from the urn, its color "
+                    "A <strong>draw with replacement</strong> means one ball is randomly selected from the urn, its color "
                     "is recorded, and then it is placed <strong>back</strong> into the urn before the next draw. "
                     "Remember, your 20 draws are just a sample — they give you clues, but the percentage of blue balls "
                     "in the sample is not necessarily the same as in the full urn."
                 ),
                 'Expectations': [
+                    "You will asked <strong>2 questions</strong> regarding the percentage of blue balls in relation to the same urn "
                     "You will be shown <strong>2 separate samples</strong> of 20 draws each.",
                     "After each sample, allocate your <strong>100 tokens</strong> across <strong>10 bins</strong> to reflect "
                     "your beliefs about the <strong>percentage of blue balls in the full urn</strong>.",
@@ -212,13 +213,9 @@ class Task_Intro(Page):
                 ),
 
                 'Expectations': [
-                    "You will report your beliefs about the ranking of <strong>2 songs</strong>.",
+                    "You will report your beliefs about the ranking of <strong>5 songs</strong>.",
                     "You will see each song's Billboard chart performance for <strong>4 weeks prior</strong>.",
-                    "You will complete <strong>Round 1 for both songs</strong> before the advice phase.",
-                    "After the advice phase, you will complete <strong>Round 2 for both songs</strong>.",
                     "Rank each song using <strong>10 bins</strong>: Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher.",
-                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
-                    "You may <strong>purchase advice once</strong> — after completing round 1 for both songs.",
 
                  ],
 

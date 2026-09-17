@@ -82,11 +82,16 @@
     /*}*/
 
     .ball {
-    width: 22px;      /* ← increased from 16px */
-    height: 22px;     /* ← increased from 16px */
-    border-radius: 50%;
-    margin: 0 auto;
-    border: 1px solid rgba(0,0,0,0.2);
+        width: 24px;      /* ← increased from 16px */
+        height: 24px;     /* ← increased from 16px */
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        margin: 0 auto;
+        border: 1px solid #333;
+        box-shadow: inset 2px 2px 3px rgba(255,255,255,0.35),
+                    inset -2px -2px 3px rgba(0,0,0,0.20);
+        vertical-align: middle;
     }
 
     table {
@@ -105,8 +110,8 @@
     td:first-child { text-align: left; }
 
 
-    .blue { background-color: #4a5481; }
-    .orange { background-color: #a86241; }
+    .ball.blue { background-color: #4F9BFF; }
+    .ball.orange { background-color: #F47A21; }
 
     .summary {
         text-align: right;
@@ -115,8 +120,8 @@
         line-height: 1.5;
     }
 
-    .text-blue { color: #4a5481; font-weight: bold; }
-    .text-orange { color: #a86241; font-weight: bold; }
+    .text-blue { color: #4F9BFF; font-weight: bold; }
+    .text-orange { color: #F47A21; font-weight: bold; }
 </style>
 
 <div style="text-align: center; margin-bottom: 10px;">
@@ -129,7 +134,7 @@
 
     <!-- Urn image -->
     <div style="text-align: center; min-width: 120px;">
-        <img src="{% static 'urn03.png' %}"
+        <img src="{% static 'urn01.jpg' %}"
              style="width: 250px; height: auto; margin-bottom: 6px;">
         <div style="font-size: 15px; font-weight: bold; margin-top: 8px;">
             Total Balls in<br>the Urn = 100

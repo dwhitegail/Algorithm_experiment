@@ -62,6 +62,10 @@ class Consent(Page):
     def is_displayed(player):
         return player.round_number == 1
 
+class Video(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
 
 class Instructions(Page):
     @staticmethod
@@ -481,6 +485,7 @@ def score_response(player: Player, response, draw):
 # ── PAGE SEQUENCE ──────────────────────────────────────────────────────────
 page_sequence = [
     Consent,
+    # Video,
     Instructions,
     Task_Intro,
     Beliefs,

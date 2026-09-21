@@ -29,7 +29,7 @@ SESSION_CONFIGS = [
         questions=[
             # [qid, labels, correct_bin, layout]
             #Weight 1-15
-            ['weight01', ['<120 lbs', '120-129 lbs', '130-139 lbs', '140-149 lbs', '150-159 lbs', '160-169 lbs', '170-179 lbs', '180-189 lbs', '190-199 lbs', '>=200 lbs'], 7, 'h'],
+            ['weight01', ['<120 \nlbs', '120-129 \nlbs', '130-139 lbs', '140-149 lbs', '150-159 lbs', '160-169 lbs', '170-179 lbs', '180-189 lbs', '190-199 lbs', '>=200 lbs'], 7, 'h'],
             ['weight02', ['<120 lbs', '120-129 lbs', '130-139 lbs', '140-149 lbs', '150-159 lbs', '160-169 lbs', '170-179 lbs', '180-189 lbs', '190-199 lbs', '>=200 lbs'], 1, 'h'],
             ['weight03', ['<120 lbs', '120-129 lbs', '130-139 lbs', '140-149 lbs', '150-159 lbs', '160-169 lbs', '170-179 lbs', '180-189 lbs', '190-199 lbs', '>=200 lbs'], 2, 'h'],
             ['weight04', ['<120 lbs', '120-129 lbs', '130-139 lbs', '140-149 lbs', '150-159 lbs', '160-169 lbs', '170-179 lbs', '180-189 lbs', '190-199 lbs', '>=200 lbs'], 4, 'h'],
@@ -315,7 +315,7 @@ SECRET_KEY = '4720801523770'
 
 INSTALLED_APPS = ['otree']
 
-
+DEBUG = False
 
 
 # import os

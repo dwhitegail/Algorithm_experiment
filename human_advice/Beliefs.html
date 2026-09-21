@@ -126,6 +126,50 @@
             height: 768px;
             z-index: -1;
         }
+            /* Optional written instructions panel */
+        .written-instructions {
+        max-width: 900px;
+        margin: 20px auto 5px auto;
+        border: 1px solid #b8cfe3;
+        border-radius: 6px;
+        background-color: #f8fbfd;
+        overflow: hidden;
+        }
+
+        /* Clickable tab */
+        .written-instructions summary {
+        cursor: pointer;
+        padding: 9px 15px;
+        background-color: #eef6fb;
+        color: #2b5f87;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-align: center;
+        transition: background-color 0.2s ease;
+        }
+
+        /* Hover effect */
+        .written-instructions summary:hover {
+        background-color: #e3f0f8;
+        }
+
+        /* Content revealed when opened */
+        .written-instructions-content {
+        padding: 12px 20px 15px 20px;
+        background-color: #ffffff;
+        border-top: 1px solid #d8e4ed;
+        }
+
+        /* Small optional label */
+        .instructions-label {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        font-style: italic;
+        margin-bottom: 15px;
+        }
+
+
 
     </style>
 {% endblock %}
@@ -197,7 +241,18 @@
         </div>
     </div>
 
+<details class="written-instructions">
+    <summary>
+        📖 &nbsp; View Written Instructions
+    </summary>
 
+    <div class="written-instructions-content">
+
+        {{ include_sibling "instructions_div.html" }}
+
+    </div>
+
+</details>
 
 {% endblock %}
 

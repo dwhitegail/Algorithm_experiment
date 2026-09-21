@@ -1165,8 +1165,8 @@ def creating_session(subsession: Subsession):
 
         # ── Assign random questions ONCE in round 1 ───────────────
         if subsession.round_number == 1:
-            chosen_weight    = random.choice(weight_questions, 2)
-            chosen_height    = random.choice(height_questions, 2)
+            chosen_weight    = random.sample(weight_questions, 2)
+            chosen_height    = random.sample(height_questions, 2)
             chosen_urn_pair  = random.choice(urn_pairs)
             chosen_song_pair = random.choice(song_pairs)
 

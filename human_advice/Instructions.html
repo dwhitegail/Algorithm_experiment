@@ -3,158 +3,138 @@
 
 {% block style %}
 <style>
-    /* Widen the main content area */
+
+    /* Main page width */
     .otree-body {
-    max-width: 1400px !important;
-    width: 95% !important;
+        max-width: 1100px !important;
+        width: 92% !important;
+        margin: 0 auto;
     }
 
-    /* Widen the card itself */
+    /* Remove excessive card styling */
     .card {
-        max-width: 100%;
+        border: none;
+        box-shadow: none;
     }
 
-      /* Increase paragraph font size */
-    p {
-        font-size: 1.2rem; /* adjust as needed */
+    /* Welcome heading */
+    .welcome-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1f3a5f;
+        margin-bottom: 12px;
+    }
+
+    /* Introductory text */
+    .welcome-text {
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+        margin-bottom: 30px;
+    }
+
+    /* Optional instructions box */
+    .instructions-box {
+        max-width: 850px;
+        margin: 0 auto 30px auto;
+        border: 2px solid #1f5f8b;
+        border-radius: 10px;
+        background-color: #f4f8fb;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    /* Clickable instructions heading */
+    .instructions-box summary {
+        cursor: pointer;
+        padding: 18px 22px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1f5f8b;
+        background-color: #e8f1f7;
+        list-style-position: inside;
+    }
+
+    .instructions-box summary:hover {
+        background-color: #eef2f6;
+    }
+
+    /* Instructions once opened */
+    .instructions-content {
+        padding: 5px 25px 20px 25px;
+        border-top: 1px solid #d9dee5;
+    }
+
+    .instructions-content p {
+        font-size: 1.05rem;
         line-height: 1.6;
     }
 
-    h4 {
-    font-size: 1.5rem;
-    font-weight: 600;
+    .instructions-note {
+        font-size: 0.95rem;
+        color: #666;
+        font-style: italic;
+        margin-top: 4px;
+    }
+
+    /* Next button area */
+    .next-button-container {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .next-button-container .btn {
+        min-width: 120px;
+        font-size: 1.05rem;
+        padding: 10px 24px;
+        border-radius: 6px;
     }
 
 </style>
 {% endblock %}
 
+
 {% block title %}
-    Welcome to the Experiment!
 {% endblock %}
+
 
 {% block content %}
 
-    <div class="card">
-        <div class="card-body">
+<div class="welcome-title">
+    Welcome to the Experiment!
+</div>
 
-            <h4>Overview</h4>
-            <p>
-                You are participating in a decision-making experiment. You will report your beliefs about certain things.
-                You will answer <strong>17 -18 questions</strong> by allocating tokens for each question across a set of possible answers.
-                The possible answers are grouped into categories, called <strong>"bins"</strong>. Placing more tokens in a specific
-                bin means you are more confident that the true answer falls in that range. Your earnings will depend on the beliefs
-                you report across four tasks: weight, height, Probability forecasting (urns task), and a song ranking task.<br><br>
-
-                You earn points in this experiment. Every point you earn for reporting your beliefs gives you a greater chance of being
-                paid $50 for that report. The more tokens you place on the correct outcome, the more points you earn. You will receive a cash payment
-                based on the points you earn for reporting your beliefs. The more points you earn, the higher your chance of earning $50.
-                Therefore, your best strategy to maximize your earnings is to always allocate your tokens honestly according to your true beliefs.
-
-            </p>
-
-            <hr>
-
-            <h4>Interface to report Beliefs</h4>
-            <p>
-                For each question, you will give a report about what you believe to be the correct answer. You will use
-                a slider interface as illustrated in the example below to allocate <strong>{{ num_tokens }} tokens</strong> across a set of
-                possible outcomes in <strong>10 bins</strong>. As you allocate tokens by using the ∧ and ∨ buttons to move tokens up or down, the number of points
-                displayed above each bar will update automatically. These points determine your earnings if the bar selected
-                corresponds to the correct outcome. If you earn 100 points, you will receive $50 with 100% certainty.
-                But if you earn 0 points, you will receive $0 with certainty.<br><br>
-
-                For this example, you would report your beliefs about what percentage of the Earth's surface is covered in water.
-                The first bin corresponds to your belief that the percentage of the Earth's surface covered in water is between 0% to 10%.
-                The second bin corresponds to your belief that the percentage of the Earth's surface covered in water is in the interval 11%-20%, and so on.
-                The tokens you allocate to each bin will reflect your beliefs about the percentage of the earth's surface is covered in water.<br><br>
-
-                You must allocate all 100 tokens.
-            </p>
-
-            <div class="text-center my-3">
-                <img src="{{ static 'interface.png' }}"
-                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
-                     alt="Example of the Interface for token allocation">
-            </div>
-
-            <br>
-            <h4>Allocation</h4>
-            <p>
-                To illustrate how you use these sliders and earn cash, suppose you think there is a fair chance that the percentage of
-                the Earth's surface that is covered in water is between 55%-75%. Then you might allocate the 100 tokens in the following way:
-                30 tokens to the interval to 51%-60%, 30 tokens to the interval 61%-70%, and 40 tokens to the 71%-80% interval.
-                After you have made your selection, confirm your choices by clicking on the <strong>Submit</strong> button.<br><br>
-
-                This display illustrates, based on your allocations, that if the percentage of the Earth's surface that is covered in water fell in
-                the interval 71%-80%, you would earn 73 points. So, you would have a 73% chance of earning $50 rather than $0.
-                You would earn less than 73 points for any other outcome. You would earn 63 points if the percentage of water
-                covering is between 61% and 70% so, you would have a 63% chance of earning $50 rather than $0.
-                Since the points are translated into cash payments, it is important to consider each question carefully
-                and report your beliefs as accurately as possible.
-            </p>
-            <div class="text-center my-3">
-                <img src="{{ static 'interface2.png' }}"
-                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
-                     alt="Example of the Interface for token allocation">
-            </div>
-            <p>
-                Suppose you decide to put all of your eggs in one basket and allocate all 100 tokens to the 71% and 80% interval
-                because you believe that the percentage of the Earth's surface covered in water is in that range.
-                Then you would have earnings outcome shown below.
-            </p>
-
-               <div class="text-center my-3">
-                <img src="{{ static 'interface3.png' }}"
-                     style="width: 800px; max-width: 100%; border: 1px solid #ccc;"
-                     alt="Example of the Interface after final token allocation">
-            </div>
-            <p>
-
-                Note the “good news” and “bad news” here. If the percentage of the Earth's surface covered in water is
-                indeed between 71% and 80%, you earn the maximum payoff, which is $50. But if the true percentage of water
-                covering is 66%, then you would have earned nothing in this task. It is up to you to balance the strength of
-                your personal beliefs with the possibility of them being wrong.
-
-            </p>
-            <br>
-            <h4>Payment</h4>
-            <p>
-                Your total payment consists of two parts:
-            </p>
-            <ul style="font-size: 18px;">
-                <li>
-                    <strong>Participation Fee:</strong>
-                    You have already earned a <strong>$10 show-up fee</strong> for agreeing to participate in this experiment,
-                    which will be paid in cash at the end of the session.
-
-                </li>
-
-                <li>
-                    <strong>Task Earnings:</strong>
-                    At the end of the experiment, the ground truth will be compared to your token allocations to determine accuracy. Based on your
-                    score, you can earn up to <strong>$50</strong> per report. Remember, however, that only <strong>ONE report</strong> will randomly be
-                    selected for payment.
-                </li>
-            </ul>
-
-            <hr>
-
-            </p>
-
-<!--            <hr>-->
-
-<!--            <h4>Lab Rules</h4>-->
-
-<!--            <ul style="font-size: 1.15em; line-height: 1.8;">-->
-<!--                <li>Please put your cell phones on silent and securely put away all phones, laptops, and other electronic devices.</li>-->
-<!--                <li>Please do not talk with others seated nearby for the duration of the session.</li>-->
-<!--                <li>If at any point you have a question, please raise your hand and an experimenter will come to assist you.</li>-->
-<!--            </ul>-->
+<div class="welcome-text">
+    Thank you for participating. You have completed the required
+    introduction video. You may also review the written instructions
+    below before continuing to the experiment.
+</div>
 
 
-        </div>
+<details class="instructions-box">
+
+    <summary>
+        View Written Instructions
+    </summary>
+
+    <div class="instructions-content">
+
+        <p class="instructions-note">
+            You may review the written instructions
+            before continuing.
+        </p>
+
+        {{ include_sibling "instructions_div.html" }}
+
     </div>
 
+</details>
+
+
+<div class="next-button-container">
     {% next_button %}
+</div>
 
 {% endblock %}

@@ -22,8 +22,6 @@ class C(BaseConstants):
     WEIGHT_ROUNDS = [1, 2, 3, 4, 5]
     HEIGHT_ROUNDS = [6, 7, 8, 9, 10]
     URN_ROUNDS = [11, 12]
-    SONG_ROUNDS_SHORT = [13, 14, 15, 16, 17] # sessions 1 and 2
-    SONG_ROUNDS_LONG = [13, 14, 15, 16, 17, 18] #session 3
 
     # First round of each task — show Task_Intro
     TASK_INTRO_ROUNDS = [1, 6, 11, 13]
@@ -57,26 +55,33 @@ class Player(BasePlayer):
 
 # ── PAGES ──────────────────────────────────────────────────────────────────
 
+def is_active_round(player):
+    return player.round_number <= len(player.session.config['questions'])
+
+def is_last_question_round(player):
+    return player.round_number == len(player.session.config['questions'])
+
 class Consent(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.round_number == 1 and is_active_round(player)
 
 class Video(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.round_number == 1 and is_active_round(player)
 
 class Instructions(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 1
+        return player.round_number == 1 and is_active_round(player)
 
     @staticmethod
     def vars_for_template(player: Player):
         # Calculate song count dynamically from session config
         questions = player.session.config['questions']
-        num_songs = len(questions) - len(C.WEIGHT_ROUNDS) - len(C.HEIGHT_ROUNDS) - len(C.URN_ROUNDS)
+        total_questions = len(questions)
+        num_songs = total_questions - len(C.WEIGHT_ROUNDS) - len(C.HEIGHT_ROUNDS) - len(C.URN_ROUNDS)
 
         return dict(
             num_tokens=player.num_tokens,
@@ -86,7 +91,7 @@ class Instructions(Page):
             num_height=len(C.HEIGHT_ROUNDS),
             num_urns=len(C.URN_ROUNDS),
             num_songs=num_songs,  # ← dynamic, not C.SONG_ROUNDS
-            total_questions=len(questions),  # ← dynamic, not C.NUM_ROUNDS
+            total_questions=total_questions,  # ← dynamic, not C.NUM_ROUNDS
             #num_songs=len(C.SONG_ROUNDS),
             #total_questions=C.NUM_ROUNDS,
 
@@ -96,14 +101,13 @@ class Instructions(Page):
 class Task_Intro(Page):
     @staticmethod
     def is_displayed(player):
-        # Show before first round of each task
-        # weight=1, height=2, urns=3, songs=5
-        return player.round_number in C.TASK_INTRO_ROUNDS
+        return player.round_number in C.TASK_INTRO_ROUNDS and is_active_round(player)
 
     @staticmethod
     def vars_for_template(player: Player):
         questions = player.session.config['questions']
-        num_songs = len(questions) - 12  # total minus weight(5)+height(5)+urns(2)
+        num_fixed = len(C.WEIGHT_ROUNDS) + len(C.HEIGHT_ROUNDS) + len(C.URN_ROUNDS)
+        num_songs = len(questions) - num_fixed
 
         intros = {
             1: {
@@ -217,7 +221,7 @@ class Task_Intro(Page):
                 ),
 
                 'Expectations': [
-                    "You will report your beliefs about the ranking of <strong>5 songs</strong>.",
+                    f"You will report your beliefs about the ranking of <strong>{num_songs} songs</strong>.",
                     "You will see each song's Billboard chart performance for <strong>4 weeks prior</strong>.",
                     "Rank each song using <strong>10 bins</strong>: Bin 1 = #1 on the chart, Bin 10 = ranked 10th or higher.",
 
@@ -244,6 +248,8 @@ class Task_Intro(Page):
             intro=info['intro'],
             note=info['note'],
             Expectations=info['Expectations'],
+            total_questions=len(questions),
+            num_tokens=player.num_tokens,
         )
 
 
@@ -254,9 +260,7 @@ class Beliefs(Page):
 
     @staticmethod
     def is_displayed(player):
-        questions = player.session.config['questions']
-        # Only show if there is a question for this round
-        return player.round_number <= len(questions)  # ← handles 17 vs 18 rounds
+        return is_active_round(player)
 
     @staticmethod
     def before_next_page(player, timeout_happened):
@@ -307,6 +311,7 @@ class Beliefs(Page):
             task_label=task_label,
             q_num=q_num,
             q_total=q_total,
+            total_questions=len(questions),
             display_round=1,
         )
 
@@ -314,10 +319,7 @@ class Beliefs(Page):
 class ThankYou(Page):
     @staticmethod
     def is_displayed(player):
-        questions = player.session.config['questions']
-        return player.round_number == len(questions)  # ← handles 17 vs 18 rounds
-
-        #return player.round_number == C.NUM_ROUNDS
+        return is_last_question_round(player)
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -329,8 +331,7 @@ class ThankYou(Page):
 class Payoff(Page):
     @staticmethod
     def is_displayed(player):
-        questions = player.session.config['questions']
-        return player.round_number == len(questions)
+        return is_last_question_round(player)
 
     @staticmethod
     def vars_for_template(player: Player):

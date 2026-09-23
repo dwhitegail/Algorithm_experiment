@@ -46,17 +46,23 @@
     </thead>
     <tbody>
         {% for task in task_results %}
-        <tr class="{% if task.round == selected_round %}selected-row{% endif %}">
-            <td>{{ task.round }}</td>
-            <td>{{ task.title }}</td>
-            <td>
-                {% for bin in task.bins %}
-                    {{ bin.label }}: {{ bin.tokens }} tokens<br>
-                {% endfor %}
-            </td>
-            <td>{{ task.true_value }}</td>
-            <td>${{ task.earnings }}</td>
-        </tr>
+            {% if task.round == selected_round %}
+            <tr class="selected-row">
+                <td>{{ task.round }}</td>
+
+                <td>{{ task.title }}</td>
+
+                <td>
+                    {% for bin in task.bins %}
+                        {{ bin.label }}: {{ bin.tokens }} tokens<br>
+                    {% endfor %}
+                </td>
+
+                <td>{{ task.true_value }}</td>
+
+                <td>${{ task.earnings }}</td>
+            </tr>
+            {% endif %}
         {% endfor %}
     </tbody>
 </table>

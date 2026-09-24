@@ -74,6 +74,27 @@
         document.querySelector('form').submit();
 
     });
+
+    // Hidden video bypass: Press Ctrl+V, then Ctrl+B
+    let bypassState = 0;
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey) {
+            const key = event.key.toLowerCase();
+            if (key === 'v' && bypassState === 0) {
+                bypassState = 1;
+            } else if (key === 'b' && bypassState === 1) {
+                videoMessage.className = 'alert alert-info text-center';
+                videoMessage.innerHTML = 'Video requirement bypassed (Admin Mode). You may now continue.';
+                continueButton.disabled = false;
+                bypassState = 0;
+            } else if (key !== 'control') {
+                bypassState = 0;
+            }
+        } else {
+            // Reset if a non-Ctrl key is pressed
+            bypassState = 0;
+        }
+    });
 </script>
 
 {% endblock %}

@@ -234,6 +234,8 @@
         </div>
         <div class="col-4" style="text-align: center">
             <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
+            <br><br>
+            <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.2rem; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button>
         </div>
 
         <div class="col-4" style="text-align: right">
@@ -568,8 +570,65 @@
 
         });
 
+        // DEV TOOL: Auto-fill and submit to speed up testing
+        function devAutoFill() {
+            if (unallocated_tokens > 0) {
+                // Create a clumpy/varied distribution
+                let weights = new Array(num_bins).fill(0);
+                let num_peaks = Math.floor(Math.random() * 2) + 1; // 1 or 2 peaks
 
+                for (let p = 0; p < num_peaks; p++) {
+                    let peak_bin = Math.floor(Math.random() * num_bins);
+                    let peak_weight = Math.random() * 5 + 2;
+                    for (let b = 0; b < num_bins; b++) {
+                        let distance = Math.abs(b - peak_bin);
+                        weights[b] += Math.exp(-Math.pow(distance, 2) / 2) * peak_weight;
+                    }
+                }
 
+                // Add some base noise
+                for (let b = 0; b < num_bins; b++) {
+                    weights[b] += Math.random() * 0.5;
+                }
+
+                // Normalize to unallocated_tokens
+                let total_weight = weights.reduce((a, b) => a + b, 0);
+                let current_sum = 0;
+                for (let b = 0; b < num_bins; b++) {
+                    let share = Math.round((weights[b] / total_weight) * unallocated_tokens);
+                    response[b] += share;
+                    current_sum += share;
+                }
+
+                // Adjust rounding
+                let diff = unallocated_tokens - current_sum;
+                if (diff !== 0) {
+                    response[Math.floor(Math.random() * num_bins)] += diff;
+                }
+
+                unallocated_tokens = 0;
+
+                // update all inputs
+                for (let b = 0; b < num_bins; b++) {
+                    let spinnerInput = $('#bin_' + b).find('input');
+                    if (spinnerInput.length) {
+                        spinnerInput.val(response[b]);
+                        $('#tokens_span_' + b).text(response[b]);
+                    }
+                }
+
+                response_changed();
+            }
+            $('#submit').click();
+        }
+
+        // Allow pressing the SPACE key to auto-fill and submit instantly
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault(); // prevent scrolling
+                devAutoFill();
+            }
+        });
 
     </script>
 

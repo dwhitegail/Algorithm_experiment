@@ -1,0 +1,514 @@
+{% extends "global/Page.html" %}
+
+{% block style %}
+    <style>
+        :root {
+            --green:	#2db166;
+            --yellow:	#f1e826;
+            --orange:	#faa71b;
+            --red:	    #ef2f27;
+            --black:	#000000;
+            --blue:     #7cb5ec;
+        }
+
+
+
+
+
+        .page-header {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-top: 10px;
+        }
+
+        .otree-body{
+            max-width: 1600px;
+        }
+
+        .bins{}
+
+        .quantity {
+            position: relative;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .quantity input {
+            width: 50px;
+            height: 120px;
+            line-height: 1.65;
+            float: left;
+            display: block;
+            padding: 0;
+            margin: 0;
+            padding-left: 20px;
+            border: none;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+            border-radius: 4px;
+            /*text-align: left;*/
+        }
+
+        .quantity input:focus {
+            outline: 0;
+        }
+
+        .quantity-nav {
+            float: left;
+            position: relative;
+            height: 80px;
+        }
+
+        .quantity-button {
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            /*border: 1px solid black;*/
+            /*border-left: 1px solid rgba(0, 0, 0, 0.08);*/
+            width: 50px;
+            text-align: center;
+            color: #333;
+            font-size: 13px;
+            /*font-family: "FontAwesome" !important;*/
+            line-height: 1.5px;
+            padding: 0;
+            background: #FAFAFA;
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+
+        .quantity-button:active {
+            background: #EAEAEA;
+        }
+
+        .quantity-button.quantity-up {
+            position: absolute;
+            height: 50%;
+            top: 0;
+            /*border-bottom: 1px solid rgba(0, 0, 0, 0.08);*/
+            border-radius: 4px 4px 0 0;
+            /*line-height: 1.6*/
+        }
+
+        .quantity-button.quantity-down {
+            position: absolute;
+            bottom: -40px;
+            height: 50%;
+            border-radius: 0 0 4px 4px;
+        }
+
+        #submit_div {
+            /*display: flex;*/
+            /*align-items: center;*/
+            /*justify-content: space-between;*/
+            text-align: center;
+        }
+
+        #laptop_border {
+            position: absolute;
+            border-bottom: 1px solid red !important;
+            top: 0px;
+            left: 0px;
+            width: 1366px;
+            height: 768px;
+            z-index: -1;
+        }
+            /* Optional written instructions panel */
+        .written-instructions {
+        max-width: 900px;
+        margin: 20px auto 5px auto;
+        border: 1px solid #b8cfe3;
+        border-radius: 6px;
+        background-color: #f8fbfd;
+        overflow: hidden;
+        }
+
+        /* Clickable tab */
+        .written-instructions summary {
+        cursor: pointer;
+        padding: 9px 15px;
+        background-color: #eef6fb;
+        color: #2b5f87;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-align: center;
+        transition: background-color 0.2s ease;
+        }
+
+        /* Hover effect */
+        .written-instructions summary:hover {
+        background-color: #e3f0f8;
+        }
+
+        /* Content revealed when opened */
+        .written-instructions-content {
+        padding: 12px 20px 15px 20px;
+        background-color: #ffffff;
+        border-top: 1px solid #d8e4ed;
+        }
+
+        /* Small optional label */
+        .instructions-label {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        font-style: italic;
+        margin-bottom: 15px;
+        }
+
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="alert alert-info" style="text-align: center; font-size: 1.1rem; border: 2px solid #17a2b8;">
+        <strong>Random Draw Complete!</strong><br>
+        The computer has randomly selected <strong>Round {{ display_round }}</strong> for your payment. This page displays your choices for that round. The true answer is indicated by a thick green border.
+    </div>
+
+    <p>
+        Question {{ display_round }} of {{ total_questions }} (Selected for Payment)
+    </p>
+    <br>
+
+    <div class="row">
+        <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center">
+            {{ include stimulus_path | safe }}
+        </div>
+
+        {% if player.layout == 'h' %}
+        <div class="col-7">
+
+            <div style="text-align: center; margin-bottom: 8px;">
+                <h5 style="color: #2979D0; font-weight: 700;">
+                    <span id="unallocated_tokens"></span>
+                </h5>
+            </div>
+            <div id="chart_wrapper" style="position: relative;">
+                <div id="chart_container"></div>
+                <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+                <div id="highlight_rect" style="position: absolute; border: 4px solid #28a745; pointer-events: none; display: none; z-index: 10;"></div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if player.layout != 'h' %}
+    <br>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div style="text-align: center; margin-bottom: 8px;">
+                <h5 style="color: #2979D0; font-weight: 700;">
+                    <span id="unallocated_tokens"></span>
+                </h5>
+            </div>
+            <div id="chart_wrapper_v" style="position: relative;">
+                <div id="chart_container"></div>
+                <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+                <div id="highlight_rect_v" style="position: absolute; border: 4px solid #28a745; pointer-events: none; display: none; z-index: 10;"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <br>
+
+
+    {{ for field in form }}
+        <input type="hidden" name={{field.name}} id="response" />
+    {{ endfor }}
+
+{#    <div id="submit_div">#}
+    <div class="row">
+        <div class="col-4" style="text-align: left">
+            <span id="unallocated_tokens"></span>
+        </div>
+        <div class="col-4" style="text-align: center">
+            <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
+        </div>
+
+        <div class="col-4" style="text-align: right">
+            <span id="directions">t</span>
+        </div>
+    </div>
+
+<details class="written-instructions">
+    <summary>
+        📖 &nbsp; View Written Instructions
+    </summary>
+
+    <div class="written-instructions-content">
+
+        {{ include_sibling "instructions_div.html" }}
+
+    </div>
+
+</details>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'highcharts.js' %}"></script>
+    <script>
+
+
+        let qid = 42;
+        console.log ('QUESTION = ' + qid.toString());
+        let color = '#6495ED';
+        let bin_labels = {{bin_labels}};
+        let correct_bin = {{correct_bin}};
+        console.log(bin_labels);
+        let num_bins = bin_labels.length;
+
+        // Load player's previous responses
+        let loaded_beliefs = {{ beliefs_json|safe }};
+        let response = new Array(num_bins);
+        let scores = new Array(num_bins);
+        let i;
+        for (i=0; i < num_bins; i++)
+        {
+           response[i] = loaded_beliefs && loaded_beliefs.length > i ? loaded_beliefs[i] : 0;
+           scores[i] = 0;
+        }
+
+        let num_tokens = {{num_tokens}};
+        let allocated_tokens = response.reduce((a, b) => a + b, 0);
+        let unallocated_tokens = num_tokens - allocated_tokens;
+
+        let alpha = {{alpha}};
+        let beta = {{beta}};
+
+        let my_chart;
+
+        currency_a = '';
+        currency_b = 'points';
+        or = 'OR';
+        submit = 'Submit';
+        round_a = 'Round ';
+        round_b = ' of ';
+        round_c = '';
+        unallocated_text = 'Unallocated tokens: ';
+        allocate_all = 'You must allocate all tokens before you are able to submit';
+        submit_text = 'Submit your decision or continue making choices';
+        tokens = 'tokens';
+
+        function scoring_rule(index) {
+            //console.log('in scoring rule')
+            let ss = 0;
+            let b;
+            for (b = 0; b < num_bins; b++) {
+                // division of two integers results in integer (with possible rounding), so multiply by 1.0 to convert to float
+                ss = ss + Math.pow(response[b] / num_tokens, 2); // forces result to be float
+            }
+            return alpha + beta * ((2 * response[index] / num_tokens) - ss);
+        };
+
+        function response_changed() {
+                // update chart
+                let i
+                for (i = 0; i < num_bins; i++) {
+                    scores[i] = scoring_rule(i);
+                }
+                my_chart.series[0].setData(scores);
+
+                // update remaining tokens
+                $('#unallocated_tokens').text(unallocated_text + unallocated_tokens.toString());
+
+                // update hidden form field
+                 $("#response").val(JSON.stringify(response));
+
+                // enable submit button if all tokens allocated
+                if (unallocated_tokens==0) {
+                    $('#submit').prop('disabled', false);
+                    $('#directions').text(submit_text)
+                } else {
+                    $('#submit').prop('disabled', true);
+                    $('#directions').text(allocate_all)
+                }
+        };
+
+        document.addEventListener( 'DOMContentLoaded', function() {
+
+            $('#round_text').text(    'Round ' + {{subsession.round_number}});
+
+            $('#round_text').text('Round ' + {{display_round}});
+
+            $('#submit_text').text(submit);
+
+
+            my_chart = Highcharts.chart('chart_container', {
+                title: {
+                    text: "",
+                },
+                chart: {
+                    type: "column",
+                    animation: false,
+                    marginTop: 40,  // Extra space so that bar labels are not cropped when always on top of bar.
+                },
+                // colors: ['#faa71b'],
+                // colors: [getComputedStyle(document.documentElement,null).getPropertyValue(color[0])],
+                colors: ['#6495ED'],
+                plotOptions: {
+                    series: {
+                        animation: false,
+                    },
+                column: {
+                    maxPointWidth: 100,  // max width of column
+                    dataLabels: {
+                        enabled: true,
+                        inside: false,
+                        crop: false,
+                        overflow: 'none',
+                        style: {
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                            textShadow: "0px",
+                            textOutline: "none",
+                        },
+                        formatter: function () {
+                            // return currency_a + this.y.toFixed(2) + currency_b;
+                            return currency_a + this.y.toFixed(2) + '<br/>' + currency_b;
+                        }
+                    },
+                },
+                },
+                xAxis: {
+                    tickLength: 0,
+                    labels: {
+                        style: {
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                            textShadow: "0px",
+                            textOutline: "none",
+                        },
+                        formatter: function () {
+                            return bin_labels[this.value]
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '' // axis label
+                    },
+                    min: alpha - beta,
+                    max: alpha + beta,
+                    tickPositions: [alpha - beta, alpha - beta/2, alpha, alpha + beta/2, alpha + beta ],
+                    labels: {
+                        formatter: function () {
+                            return currency_a + this.value.toFixed(2)
+                        }
+                    },
+                    gridLineWidth: 0,
+                    lineWidth: 1,
+                    tickWidth: 1,
+                },
+                series: [{
+                    data: scores,
+
+                }],
+                credits: {
+                    enabled: false,
+                },
+                legend: {
+                    enabled: false,
+                },
+            });
+
+
+            function sliderRowMargins() {
+                let leftInt = -30
+                let rightInt = 0
+
+                leftInt = my_chart.xAxis[0].toPixels(-0.5,false) - my_chart.container.clientLeft
+                rightInt = my_chart.container.clientWidth - my_chart.xAxis[0].toPixels(num_bins - 0.5,false)
+
+                return {
+                    'margin-left': (leftInt) + 'px',
+                    'margin-right': (rightInt) + 'px',
+                }
+            }
+
+            $('.bins').css(sliderRowMargins());
+
+            // console.log(my_chart)
+            // console.log(sliderRowMargins())
+
+            for (i=0; i < num_bins; i++)
+            {
+                let bin_num = i; // local scope so that we don't see final value of i in some places...
+                let txt_html;
+
+                // add divs with token allocations
+                txt_html = "";
+                txt_html += "<div class='col d-flex justify-content-center' style='padding-top: 10px; margin-top: 10px;'>";
+                txt_html += "<div id='token_col_" + bin_num + "' style='text-align: center;'>";
+                txt_html += "<div class='large' style='white-space: nowrap;'><span id='tokens_span_" + bin_num.toString() + "'>" + response[bin_num] + "</span> "+ tokens + "</div>";
+                txt_html += "</div></div>";
+                $('#tokens_div').append(txt_html);
+
+                // No input_div generated for SelectedRound.html since it is read-only
+            }
+            //$('input').attr('max', 5);
+            // console.log(unallocated_tokens)
+
+            // Call the following on page load so that bars draw with zero allocation (instead of bars not showing)
+            response_changed();
+
+            // Highlight the true bin and enable next button
+            setTimeout(function() {
+                // Remove any previous bar highlights if they exist
+                if (my_chart && my_chart.series && my_chart.series[0] && my_chart.series[0].data[correct_bin]) {
+                    my_chart.series[0].data[correct_bin].update({
+                        borderColor: null,
+                        borderWidth: 1
+                    });
+                }
+
+                // Position the single thick green rectangle
+                let token_col = $('#token_col_' + correct_bin);
+                let wrapper = token_col.closest('#chart_wrapper, #chart_wrapper_v');
+                let rect = wrapper.find('#highlight_rect, #highlight_rect_v');
+
+                if (token_col.length && rect.length) {
+                    let chart_div = wrapper.find('#chart_container');
+
+                    // Top: The X-axis of the chart
+                    // Bottom: The bottom edge of the Highcharts div
+                    let top = my_chart.plotTop + my_chart.plotHeight - 2;
+                    let left = token_col.position().left - 15;
+                    let width = token_col.outerWidth() + 23;
+                    let bottom = chart_div.outerHeight();
+                    let height = bottom - top;
+
+                    rect.css({
+                        'top': top + 'px',
+                        'left': left + 'px',
+                        'width': width + 'px',
+                        'height': height + 'px',
+                        'display': 'block'
+                    });
+                }
+            }, 100);
+
+            $('#submit').prop('disabled', false).text('Next');
+            $('#directions').text('');
+
+        });
+    </script>
+{% endblock %}

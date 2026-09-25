@@ -1,53 +1,108 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 
-{% block title %}
-    Study Introduction Video
+{% block style %}
+<style>
+
+    /* Expand the oTree page so the video can actually become wider */
+    .otree-body {
+        max-width: 1400px !important;
+        width: 95% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Make the video area wider */
+    .video-container {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto 25px auto;
+        aspect-ratio: 16 / 9;
+        position: relative;
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        border: none;
+    }
+
+    .video-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .video-instruction {
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .video-message {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto 15px auto;
+    }
+
+</style>
 {% endblock %}
+
+
+{% block title %}
+{% endblock %}
+
 
 {% block content %}
 
-<div class="container" style="max-width: 900px;">
+<div class="video-title">
+    Please Watch the Study Introduction Video
+</div>
 
-    <h3 class="text-center mb-4">
-        Please Watch the Video Before Continuing
-    </h3>
+<p class="video-instruction">
+    This video provides important information about the study.
+    You must watch the entire video before you can continue.
+</p>
 
-    <p class="text-center">
-        This video provides important information about the study.
-        You must watch the entire video before you can continue.
-    </p>
 
-    <div class="ratio ratio-16x9 mb-4">
-        <iframe
-            id="vimeo-player"
-            src="https://player.vimeo.com/video/1229208776"
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen>
-        </iframe>
-    </div>
+<div class="video-container">
 
-    <div id="video-message"
-         class="alert alert-warning text-center">
-        Please watch the entire video before continuing.
-    </div>
-
-    <div class="text-center">
-        <button
-            type="button"
-            id="continue-button"
-            class="btn btn-primary"
-            disabled>
-            Continue
-        </button>
-    </div>
+    <iframe
+        id="vimeo-player"
+        src="https://player.vimeo.com/video/1229208776?skipping_forward=0&speed=0&keyboard=0"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen>
+    </iframe>
 
 </div>
+
+
+<div id="video-message"
+     class="video-message alert alert-warning text-center">
+    Please watch the entire video before continuing.
+</div>
+
+
+<div class="text-center">
+    <button
+        type="button"
+        id="continue-button"
+        class="btn btn-primary"
+        disabled>
+        Continue
+    </button>
+</div>
+
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 
 <script>
+
     const iframe = document.getElementById('vimeo-player');
     const player = new Vimeo.Player(iframe);
 
@@ -57,20 +112,74 @@
     const videoMessage =
         document.getElementById('video-message');
 
+    let furthestWatched = 0;
+    let videoDuration = 0;
+    let isCorrectingSeek = false;
+
+
+    // Get the length of the video
+    player.getDuration().then(function(duration) {
+        videoDuration = duration;
+    });
+
+
+    // Keep track of the furthest point actually watched
+    player.on('timeupdate', function(data) {
+
+        if (!isCorrectingSeek) {
+
+            const currentTime = data.seconds;
+
+            if (currentTime > furthestWatched) {
+                furthestWatched = currentTime;
+            }
+        }
+    });
+
+
+    // Prevent participants from jumping ahead
+    player.on('seeking', function(data) {
+
+        const attemptedTime = data.seconds;
+
+        if (
+            attemptedTime > furthestWatched + 1 &&
+            !isCorrectingSeek
+        ) {
+
+            isCorrectingSeek = true;
+
+            player.setCurrentTime(furthestWatched).then(function() {
+
+                isCorrectingSeek = false;
+
+            }).catch(function(error) {
+
+                console.log(error);
+                isCorrectingSeek = false;
+
+            });
+        }
+    });
+
+
+    // Video must reach the end before Continue is enabled
     player.on('ended', function() {
 
         videoMessage.className =
-            'alert alert-success text-center';
+            'video-message alert alert-success text-center';
 
         videoMessage.innerHTML =
             'Thank you. You have completed the video. You may now continue.';
 
         continueButton.disabled = false;
+
     });
 
+
+    // Continue to the next oTree page
     continueButton.addEventListener('click', function() {
 
-        // Tell oTree to move to the next page
         document.querySelector('form').submit();
 
     });
@@ -97,4 +206,5 @@
     });
 </script>
 
+</script>
 {% endblock %}

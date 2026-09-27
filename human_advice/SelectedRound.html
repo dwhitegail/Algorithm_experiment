@@ -175,8 +175,13 @@
 {% endblock %}
 
 {% block content %}
+    <div class="alert alert-info" style="text-align: center; font-size: 1.1rem; border: 2px solid #17a2b8;">
+        <strong>Random Draw Complete!</strong><br>
+        The computer has randomly selected <strong>Round {{ display_round }}</strong> for your payment. This page displays your choices for that round. The true answer is indicated by a thick green border.
+    </div>
+
     <p>
-        Question {{ subsession.round_number }} of {{ total_questions }}
+        Question {{ display_round }} of {{ total_questions }} (Selected for Payment)
     </p>
     <br>
 
@@ -193,10 +198,11 @@
                     <span id="unallocated_tokens"></span>
                 </h5>
             </div>
-            <div id="chart_container"></div>
-            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
-            <br>
-            <div class="row bins" id="input_div"></div>
+            <div id="chart_wrapper" style="position: relative;">
+                <div id="chart_container"></div>
+                <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+                <div id="highlight_rect" style="position: absolute; border: 4px solid #28a745; pointer-events: none; display: none; z-index: 10;"></div>
+            </div>
         </div>
         {% endif %}
     </div>
@@ -212,10 +218,11 @@
                     <span id="unallocated_tokens"></span>
                 </h5>
             </div>
-            <div id="chart_container"></div>
-            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
-            <br>
-            <div class="row bins" id="input_div"></div>
+            <div id="chart_wrapper_v" style="position: relative;">
+                <div id="chart_container"></div>
+                <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+                <div id="highlight_rect_v" style="position: absolute; border: 4px solid #28a745; pointer-events: none; display: none; z-index: 10;"></div>
+            </div>
         </div>
     </div>
     {% endif %}
@@ -234,8 +241,6 @@
         </div>
         <div class="col-4" style="text-align: center">
             <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
-            <br><br>
-            <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.2rem; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button>
         </div>
 
         <div class="col-4" style="text-align: right">
@@ -267,20 +272,24 @@
         console.log ('QUESTION = ' + qid.toString());
         let color = '#6495ED';
         let bin_labels = {{bin_labels}};
+        let correct_bin = {{correct_bin}};
         console.log(bin_labels);
         let num_bins = bin_labels.length;
+
+        // Load player's previous responses
+        let loaded_beliefs = {{ beliefs_json|safe }};
         let response = new Array(num_bins);
         let scores = new Array(num_bins);
         let i;
         for (i=0; i < num_bins; i++)
         {
-           response[i] = 0;
+           response[i] = loaded_beliefs && loaded_beliefs.length > i ? loaded_beliefs[i] : 0;
            scores[i] = 0;
         }
 
         let num_tokens = {{num_tokens}};
-        let allocated_tokens = 0;
-        let unallocated_tokens = num_tokens;
+        let allocated_tokens = response.reduce((a, b) => a + b, 0);
+        let unallocated_tokens = num_tokens - allocated_tokens;
 
         let alpha = {{alpha}};
         let beta = {{beta}};
@@ -447,120 +456,13 @@
 
                 // add divs with token allocations
                 txt_html = "";
-                txt_html += "<div class='col d-flex justify-content-center'>";
-                txt_html += "<div class='large' style='white-space: nowrap;'><span id='tokens_span_" + bin_num.toString() + "'>0</span> "+ tokens + "</div>";
-                txt_html += "</div>";
+                txt_html += "<div class='col d-flex justify-content-center' style='padding-top: 10px; margin-top: 10px;'>";
+                txt_html += "<div id='token_col_" + bin_num + "' style='text-align: center;'>";
+                txt_html += "<div class='large' style='white-space: nowrap;'><span id='tokens_span_" + bin_num.toString() + "'>" + response[bin_num] + "</span> "+ tokens + "</div>";
+                txt_html += "</div></div>";
                 $('#tokens_div').append(txt_html);
 
-                // add the updown spinner input widgets
-                txt_html = "";
-                txt_html += "<div class='quantity col d-flex justify-content-center' id='bin_" + bin_num.toString() + "'>";
-                txt_html += "<input type='number' min='0' max='" + num_tokens.toString() + "' step='1' value='0'  disabled='disabled'>";
-                txt_html += "</div>"
-                $('#input_div').append(txt_html);
-                $('<div class="quantity-nav"><button class="quantity-button quantity-up btn" type="button">&#708;</button><button class="quantity-button quantity-down btn" type="button">&#709;</button></div>').insertAfter('#bin_'+bin_num+' input');
-                $('#bin_'+i).each(function () {
-                    var spinner = $(this),
-                        input = spinner.find('input[type="number"]'),
-                        btnUp = spinner.find('.quantity-up'),
-                        btnDown = spinner.find('.quantity-down'),
-                        min = input.attr('min'),
-                        //max = input.attr('max');
-                        max = unallocated_tokens;
-
-                    var timeout, interval;
-
-                    let up_handled = false;
-                    $(btnUp).on('touchstart mousedown', function (e) {
-                        e.stopImmediatePropagation();
-                        if(e.type == "touchstart") {
-                            up_handled = true;
-                            handleIt();
-                        }
-                        else if(e.type == "mousedown" && !up_handled) {
-                            handleIt();
-                        }
-                        else {
-                            up_handled = false;
-                        }
-                        function handleIt(){
-                            increment_value();
-                            timeout = setTimeout(function() {
-                                interval = setInterval(function() {
-                                    increment_value();
-                                }, 50);
-                            }, 300);
-                            function increment_value() {
-                                let oldValue = parseFloat(input.val());
-                                let newVal
-                                if (unallocated_tokens <= 0) {
-                                    newVal = oldValue;
-                                } else {
-                                    newVal = oldValue + 1;
-                                    unallocated_tokens -= 1;
-                                    console.log(response)
-                                    response[bin_num] += 1;
-                                    response_changed();
-                                }
-                                $('#tokens_span_'+bin_num).text(newVal);
-                                spinner.find("input").val(newVal);
-                                spinner.find("input").trigger("change");
-                            }
-                        }
-
-                    });
-
-                    $(btnUp).on('touchend mouseup', clearTimers);
-                    $(btnUp).on('mouseleave', clearTimers);
-
-                    let down_handled = false;
-                    $(btnDown).on('touchstart mousedown', function (e) {
-                        e.stopImmediatePropagation();
-                        if(e.type == "touchstart") {
-                            down_handled = true;
-                            handleIt();
-                        }
-                        else if(e.type == "mousedown" && !down_handled) {
-                            handleIt();
-                        }
-                        else {
-                            down_handled = false;
-                        }
-                        function handleIt(){
-                            decrement_value();
-                            timeout = setTimeout(function() {
-                                interval = setInterval(function() {
-                                    decrement_value();
-                                }, 50);
-                            }, 300);
-                            function decrement_value() {
-                                let oldValue = parseFloat(input.val());
-                                let newVal;
-                                if (oldValue <= min) {
-                                    newVal = oldValue;
-                                } else {
-                                    newVal = oldValue - 1;
-                                    unallocated_tokens += 1;
-                                    response[bin_num] -= 1;
-                                    response_changed();
-                                }
-                                $('#tokens_span_'+bin_num).text(newVal);
-                                spinner.find("input").val(newVal);
-                                spinner.find("input").trigger("change");
-                            }
-                        }
-                     });
-
-                    $(btnDown).on('mouseup touchend', clearTimers);
-                    $(btnDown).on('mouseleave', clearTimers);
-
-                    function clearTimers() {
-                        clearTimeout(timeout);
-                        clearInterval(interval);
-                    }
-                });
-
-
+                // No input_div generated for SelectedRound.html since it is read-only
             }
             //$('input').attr('max', 5);
             // console.log(unallocated_tokens)
@@ -568,68 +470,45 @@
             // Call the following on page load so that bars draw with zero allocation (instead of bars not showing)
             response_changed();
 
+            // Highlight the true bin and enable next button
+            setTimeout(function() {
+                // Remove any previous bar highlights if they exist
+                if (my_chart && my_chart.series && my_chart.series[0] && my_chart.series[0].data[correct_bin]) {
+                    my_chart.series[0].data[correct_bin].update({
+                        borderColor: null,
+                        borderWidth: 1
+                    });
+                }
+
+                // Position the single thick green rectangle
+                let token_col = $('#token_col_' + correct_bin);
+                let wrapper = token_col.closest('#chart_wrapper, #chart_wrapper_v');
+                let rect = wrapper.find('#highlight_rect, #highlight_rect_v');
+
+                if (token_col.length && rect.length) {
+                    let chart_div = wrapper.find('#chart_container');
+
+                    // Top: The X-axis of the chart
+                    // Bottom: The bottom edge of the Highcharts div
+                    let top = my_chart.plotTop + my_chart.plotHeight - 2;
+                    let left = token_col.position().left - 15;
+                    let width = token_col.outerWidth() + 23;
+                    let bottom = chart_div.outerHeight();
+                    let height = bottom - top;
+
+                    rect.css({
+                        'top': top + 'px',
+                        'left': left + 'px',
+                        'width': width + 'px',
+                        'height': height + 'px',
+                        'display': 'block'
+                    });
+                }
+            }, 100);
+
+            $('#submit').prop('disabled', false).text('Next');
+            $('#directions').text('');
+
         });
-
-        // DEV TOOL: Auto-fill and submit to speed up testing
-        function devAutoFill() {
-            if (unallocated_tokens > 0) {
-                // Create a clumpy/varied distribution
-                let weights = new Array(num_bins).fill(0);
-                let num_peaks = Math.floor(Math.random() * 2) + 1; // 1 or 2 peaks
-
-                for (let p = 0; p < num_peaks; p++) {
-                    let peak_bin = Math.floor(Math.random() * num_bins);
-                    let peak_weight = Math.random() * 5 + 2;
-                    for (let b = 0; b < num_bins; b++) {
-                        let distance = Math.abs(b - peak_bin);
-                        weights[b] += Math.exp(-Math.pow(distance, 2) / 2) * peak_weight;
-                    }
-                }
-
-                // Add some base noise
-                for (let b = 0; b < num_bins; b++) {
-                    weights[b] += Math.random() * 0.5;
-                }
-
-                // Normalize to unallocated_tokens
-                let total_weight = weights.reduce((a, b) => a + b, 0);
-                let current_sum = 0;
-                for (let b = 0; b < num_bins; b++) {
-                    let share = Math.round((weights[b] / total_weight) * unallocated_tokens);
-                    response[b] += share;
-                    current_sum += share;
-                }
-
-                // Adjust rounding
-                let diff = unallocated_tokens - current_sum;
-                if (diff !== 0) {
-                    response[Math.floor(Math.random() * num_bins)] += diff;
-                }
-
-                unallocated_tokens = 0;
-
-                // update all inputs
-                for (let b = 0; b < num_bins; b++) {
-                    let spinnerInput = $('#bin_' + b).find('input');
-                    if (spinnerInput.length) {
-                        spinnerInput.val(response[b]);
-                        $('#tokens_span_' + b).text(response[b]);
-                    }
-                }
-
-                response_changed();
-            }
-            $('#submit').click();
-        }
-
-        // Allow pressing the SPACE key to auto-fill and submit instantly
-        document.addEventListener('keydown', function(e) {
-            if (e.key === ' ' || e.code === 'Space') {
-                e.preventDefault(); // prevent scrolling
-                devAutoFill();
-            }
-        });
-
     </script>
-
 {% endblock %}

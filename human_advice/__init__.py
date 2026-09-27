@@ -328,7 +328,9 @@ class ThankYou(Page):
         )
 
 
-class Payoff(Page):
+class SelectedRound(Page):
+    template_name = 'human_advice/SelectedRound.html'
+
     @staticmethod
     def is_displayed(player):
         return is_last_question_round(player)
@@ -338,109 +340,96 @@ class Payoff(Page):
         questions = player.session.config['questions']
         num_rounds = len(questions)
 
-        question_meta = {
-            'weight01': {'title': 'Weight Task',  'true_value': '170–179 lbs'},
-            'weight02': {'title': 'Weight Task',  'true_value': "<120 pounds"},
-            'weight03': {'title': 'Weight Task',  'true_value': '120–129 lbs'},
-            'weight04': {'title': 'Weight Task',  'true_value': '140–149 lbs'},
-            'weight05': {'title': 'Weight Task',  'true_value': "≥200 pounds"},
-            'weight06': {'title': 'Weight Task',  'true_value': "≥200 pounds"},
-            'weight07': {'title': 'Weight Task',  'true_value': '170–179 lbs'},
-            'weight08': {'title': 'Weight Task',  'true_value': '130–139 lbs'},
-            'weight09': {'title': 'Weight Task',  'true_value': '150–159 lbs'},
-            'weight10': {'title': 'Weight Task',  'true_value': '170–179 lbs'},
-            'weight11': {'title': 'Weight Task',  'true_value': "≥200 pounds"},
-            'weight12': {'title': 'Weight Task',  'true_value': '160–169 lbs'},
-            'weight13': {'title': 'Weight Task',  'true_value': '160–169 lbs'},
-            'weight14': {'title': 'Weight Task',  'true_value': '160–169 lbs'},
-            'weight15': {'title': 'Weight Task',  'true_value': '160–169 lbs'},
-            'height01': {'title': 'Height Task',  'true_value': "< 5 feet"},
-            'height02': {'title': 'Height Task', 'true_value': "5 feet 11 inches"},
-            'height03': {'title': 'Height Task', 'true_value': "5 feet 4 inches"},
-            'height04': {'title': 'Height Task', 'true_value': "5 feet 5 inches"},
-            'height05': {'title': 'Height Task', 'true_value': "5 feet 6 inches"},
-            'height06': {'title': 'Height Task', 'true_value': "5 feet 6 inches"},
-            'height07': {'title': 'Height Task', 'true_value': "5 feet 8 inches"},
-            'height08': {'title': 'Height Task', 'true_value': "5 feet 10 inches"},
-            'height09': {'title': 'Height Task',  'true_value': "6 feet 0 inches"},
-            'height10': {'title': 'Height Task', 'true_value': "6 feet 0 inches"},
-            'height11': {'title': 'Height Task', 'true_value': "< 5 feet"},
-            'height12': {'title': 'Height Task', 'true_value': "6 feet 1 inch"},
-            'height13': {'title': 'Height Task', 'true_value': "6 feet 1 inch"},
-            'height14': {'title': 'Height Task', 'true_value': "6 feet 3 inches"},
-            'height15': {'title': 'Height Task', 'true_value': "5 feet 7 inches"},
-            'urn01': {'title': 'Urns — Period 1', 'true_value': '55% blue balls'},
-            'urn02': {'title': 'Urns — Period 2', 'true_value': '55% blue balls'},
-            'urn03': {'title': 'Urns — Period 1', 'true_value': '36% blue balls'},
-            'urn04': {'title': 'Urns — Period 2', 'true_value': '36% blue balls'},
-            'urn05': {'title': 'Urns — Period 1', 'true_value': '23% blue balls'},
-            'urn06': {'title': 'Urns — Period 2', 'true_value': '23% blue balls'},
-            'urn07': {'title': 'Urns — Period 1', 'true_value': '42% blue balls'},
-            'urn08': {'title': 'Urns — Period 2', 'true_value': '42% blue balls'},
-            'song01': {'title': 'Song Ranking Task: Daisies by Justin Bieber', 'true_value': 'Position 8'},
-            'song02': {'title': 'Song Ranking Task: Ordinary by Alex Warren',  'true_value': 'Position 2'},
-            'song03': {'title': 'Song Ranking Task: Not Like Us by Kendrick Lamar', 'true_value': 'Position 8'},
-            'song04': {'title': 'Song Ranking Task: Golden by HUNTR/X: EJAE, Audrey Nuna & REI AMI', 'true_value': 'Position 1'},
-            'song05': {'title': 'Song Ranking Task: Lose Control by Teddy Swims', 'true_value': 'Position 7'},
-            'song06': {'title': 'Song Ranking Task: Just in Case by Morgan Wallen', 'true_value': 'Position 9'},
-            'song07': {'title': 'Song Ranking Task: A Bar Song (Tipsy) by Shaboozey', 'true_value': 'Position 10'},
-            'song08': {'title': 'Song Ranking Task: What I Want by Morgan Wallen ft. Tate McRae', 'true_value': 'Position 3'},
-            'song09': {'title': 'Song Ranking Task: Soda Pop by Saja Boys', 'true_value': 'Position 5'},
-            'song10': {'title': 'Song Ranking Task: Luther by Kendrick Lamar', 'true_value': 'Position 10'},
-            'song11': {'title': 'Song Ranking Task: Die with a smile by Lady Gaga & Bruno Mars', 'true_value': 'Position 10'},
-            'song12': {'title': 'Song Ranking Task: Your Idol by Saja Boys', 'true_value': 'Position 4'},
-            'song13': {'title': 'Song Ranking Task: Love Me Not by Ravyn Lenae', 'true_value': 'Position 6'},
-            'song14': {'title': 'Song Ranking Task: Birds of a Feather by Billie Ellish ', 'true_value': 'Position 7'},
-            'song15': {'title': 'Song Ranking Task: APT by ROSE and Bruno Mars', 'true_value': 'Position 10'},
-            'song16': {'title': 'Song Ranking Task: TV OFF by Kendrick Lamar', 'true_value': 'Position 10'},
-
-        }
-
-        task_results = []
-        for i in range(1, num_rounds + 1):
-            p = player.in_round(i)
-            meta = question_meta.get(p.qid, {'title': p.qid, 'true_value': 'N/A'})
-            labels = json.loads(p.bin_labels)
-
-            bins = []
-            if p.beliefs:
-                tokens = json.loads(p.beliefs)
-                for j, label in enumerate(labels):
-                    t = tokens[j] if j < len(tokens) else 0
-                    if t > 0:
-                        bins.append({'label': label, 'tokens': t})
-
-            task_results.append({
-                'round': i,
-                'title':      meta['title'],
-                'true_value': meta['true_value'],
-                'earnings':   f"{p.earnings:.2f}",
-                'bins':       bins,
-                'qid': p.qid,
-            })
-
-
-        # ── Randomly select ONE round for payment ──────────────────
-        # Use participant label as seed so it's consistent if page reloads
-        import random as _random
-        rng = _random.Random(player.participant.code)
-        selected_round = rng.randint(1, num_rounds)
+        if 'selected_round' not in player.participant.vars:
+            import random as _random
+            rng = _random.Random(player.participant.code)
+            player.participant.vars['selected_round'] = rng.randint(1, num_rounds)
+            
+        selected_round = player.participant.vars['selected_round']
         selected_player = player.in_round(selected_round)
-        selected_earnings = selected_player.earnings
-        selected_title = question_meta.get(
-            selected_player.qid, {'title': selected_player.qid}
-        )['title']
 
-        participation_fee = C.PARTICIPATION_FEE
-        grand_total = round(selected_earnings + participation_fee, 2)
+        r = selected_player.round_number
+        song_rounds = list(range(13, len(questions) + 1))
+
+        if r in C.WEIGHT_ROUNDS:
+            task_label = "Weight Estimation"
+            q_num = C.WEIGHT_ROUNDS.index(r) + 1
+            q_total = len(C.WEIGHT_ROUNDS)
+        elif r in C.HEIGHT_ROUNDS:
+            task_label = "Height Estimation"
+            q_num = C.HEIGHT_ROUNDS.index(r) + 1
+            q_total = len(C.HEIGHT_ROUNDS)
+        elif r in C.URN_ROUNDS:
+            task_label = "Urns Task"
+            q_num = C.URN_ROUNDS.index(r) + 1
+            q_total = len(C.URN_ROUNDS)
+        else:
+            task_label = "Song Ranking"
+            q_num = song_rounds.index(r) + 1
+            q_total = len(song_rounds)
+
+        beliefs = []
+        if selected_player.beliefs:
+            beliefs = json.loads(selected_player.beliefs)
 
         return dict(
-            task_results=task_results,
+            qid=selected_player.qid,
+            stimulus_path=f"shared_stimulus/{selected_player.qid}.html",
+            alpha=selected_player.alpha,
+            beta=selected_player.beta,
+            num_tokens=selected_player.num_tokens,
+            color=json.loads(selected_player.color),
+            bin_labels=json.loads(selected_player.bin_labels),
+            task_label=task_label,
+            q_num=q_num,
+            q_total=q_total,
+            total_questions=len(questions),
+            display_round=selected_round,
+            beliefs_json=json.dumps(beliefs),
+            correct_bin=selected_player.correct_bin,
+        )
+
+class Earnings(Page):
+    @staticmethod
+    def is_displayed(player):
+        return is_last_question_round(player)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        if 'selected_round' not in player.participant.vars:
+            import random as _random
+            rng = _random.Random(player.participant.code)
+            player.participant.vars['selected_round'] = rng.randint(1, len(player.session.config['questions']))
+            
+        selected_round = player.participant.vars['selected_round']
+        selected_player = player.in_round(selected_round)
+
+        r = json.loads(selected_player.beliefs) if selected_player.beliefs else [0]*len(json.loads(selected_player.bin_labels))
+        tokens_allocated = int(r[selected_player.correct_bin]) if selected_player.correct_bin >= 0 and selected_player.correct_bin < len(r) else 0
+
+        draw = selected_player.BLP_draw
+        score = selected_player.score
+        earnings = int(selected_player.earnings)
+            
+        task_earnings = earnings
+        total_earnings = task_earnings + C.PARTICIPATION_FEE
+
+        bin_labels = json.loads(selected_player.bin_labels)
+        correct_answer = bin_labels[selected_player.correct_bin] if selected_player.correct_bin >= 0 and selected_player.correct_bin < len(bin_labels) else "N/A"
+
+        return dict(
             selected_round=selected_round,
-            selected_title=selected_title,
-            selected_earnings=f"{selected_earnings:.2f}",
-            participation_fee=f"{participation_fee:.2f}",
-            grand_total=f"{grand_total:.2f}",
+            correct_answer=correct_answer,
+            num_tokens=selected_player.num_tokens,
+            tokens_allocated=tokens_allocated,
+            score=score,
+            draw=draw,
+            earnings=earnings,
+            task_earnings=task_earnings,
+            participation_fee=C.PARTICIPATION_FEE,
+            total_earnings=total_earnings,
+            tplural='' if tokens_allocated == 1 else 's',
+            splural='' if score == 1.0 else 's',
         )
 
 
@@ -486,10 +475,11 @@ def score_response(player: Player, response, draw):
 # ── PAGE SEQUENCE ──────────────────────────────────────────────────────────
 page_sequence = [
     Consent,
-    #Video,
+    Video,
     Instructions,
     Task_Intro,
     Beliefs,
-    ThankYou,
-    Payoff
+    SelectedRound,
+    Earnings,
+    ThankYou
 ]

@@ -1,0 +1,141 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block style %}
+<style>
+    .otree-body { max-width: 800px !important; }
+    
+    .payout-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .payout-header {
+        background: linear-gradient(135deg, #1f4e79, #2f6ea5);
+        color: white;
+        padding: 24px 32px;
+    }
+
+    .payout-body {
+        padding: 32px;
+        color: #2c3e50;
+        font-size: 1.1em;
+        line-height: 1.6;
+    }
+
+    .highlight-box {
+        background: #eaf4fb;
+        border-left: 5px solid #2979D0;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        color: #1a5276;
+    }
+
+    .summary-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 24px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.2em;
+        color: #1f4e79;
+        margin-top: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+    <div class="payout-card">
+        <!-- Header -->
+        <div class="payout-header">
+            <h2 style="margin: 0; font-weight: 700;">💰 Final Earnings</h2>
+        </div>
+
+        <!-- Body -->
+        <div class="payout-body">
+            <p>
+                Question <strong>{{ selected_round }}</strong> was randomly selected for payment.
+            </p>
+            <p>
+                The correct response for this question was: <strong>{{ correct_answer }}</strong>.
+            </p>
+
+            <div class="highlight-box">
+                {% if num_tokens > 1 %}
+                    <p>
+                        You allocated <b>{{ tokens_allocated }}</b> token{{ tplural }} to the correct response and earned <b>{{ score }}</b> point{{ splural }}.
+                    </p>
+                    <p>
+                        Your random draw this period is <b>{{ draw }}</b>.
+                    </p>
+                    
+                    <p style="margin-bottom: 0;">
+                    {% if draw <= score %}
+                        Since your random draw is less than or equal to your points score, you have earned <b>${{ earnings }}</b>.
+                    {% else %}
+                        Since your random draw is greater than your points score, you have earned <b>$0</b>.
+                    {% endif %}
+                    </p>
+                {% else %}
+                    <p>
+                    {% if tokens_allocated == 1 %}
+                        You allocated your token to the correct response.
+                    {% else %}
+                        You <b>did not</b> allocate your token to the correct response.
+                    {% endif %}
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        You have earned <b>${{ earnings }}</b>.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="summary-box">
+                <p style="margin-top: 0; font-weight: 700;">Total Breakdown:</p>
+                
+                <div class="summary-item">
+                    <span>Show-up fee:</span>
+                    <span>${{ participation_fee }}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Task earnings (selected round):</span>
+                    <span>${{ task_earnings }}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total earnings:</span>
+                    <span>${{ total_earnings }}</span>
+                </div>
+            </div>
+
+            <p style="margin-top: 24px; font-size: 0.95em; color: #555;">
+                The experiment is now completed. Please take your card to the payment window for payment.
+            </p>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        {% next_button %}
+    </div>
+    
+{% endblock %}
+
+{% block script %}
+{% endblock %}

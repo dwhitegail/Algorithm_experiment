@@ -475,11 +475,12 @@ def score_response(player: Player, response, draw):
 # ── PAGE SEQUENCE ──────────────────────────────────────────────────────────
 page_sequence = [
     Consent,
-    Video,
+    #Video,
     Instructions,
     Task_Intro,
     Beliefs,
+    ThankYou,
     SelectedRound,
-    Earnings,
-    ThankYou
+    Earnings
+
 ]

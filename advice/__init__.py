@@ -1304,4 +1304,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Consent, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Results]
+page_sequence = [Consent, Video, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Results]

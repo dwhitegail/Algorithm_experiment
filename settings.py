@@ -294,7 +294,12 @@ ROOMS = [
         display_name='lab',
         participant_label_file='_rooms/lab.txt',
         use_secure_urls=False
-    ),
+    ),    dict(
+        name='lab2',
+        display_name='lab 2',
+        participant_label_file='_rooms/lab.txt',
+        use_secure_urls=False
+    )
     # dict(
     #     name='econ101',
     #     display_name='Econ 101 class',

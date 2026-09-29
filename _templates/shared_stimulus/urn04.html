@@ -35,6 +35,72 @@
         font-size: 14px;
     }
 
+    .sample-note {
+        margin: 14px auto 0 auto;
+        max-width: 270px;
+        border: 1px solid #b8cfe3;
+        border-left: 5px solid #2979D0;
+        border-radius: 8px;
+        background-color: #f4f8fb;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .sample-note-title {
+        background-color: #2979D0;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 7px 10px;
+        letter-spacing: 0.3px;
+    }
+
+    .sample-note-body {
+        padding: 10px 12px 12px 12px;
+    }
+
+    .sample-note-label {
+        font-size: 13px;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+    }
+
+    .sample-note-counts {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .sample-note-counts .dot {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin-right: 5px;
+        vertical-align: -1px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .sample-note-section + .sample-note-section {
+        border-top: 1px dashed #b8cfe3;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .sample-note-label.current {
+        color: #2979D0;
+        font-weight: 700;
+    }
+
+    .dot.blue   { background-color: #4F9BFF; }
+    .dot.orange { background-color: #F47A21; }
+
+
+
     /*!*.urn {*!*/
     /*!*    width: 80px;*!*/
     /*!*    height: 110px;*!*/
@@ -121,7 +187,7 @@
 
 <div style="text-align: center; margin-bottom: 10px;">
     <h4><strong>What is the true percentage of blue balls in the Urn?</strong></h4>
-    <div style="font-size: 14px;">Sequence of 20 Draws from an Urn with 100 Balls</div>
+    <div style="font-size: 16px;"><strong>SAMPLE 2 - Sequence of 20 Draws from the SAME URN</strong></div>
     <div style="font-size: 14px; text-decoration: underline;">The Draws are with Replacement</div>
 </div>
 
@@ -134,7 +200,33 @@
         <div style="font-size: 20px; font-weight: bold; margin-top: 8px;">
             Total Balls in the Urn = 100
         </div>
+
+        <div class="sample-note">
+    <div class="sample-note-title">
+        SAME URN, TOTAL DRAWS
     </div>
+    <div class="sample-note-body">
+
+        <div class="sample-note-section">
+            <div class="sample-note-label">Sample 1 draw</div>
+            <div class="sample-note-counts">
+                <span><span class="dot blue"></span>10 blue</span>
+                <span><span class="dot orange"></span>10 orange</span>
+            </div>
+        </div>
+
+        <div class="sample-note-section">
+            <div class="sample-note-label current">Sample 2 draw (shown here)</div>
+            <div class="sample-note-counts">
+                <span><span class="dot blue"></span>14 blue</span>
+                <span><span class="dot orange"></span>6 orange</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
 
        <!-- Two side-by-side draw tables -->
     <div>

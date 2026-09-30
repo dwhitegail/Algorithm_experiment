@@ -4,7 +4,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1,
     participation_fee=10,
     doc="",
-    qualtrics_url="SURVEY URL HERE",
+    qualtrics_url="https://gsu.qualtrics.com/jfe/form/SV_cvey22rqpZ5DbnM",
 )
 
 PARTICIPANT_FIELDS = [

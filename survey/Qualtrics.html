@@ -1,0 +1,11 @@
+{{ block title }}
+    Qualtrics Redirect...
+{{ endblock }}
+
+{{ block content }}
+<p>Redirecting you to the survey. If nothing happens, <a href="{{ full_url_to_qualtrics }}">click here</a>.</p>
+
+<script>
+    window.location.href = "{{ full_url_to_qualtrics }}";
+</script>
+{{ endblock }}

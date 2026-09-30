@@ -4,6 +4,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1,
     participation_fee=10,
     doc="",
+    qualtrics_url="SURVEY URL HERE",
 )
 
 PARTICIPANT_FIELDS = [
@@ -271,6 +272,12 @@ SESSION_CONFIGS = [
            ]
         ],
     ),
+    dict(
+        name='survey',
+        display_name='Survey',
+        app_sequence=['survey'],
+        num_demo_participants=1,
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
@@ -321,7 +328,7 @@ SECRET_KEY = '4720801523770'
 
 INSTALLED_APPS = ['otree']
 
-DEBUG = False
+DEBUG = True
 
 
 # import os

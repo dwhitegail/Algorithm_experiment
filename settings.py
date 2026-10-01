@@ -134,7 +134,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_advice_session2',
         display_name='Human Advice Responses — Session 2',
-        app_sequence=['human_advice'],
+        app_sequence=['human_advice', 'survey'],
         num_demo_participants=1,
         questions=[
             # Weight 6-10
@@ -165,7 +165,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_advice_session3',
         display_name='Human Advice Responses — Session 3',
-        app_sequence=['human_advice'],
+        app_sequence=['human_advice', 'survey'],
         num_demo_participants=1,
         questions=[
             # Weight 11-15
@@ -195,20 +195,20 @@ SESSION_CONFIGS = [
 
 
 
-    dict(
-        name = "risk_piechart",
-        language = 'english',
-        display_name = 'Standard Risk',
-        num_demo_participants= 3,
-        app_sequence= ['risk'],
-        risk_sample_sizes= [2],
-        # # params format: [ qid, [[L#1,...,L#n] , [L$1,...,L$n]] , [[R#1,...,R#n] , [R$1,...,R$n]]],
-        # # 'params':   [ [ ['testq1', [[3, 7, 10], [11, 22, 33]], [[8, 2, 10], [5, 33, 25]]],
-        # #                ['testq2', [[5, 5, 10], [8, 15, 25]],  [[10, 1, 10],   [11, 22, 33]]] ] ]
-        risk_params = [
-           [
-               ['instructions_1', [[40, 0, 60], [5, 10, 15]], [[50, 40, 10], [5, 10, 15]]],
-               ['instructions_2', [[0, 50, 50, 0], [0, 6, 11, 21]], [[50, 0, 0, 50], [0, 6, 11, 21], [0, 0, 0, 1]]],
+    # dict(
+    #     name = "risk_piechart",
+    #     language = 'english',
+    #     display_name = 'Standard Risk',
+    #     num_demo_participants= 3,
+    #     app_sequence= ['risk'],
+    #     risk_sample_sizes= [2],
+    #     # # params format: [ qid, [[L#1,...,L#n] , [L$1,...,L$n]] , [[R#1,...,R#n] , [R$1,...,R$n]]],
+    #     # # 'params':   [ [ ['testq1', [[3, 7, 10], [11, 22, 33]], [[8, 2, 10], [5, 33, 25]]],
+    #     # #                ['testq2', [[5, 5, 10], [8, 15, 25]],  [[10, 1, 10],   [11, 22, 33]]] ] ]
+    #     risk_params = [
+    #        [
+    #            ['instructions_1', [[40, 0, 60], [5, 10, 15]], [[50, 40, 10], [5, 10, 15]]],
+    #            ['instructions_2', [[0, 50, 50, 0], [0, 6, 11, 21]], [[50, 0, 0, 50], [0, 6, 11, 21], [0, 0, 0, 1]]],
                # ['ls10_lr', [[50, 0, 50], [10, 30, 50]], [[10, 80, 10], [10, 30, 50]]],
                # ['ls13', [[70, 0, 30], [10, 30, 50]], [[50, 40, 10], [10, 30, 50]]],
                # ['ls13i_lr', [[55, 30, 15], [10, 30, 50]], [[65, 10, 25], [10, 30, 50]]],

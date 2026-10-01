@@ -102,7 +102,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_advice_session1',
         display_name='Human Advice Responses — Session 1',
-        app_sequence=['human_advice'],
+        app_sequence=['human_advice' , 'survey'],
         num_demo_participants=1,
         questions=[
             # Weight 1-5

@@ -5,8 +5,8 @@ from otree.api import *
 doc = """
 Human Advice Collection Experiment
 Collects belief distributions from subjects to use as human advice
-in the main algorithmic aversion experiment.
-No performance-based payment — flat $40 participation fee.
+in the main algorithmic experiment and as a control group measure.
+Performance-based payment and flat $10 participation fee.
 """
 
 

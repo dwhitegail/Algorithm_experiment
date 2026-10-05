@@ -271,7 +271,12 @@ class Beliefs(Page):
         player.earnings = earnings
         player.accuracy = accuracy
         player.efficiency = efficiency
-        player.payoff += earnings
+        
+        # Only add to payoff if this round was selected for payment
+        if player.round_number == player.participant.vars.get('selected_round'):
+            player.payoff = earnings
+        else:
+            player.payoff = 0
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -340,11 +345,6 @@ class SelectedRound(Page):
         questions = player.session.config['questions']
         num_rounds = len(questions)
 
-        if 'selected_round' not in player.participant.vars:
-            import random as _random
-            rng = _random.Random(player.participant.code)
-            player.participant.vars['selected_round'] = rng.randint(1, num_rounds)
-            
         selected_round = player.participant.vars['selected_round']
         selected_player = player.in_round(selected_round)
 
@@ -396,11 +396,6 @@ class Earnings(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        if 'selected_round' not in player.participant.vars:
-            import random as _random
-            rng = _random.Random(player.participant.code)
-            player.participant.vars['selected_round'] = rng.randint(1, len(player.session.config['questions']))
-            
         selected_round = player.participant.vars['selected_round']
         selected_player = player.in_round(selected_round)
 
@@ -437,8 +432,16 @@ class Earnings(Page):
 
 def creating_session(subsession: Subsession):
     questions = subsession.session.config['questions']
+    num_rounds = len(questions)
 
-    if subsession.round_number <= len(questions):
+    if subsession.round_number == 1:
+        for p in subsession.get_players():
+            # Use participant code as seed for deterministic random selection
+            import random as _random
+            rng = _random.Random(p.participant.code)
+            p.participant.vars['selected_round'] = rng.randint(1, num_rounds)
+
+    if subsession.round_number <= num_rounds:
         for p in subsession.get_players():
             question_data = questions[subsession.round_number - 1]
             p.qid        = str(question_data[0])

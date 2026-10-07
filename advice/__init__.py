@@ -157,6 +157,7 @@ class Pre_beliefs(Page):
             color=json.loads(player.color),
             bin_labels=json.loads(player.bin_labels),
             display_round=1,  # ← always show "Round 1" for pre-beliefs
+            endowment=f"{C.ENDOWMENT:.0f}",
         )
 
 class Preview_Advice(Page):
@@ -417,6 +418,7 @@ class Post_beliefs(Page):
             color=json.loads(player.color),
             bin_labels=json.loads(player.bin_labels),
             display_round=2,  # ← always show "Round 2" for post-beliefs
+            endowment=f"{C.ENDOWMENT:.0f}",
         )
 
 

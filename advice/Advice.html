@@ -1,9 +1,19 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 
+{% block title %}{% endblock %}
+
 {% block content %}
 
-    {% include advice_path %}
+    <!-- Label telling subject which question this advice is for -->
+    <div style="background: #1a1a2e; color: #D4AF37; border-radius: 8px;
+                padding: 12px 20px; margin-bottom: 20px; text-align: center;">
+        <strong style="font-size: 1.1em;">
+            📋 Advice for: {{ advice_label }}
+        </strong>
+    </div>
+
+    {% include advice_path with qid=qid al_advice_source=al_advice_source song_title=song_title %}
 
     {% next_button %}
 

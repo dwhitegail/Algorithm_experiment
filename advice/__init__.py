@@ -178,7 +178,7 @@ class Preview_Advice(Page):
 
 
             )
-        elif player.treatment == 'human':
+        else:
             advice_type = "Human Advice"
             advice_description = (
                 "This advice is based on the aggregated average "
@@ -186,14 +186,13 @@ class Preview_Advice(Page):
                 "in a previous study."
             )
 
-        else:
-            raise ValueError(f"Unexpected treatment: {player.treatment}")
-            # treatment == 'none'
-            advice_type = "No Advice"
-            advice_description = (
-                "You have not been selected to receive advice for this experiment. "
-                "Please proceed to update your beliefs based on your own judgment."
-            )
+
+            # # treatment == 'none'
+            # advice_type = "No Advice"
+            # advice_description = (
+            #     "You have not been selected to receive advice for this experiment. "
+            #     "Please proceed to update your beliefs based on your own judgment."
+            # )
 
         return dict(
             advice_type=advice_type,
@@ -259,16 +258,37 @@ class Mpl(Page):
 class Advice(Page):
     form_model = 'player'
 
-    def is_displayed(player):
-        # Show advice on same rounds as MPL if purchased
-        mpl_rounds = [2, 6, 10, 14]
-        # Only show if advice was purchased AND treatment is NOT 'none'
-        return (
-            player.round_number in mpl_rounds
-            and player.advice_purchased
-            #and player.treatment != 'none'
+    # def is_displayed(player):
+    #     # Show advice on same rounds as MPL if purchased
+    #     mpl_rounds = [2, 6, 10, 14]
+    #     # Only show if advice was purchased AND treatment is NOT 'none'
+    #     return (
+    #         player.round_number in mpl_rounds
+    #         and player.advice_purchased
+    #         #and player.treatment != 'none'
+    #
+    #     )
 
-        )
+    @staticmethod
+    def is_displayed(player):
+        # Show advice on MPL round AND the round immediately after
+        # BUT only if advice was purchased on the MPL round of this task
+        advice_rounds = {
+            2:  2,   # weight task MPL round
+            3:  2,   # weight task carry-over → check round 2 for purchase
+            6:  6,   # height task MPL round
+            7:  6,   # height task carry-over → check round 6
+            10: 10,  # urn task MPL round
+            11: 10,  # urn task carry-over → check round 10
+            14: 14,  # song task MPL round
+            15: 14,  # song task carry-over → check round 14
+        }
+        r = player.round_number
+        if r not in advice_rounds:
+            return False
+        mpl_round = advice_rounds[r]
+        purchased = player.in_round(mpl_round).advice_purchased
+        return purchased
 
 
     @staticmethod
@@ -339,12 +359,26 @@ class Advice(Page):
 
         advice_path = f"advice/intervention/{advice_qid}_{suffix}.html"
 
+        # ── Label so subject knows which question this advice is for ──
+        task_labels = {
+            2: 'Weight Task — Photo 1',
+            3: 'Weight Task — Photo 2',
+            6: 'Height Task — Photo 1',
+            7: 'Height Task — Photo 2',
+            10: 'Urns Task — Sample 1',
+            11: 'Urns Task — Sample 2',
+            14: 'Song Ranking — Song 1',
+            15: 'Song Ranking — Song 2',
+        }
+        advice_label = task_labels.get(player.round_number, '')
+
         return dict(
             advice_path=advice_path,
             treatment=player.treatment,
             al_advice_source=player.al_advice_source,  # ← pass index to template
             qid=player.qid,
             song_title=song_title,
+            advice_label=advice_label,
         )
 
 
@@ -1051,8 +1085,8 @@ class Results(Page):
         import random as _random
 
         # All rounds that have actual belief reports
-        pre_belief_rounds = [1, 2, 3, 4, 7, 8]
-        post_belief_rounds = [1, 2, 5, 6, 9, 10]
+        pre_belief_rounds = [1, 2, 5, 6, 9, 10, 13, 14]
+        post_belief_rounds = [3, 4, 7, 8, 11, 12, 15, 16]
 
         # Build list of all valid (round, report_type) pairs
         all_reports = []
@@ -1154,12 +1188,24 @@ def creating_session(subsession: Subsession):
     ]
     urn_pairs = [pair for pair in urn_pairs if len(pair) == 2]
 
-    song_questions = [q for q in questions if q[0].startswith('song')]
-    song_pairs = [
-        song_questions[i:i + 2]
-        for i in range(0, len(song_questions) - 1, 2)
+    song_pair_ids = [
+        ['song01', 'song02'], ['song03', 'song04'], ['song05', 'song06'],
+        ['song07', 'song08'], ['song09', 'song10'], ['song11', 'song12'],
+        ['song13', 'song14'], ['song15', 'song16'],
     ]
-    song_pairs = [pair for pair in song_pairs if len(pair) == 2]
+    song_pairs = []
+    for pair_ids in song_pair_ids:
+        pair = [q for q in questions if q[0] in pair_ids]
+        if len(pair) == 2:
+            pair.sort(key=lambda q: q[0])
+            song_pairs.append(pair)
+
+    # song_questions = [q for q in questions if q[0].startswith('song')]
+    # song_pairs = [
+    #     song_questions[i:i + 2]
+    #     for i in range(0, len(song_questions) - 1, 2)
+    # ]
+    # song_pairs = [pair for pair in song_pairs if len(pair) == 2]
 
     for p in subsession.get_players():
 
@@ -1178,12 +1224,20 @@ def creating_session(subsession: Subsession):
             p.participant.vars['chosen_urn2']   = chosen_urn_pair[1][0]
             p.participant.vars['chosen_song1']  = chosen_song_pair[0][0]
             p.participant.vars['chosen_song2']  = chosen_song_pair[1][0]
-        else:
-            # In rounds 2-10, read from participant.vars set in round 1
-            pass    # participant.vars already set — just read below
+        # else:
+        #     # In rounds 2-10, read from participant.vars set in round 1
+        #     pass    # participant.vars already set — just read below
+        #
+        # # ── Build round-to-qid map from participant.vars ───────────
+        # # (safe to read in all rounds since round 1 always runs first)
 
-        # ── Build round-to-qid map from participant.vars ───────────
-        # (safe to read in all rounds since round 1 always runs first)
+            # ── Treatment: algorithmic or human only ───────────────
+            p.treatment = random.choice(['algorithmic', 'human'])
+            p.al_advice_source = random.randint(0, 2)
+
+        else:
+            p.treatment = p.in_round(1).treatment
+            p.al_advice_source = p.in_round(1).al_advice_source
         round_to_qid = {
             1: p.participant.vars['chosen_weight1'],
             2: p.participant.vars['chosen_weight2'],
@@ -1219,13 +1273,13 @@ def creating_session(subsession: Subsession):
         p.pre_BLP_draw  = round(random.uniform(0, 100), 2)
         p.post_BLP_draw = round(random.uniform(0, 100), 2)
 
-        # ── Treatment assignment ───────────────────────────────────
-        if subsession.round_number == 1:
-            p.treatment        = random.choice(['algorithmic', 'human'])
-            p.al_advice_source = random.randint(0, 2)
-        else:
-            p.treatment        = p.in_round(1).treatment
-            p.al_advice_source = p.in_round(1).al_advice_source
+        # # ── Treatment assignment ───────────────────────────────────
+        # if subsession.round_number == 1:
+        #     p.treatment        = random.choice(['algorithmic', 'human'])
+        #     p.al_advice_source = random.randint(0, 2)
+        # else:
+        #     p.treatment        = p.in_round(1).treatment
+        #     p.al_advice_source = p.in_round(1).al_advice_source
 
         # ── Defaults for none treatment ────────────────────────────
         #if p.treatment == 'none':
@@ -1261,7 +1315,7 @@ def creating_session(subsession: Subsession):
 def score_response(player: Player, response, draw):
     # response = json.loads(player.pre_beliefs)
     num_bins = len(response)
-    for i in range(len(response)):
+    for i in range(num_bins):
         response[i] = response[i] / player.num_tokens
     print(response)
 

@@ -190,7 +190,7 @@ class Task_Intro(Page):
                     "in the sample is not necessarily the same as in the full urn."
                 ),
                 'Expectations': [
-                    "You will asked <strong>2 questions</strong> regarding the percentage of blue balls in relation to the same urn "
+                    "You will asked <strong>2 questions</strong> regarding the percentage of blue balls in relation to the <strong>SAME URN</strong>. "
                     "You will be shown <strong>2 separate samples</strong> of 20 draws each.",
                     "After each sample, allocate your <strong>100 tokens</strong> across <strong>10 bins</strong> to reflect "
                     "your beliefs about the <strong>percentage of blue balls in the full urn</strong>.",

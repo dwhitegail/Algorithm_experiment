@@ -329,12 +329,12 @@ SECRET_KEY = '4720801523770'
 
 INSTALLED_APPS = ['otree']
 
-DEBUG = False
+DEBUG = True
 
 
 # import os
 # import dj_database_url
-
+#
 # if os.environ.get('DATABASE_URL'):
 #     DATABASES = {
 #         'default': dj_database_url.config(

@@ -2,6 +2,7 @@ from otree.api import *
 import json
 import csv
 import random
+import settings
 
 
 doc = """
@@ -118,6 +119,7 @@ class Instructions(Page):
             num_tokens=player.num_tokens,
             participation_fee=f"{C.PARTICIPATION_FEE:.0f}",
             endowment=f"{C.ENDOWMENT:.0f}",
+            DEBUG=settings.DEBUG,
             max_earnings=C.MAX_EARNINGS_PER_REPORT
         )
 
@@ -143,8 +145,21 @@ class Pre_beliefs(Page):
         player.pre_accuracy = accuracy
         player.pre_efficiency = efficiency
 
-        # ── Add pre_beliefs earnings to player.payoff ──────────────
-        player.payoff += earnings  # ← oTree accumulates this automatically
+        # ── Add earnings to player.payoff ONLY if selected ─────────────────
+        if player.round_number == player.participant.vars.get('selected_round'):
+            player.payoff = earnings
+        else:
+            player.payoff = 0
+
+        # If this is the last round, add the remaining endowment
+        if player.round_number == C.NUM_ROUNDS:
+            total_advice_cost = 0
+            for r in range(1, C.NUM_ROUNDS + 1):
+                p_r = player.in_round(r)
+                if p_r.advice_purchased:
+                    total_advice_cost += p_r.selected_value
+            endowment_remaining = max(C.ENDOWMENT - total_advice_cost, 0)
+            player.payoff += endowment_remaining
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -158,6 +173,7 @@ class Pre_beliefs(Page):
             bin_labels=json.loads(player.bin_labels),
             display_round=1,  # ← always show "Round 1" for pre-beliefs
             endowment=f"{C.ENDOWMENT:.0f}",
+            DEBUG=settings.DEBUG,
         )
 
 class Preview_Advice(Page):
@@ -404,8 +420,21 @@ class Post_beliefs(Page):
         # print(player.response)
         # print(json.loads(player.response))
 
-        # ── Add post_beliefs earnings to player.payoff ─────────────
-        player.payoff += earnings  # ← oTree accumulates this automatically
+        # ── Add earnings to player.payoff ONLY if selected ─────────────────
+        if player.round_number == player.participant.vars.get('selected_round'):
+            player.payoff = earnings
+        else:
+            player.payoff = 0
+
+        # If this is the last round, add the remaining endowment
+        if player.round_number == C.NUM_ROUNDS:
+            total_advice_cost = 0
+            for r in range(1, C.NUM_ROUNDS + 1):
+                p_r = player.in_round(r)
+                if p_r.advice_purchased:
+                    total_advice_cost += p_r.selected_value
+            endowment_remaining = max(C.ENDOWMENT - total_advice_cost, 0)
+            player.payoff += endowment_remaining
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -419,6 +448,7 @@ class Post_beliefs(Page):
             bin_labels=json.loads(player.bin_labels),
             display_round=2,  # ← always show "Round 2" for post-beliefs
             endowment=f"{C.ENDOWMENT:.0f}",
+            DEBUG=settings.DEBUG,
         )
 
 
@@ -687,491 +717,82 @@ class Reveal(Page):
             reveal_items=reveal_items,
         )
 
-class Results(Page):
+
+class SelectedRound(Page):
+    template_name = 'advice/SelectedRound.html'
+
     @staticmethod
     def is_displayed(player):
         return player.round_number == C.NUM_ROUNDS
 
     @staticmethod
     def vars_for_template(player: Player):
-        num_rounds = C.NUM_ROUNDS
-        chosen_qids = [
-            player.participant.vars['chosen_weight1'],
-            player.participant.vars['chosen_weight2'],
-            player.participant.vars['chosen_weight1'], #post
-            player.participant.vars['chosen_weight2'], #post
-            player.participant.vars['chosen_height1'],
-            player.participant.vars['chosen_height2'],
-            player.participant.vars['chosen_height1'], #post
-            player.participant.vars['chosen_height2'], #post
-            player.participant.vars['chosen_urn1'],
-            player.participant.vars['chosen_urn2'],
-            player.participant.vars['chosen_urn1'],  # post
-            player.participant.vars['chosen_urn2'],  # post
-            player.participant.vars['chosen_song1'],
-            player.participant.vars['chosen_song2'],
-            player.participant.vars['chosen_song1'],  # post
-            player.participant.vars['chosen_song2'],  # post
-        ]
+        selected_round = player.participant.vars['selected_round']
+        selected_player = player.in_round(selected_round)
 
-        # # ── Question metadata map ──────────────────────────────────────
-        # question_meta = {
-        #     'height01': {
-        #         'title': 'Estimation Task — Height 1',
-        #         'question': 'Please observe the photo and estimate the height of this person.',
-        #         'true_value': "< 5 feet",
-        #
-        #     },
-        #     'weight01': {
-        #         'title': 'Estimation Task — Weight 1',
-        #         'question': 'Estimate the weight of this person in the photograph.',
-        #         'true_value': '170–179 lbs',
-        #     },
-        #     'song01': {
-        #         'title': 'Estimation Task — Song 1',
-        #         'question': 'Please estimate the Billboard Hot 100 rank of this song.',
-        #         'true_value': 'Position 8',
-        #     },
-        #     'song02': {
-        #         'title': 'Estimation Task — Song 2',
-        #         'question': 'Please estimate the Billboard Hot 100 rank of this song.',
-        #         'true_value': 'Position 2',
-        #     },
-        #     'urn01': {
-        #         'title': 'Estimation Task — Urns_Period 1',
-        #         'question': 'Please estimate the fraction of blue balls in the urn.',
-        #         'true_value': '60% of the balls are blue',
-        #     },
-        #     'urn02': {
-        #         'title': 'Estimation Task — Urns_Period 2',
-        #         'question': 'Please estimate the fraction of blue balls in the urn.',
-        #         'true_value': '60% of the balls are blue',
-        #     },
-        # }
-
-        question_meta = {}
-
-        # Weight questions
-        weight_true_values = {
-            'weight01': '170–179 lbs', 'weight02': '<120 lbs',
-            'weight03': '120–129 lbs', 'weight04': '140–149 lbs',
-            'weight05': '≥200 lbs', 'weight06': '≥200 lbs',
-            'weight07': '170–179 lbs', 'weight08': '130–139 lbs',
-            'weight09': '150–159 lbs', 'weight10': '170–179 lbs',
-            'weight11': '≥200 lbs', 'weight12': '160–169 lbs',
-            'weight13': '160–169 lbs', 'weight14': '160–169 lbs',
-            'weight15': '160–169 lbs',
-        }
-        for qid, tv in weight_true_values.items():
-            question_meta[qid] = {
-                'title': 'Weight Task',
-                'question': 'Estimate the weight of this person in the photograph.',
-                'true_value': tv,
-            }
-
-        # Height questions
-        height_true_values = {
-            'height01': "< 5'0\"", 'height02': "5'9\"–5'11\"",
-            'height03': "5'3\"–5'5\"", 'height04': "5'3\"–5'5\"",
-            'height05': "5'6\"–5'8\"", 'height06': "5'6\"–5'8\"",
-            'height07': "5'6\"–5'8\"", 'height08': "5'9\"–5'11\"",
-            'height09': "6'0\"–6'2\"", 'height10': "6'0\"–6'2\"",
-            'height11': "< 5'0\"", 'height12': "6'0\"–6'2\"",
-            'height13': "6'0\"–6'2\"", 'height14': "6'3\"–6'5\"",
-            'height15': "5'6\"–5'8\"",
-        }
-        for qid, tv in height_true_values.items():
-            question_meta[qid] = {
-                'title': 'Height Task',
-                'question': 'Please observe the photo and estimate the height of this person.',
-                'true_value': tv,
-            }
-
-        # Urn questions
-        urn_true_values = {
-            'urn01': '51%–60% blue', 'urn02': '51%–60% blue',
-            'urn03': '31%–40% blue', 'urn04': '31%–40% blue',
-            'urn05': '21%–30% blue', 'urn06': '21%–30% blue',
-        }
-        for qid, tv in urn_true_values.items():
-            question_meta[qid] = {
-                'title': 'Urns Task',
-                'question': 'Please estimate the percentage of blue balls in the urn.',
-                'true_value': tv,
-            }
-
-        # Song questions
-        song_true_values = {
-            'song01': 'Position 8', 'song02': 'Position 2',
-            'song03': 'Position 6', 'song04': 'Position 1',
-            'song05': 'Position 7', 'song06': 'Position 9',
-            'song07': 'Position 10', 'song08': 'Position 3',
-            'song09': 'Position 5', 'song10': 'Position 10',
-            'song11': 'Position 10', 'song12': 'Position 4',
-            'song13': 'Position 8', 'song14': 'Position 7',
-            'song15': 'Position 10', 'song16': 'Position 10',
-        }
-        for qid, tv in song_true_values.items():
-            question_meta[qid] = {
-                'title': 'Song Ranking Task',
-                'question': 'Please estimate the Billboard Hot 100 rank of this song.',
-                'true_value': tv,
-            }
-
-        def get_bins(belief_str, labels):
-            if not belief_str:
-                return []
-            tokens = json.loads(belief_str)
-            return [
-                {'label': labels[j], 'tokens': tokens[j]}
-                for j in range(len(labels))
-                if j < len(tokens) and tokens[j] > 0
-            ]
-
-        # ── Build per-task results ─────────────────────────────────────
-        task_results = []
-
-        # ── Task 1: Weight (pre=round1, post=round1) ──────────────────
-        p_pre = player.in_round(1)
-        p_post = player.in_round(1)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Weight Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Weight Task',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-
-        # ── Task 2: Height (pre=round2, post=round2) ──────────────────
-        p_pre = player.in_round(2)
-        p_post = player.in_round(2)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Height Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Height Task',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-
-        # ── Task 3: Urn Sample 1 (pre=round3, post=round5) ────────────
-        p_pre = player.in_round(3)
-        p_post = player.in_round(5)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Urns Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Urns Task — Sample 1',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-
-        # ── Task 4: Urn Sample 2 (pre=round4, post=round6) ────────────
-        p_pre = player.in_round(4)
-        p_post = player.in_round(6)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Urns Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Urns Task — Sample 2',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-
-        # ── Task 5: Song 1 (pre=round7, post=round9) ──────────────────
-        p_pre = player.in_round(7)
-        p_post = player.in_round(9)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Song Ranking Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Song Ranking — Song 1',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-
-        # ── Task 6: Song 2 (pre=round8, post=round10) ─────────────────
-        p_pre = player.in_round(8)
-        p_post = player.in_round(10)
-        labels = json.loads(p_pre.bin_labels)
-        meta = question_meta.get(p_pre.qid, {'title': 'Song Ranking Task', 'question': '', 'true_value': 'N/A'})
-        task_results.append({
-            'title': 'Song Ranking — Song 2',
-            'question': meta['question'],
-            'true_value': meta['true_value'],
-            'pre_earnings': f"{p_pre.pre_earnings:.2f}",
-            'post_earnings': f"{p_post.post_earnings:.2f}",
-            'pre_bins': get_bins(p_pre.field_maybe_none('pre_beliefs'), labels),
-            'post_bins': get_bins(p_post.field_maybe_none('post_beliefs'), labels),
-        })
-        # for i in range(num_rounds):
-        #     p = player.in_round(i + 1)
-        #     qid = p.qid
-        #     meta = question_meta.get(qid, {
-        #         'title': f'Task {i + 1}',
-        #         'question': '',
-        #         'true_value': 'N/A',
-        #     })
-        #
-        #     # Parse pre beliefs tokens
-        #     pre_bins = []
-        #     post_bins = []
-        #     labels = json.loads(p.bin_labels)
-
-            # if p.pre_beliefs:
-            #     pre_tokens = json.loads(p.pre_beliefs)
-            #     for j, label in enumerate(labels):
-            #         tokens = pre_tokens[j] if j < len(pre_tokens) else 0
-            #         if tokens > 0:
-            #             pre_bins.append({
-            #                 'label': label,
-            #                 'tokens': tokens
-            #             })
-            #
-            # if p.post_beliefs:
-            #     post_tokens = json.loads(p.post_beliefs)
-            #     for j, label in enumerate(labels):
-            #         tokens = post_tokens[j] if j < len(post_tokens) else 0
-            #         if tokens > 0:  # ← only include if tokens > 0
-            #             post_bins.append({
-            #                 'label': label,
-            #                 'tokens': tokens
-            #
-            #             })
-
-            # # In the task_results loop — replace the post_beliefs section:
-            # if p.field_maybe_none('post_beliefs'):
-            #     post_tokens = json.loads(p.post_beliefs)
-            #     for j, label in enumerate(labels):
-            #         tokens = post_tokens[j] if j < len(post_tokens) else 0
-            #         if tokens > 0:
-            #             post_bins.append({'label': label, 'tokens': tokens})
-            #
-            # # Same for pre_beliefs:
-            # if p.field_maybe_none('pre_beliefs'):
-            #     pre_tokens = json.loads(p.pre_beliefs)
-            #     for j, label in enumerate(labels):
-            #         tokens = pre_tokens[j] if j < len(pre_tokens) else 0
-            #         if tokens > 0:
-            #             pre_bins.append({'label': label, 'tokens': tokens})
-
-            # task_results.append({
-            #     'title': meta['title'],
-            #     'question': meta['question'],
-            #     'true_value': meta['true_value'],
-            #     'pre_earnings': f"{p.pre_earnings:.2f}",
-            #     'post_earnings': f"{p.post_earnings:.2f}",
-            #     'pre_bins': pre_bins,
-            #     'post_bins': post_bins,
-            # })
-
-        # ── Performance table ──────────────────────────────────────────
-        s = f"""
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col" class="col-1 text-center">Question</th>
-                        <th scope="col" class="text-center">Report</th>
-                        <th scope="col" class="col-1 text-center">% Tokens on Correct Bin</th>
-                        <th scope="col" class="col-1 text-center">Earnings</th>
-                        <th scope="col" class="col-1 text-center">Efficiency</th>
-                    </tr>
-                </thead>
-        """
-        sum_pre_earnings = 0
-        sum_post_earnings = 0
-        sum_efficiency = 0
-
-        # Each tuple: (pre_round, post_round, display_label)
-        task_pairs = [
-            (1, 3, 'Weight Task — Photo 1'),
-            (2, 4, 'Weight Task — Photo 2'),
-            (5, 7, 'Height Task — Photo 1'),
-            (6, 8, 'Height Task — Photo 2'),
-            (9, 11, 'Urns Task — Sample 1'),
-            (10, 12, 'Urns Task — Sample 2'),
-            (13, 15, 'Song Ranking — Song 1'),
-            (14, 16, 'Song Ranking — Song 2'),
-        ]
-
-        for pre_r, post_r, label in task_pairs:
-            p_pre = player.in_round(pre_r)
-            p_post = player.in_round(post_r)
-
-            pre_acc = p_pre.pre_accuracy
-            pre_earn = p_pre.pre_earnings
-            pre_eff = p_pre.pre_efficiency
-            pre_points = round(pre_acc * player.num_tokens, 1)
-            sum_pre_earnings += pre_earn
-            sum_efficiency += pre_eff
-
-        # for i in range(num_rounds):
-        #     p = player.in_round(i+1)
-        #
-        #     # Get descriptive label for this question
-        #     q_label = question_meta.get(p.qid, {}).get('title', p.qid)
-        #     #q_label = question_meta.get(p.qid, p.qid)
-
-            # # ── Pre beliefs row ──────────────────────────────────
-            # pre_acc = p.pre_accuracy
-            # pre_earn = p.pre_earnings
-            # pre_eff = p.pre_efficiency
-            # pre_points = round(pre_acc * player.num_tokens, 1)  # ← tokens earned
-            # sum_pre_earnings += pre_earn
-            # sum_efficiency += pre_eff
-
-            s += "<tr>"
-            s += f"    <td class='text-center'>{label}</td>"
-            s += f"    <td class='text-center'>Report 1 (Before advice)</td>"
-            s += f"    <td class='text-center'>{pre_points} pts</td>"
-            #s += f"    <td class='text-center'>{round(pre_acc * 100, 2)}%</td>"
-            s += f"    <td class='text-center'>${round(pre_earn, 2)}</td>"
-            s += f"    <td class='text-center'>{round(pre_eff, 4)}</td>"
-            s += "</tr>"
-
-            # # ── Post beliefs row ─────────────────────────────────
-            # post_acc = p.post_accuracy
-            # post_earn = p.post_earnings
-            # post_eff = p.post_efficiency
-            # post_points = round(post_acc * player.num_tokens, 1)  # ← tokens earned
-            # sum_post_earnings += post_earn
-            # sum_efficiency += post_eff
-
-            post_acc = p_post.post_accuracy
-            post_earn = p_post.post_earnings
-            post_eff = p_post.post_efficiency
-            post_points = round(post_acc * player.num_tokens, 1)
-            sum_post_earnings += post_earn
-            sum_efficiency += post_eff
-
-            s += "<tr class='table-light'>"
-            s += f"    <td class='text-center'>{label}</td>"
-            s += f"    <td class='text-center'>Report 2 (After advice)</td>"
-            s += f"    <td class='text-center'>{post_points} pts</td>"
-            #s += f"    <td class='text-center'>{round(post_acc * 100, 2)}%</td>"
-            s += f"    <td class='text-center'>${round(post_earn, 2)}</td>"
-            s += f"    <td class='text-center'>{round(post_eff, 4)}</td>"
-            s += "</tr>"
-
-        total_reports = 12
-        sum_earnings = sum_pre_earnings + sum_post_earnings
-        avg_efficiency = sum_efficiency / total_reports if total_reports > 0 else 0
-        avg_earnings = sum_earnings / total_reports if total_reports > 0 else 0
-        avg_accuracy = (sum_efficiency * (player.alpha + player.beta)) / total_reports if total_reports > 0 else 0
-
-        s += "<tr class='table-secondary'>"
-        s += "    <td class='text-center' colspan='2'><strong>TOTAL</strong></td>"
-        s += f"   <td class='text-center'>—</td>"
-        s += f"   <td class='text-center'><strong>${round(sum_earnings, 2)}</strong></td>"
-        s += f"   <td class='text-center'>{round(avg_efficiency, 4)}</td>"
-        s += "</tr>"
-        s += "</table>"
-
-        # ── Random payment selection ───────────────────────────────────────────
-        import random as _random
-
-        # All rounds that have actual belief reports
-        pre_belief_rounds = [1, 2, 5, 6, 9, 10, 13, 14]
-        post_belief_rounds = [3, 4, 7, 8, 11, 12, 15, 16]
-
-        # Build list of all valid (round, report_type) pairs
-        all_reports = []
-        for r in pre_belief_rounds:
-            p_r = player.in_round(r)
-            if p_r.field_maybe_none('pre_beliefs'):
-                all_reports.append({
-                    'round': r,
-                    'type': 'pre',
-                    'earnings': p_r.pre_earnings,
-                    'qid': p_r.qid,
-                })
-
-        for r in post_belief_rounds:
-            p_r = player.in_round(r)
-            if p_r.field_maybe_none('post_beliefs'):
-                all_reports.append({
-                    'round': r,
-                    'type': 'post',
-                    'earnings': p_r.post_earnings,
-                    'qid': p_r.qid,
-                })
-
-        # Use participant code as seed for reproducibility
-        rng = _random.Random(player.participant.code)
-        selected_report = rng.choice(all_reports)
-        selected_earnings = selected_report['earnings']
-        selected_label = (
-            f"Round {selected_report['round']} — "
-            f"{'Report 1 (Before Advice)' if selected_report['type'] == 'pre' else 'Report 2 (After Advice)'} — "
-            f"{selected_report['qid']}"
-        )
-
-        # ── Payment summary ────────────────────────────────────────────
-        participation_fee = C.PARTICIPATION_FEE
-        endowment = C.ENDOWMENT
-
-        # Build per-round advice cost breakdown
-        advice_breakdown = []
-
-        # Sum advice costs across all rounds
-        total_advice_cost = 0
-        for i in range(1, num_rounds + 1):
-            p = player.in_round(i)
-            if p.advice_purchased and p.treatment != 'none':
-                cost = p.selected_value
-                total_advice_cost += cost
-                advice_breakdown.append(
-                    f"Round {i}: -${cost:.2f}"
-                )
-
-                #total_advice_cost += p.selected_value  # already stored as dollar amount
-
-        endowment_remaining = max(round(endowment - total_advice_cost, 2), 0)
-        total_task_earnings = round(sum_earnings, 2)
-
-        # Use oTree's built-in payoff accumulation
-        participant_payoff = float(player.participant.payoff)
-        grand_total = round(
-            participant_payoff + participation_fee + endowment_remaining, 2
-        )
-
-        # ── Grand total calculation ────────────────────────────────────
-        endowment_remaining = max(round(endowment - total_advice_cost, 2), 0)
-        grand_total = round(
-            selected_earnings + participation_fee + endowment_remaining, 2
-        )
+        is_pre = selected_round in [1, 2, 5, 6, 9, 10, 13, 14]
+        beliefs_str = selected_player.pre_beliefs if is_pre else selected_player.post_beliefs
+        beliefs = json.loads(beliefs_str) if beliefs_str else []
 
         return dict(
-            my_table=s,
-            participation_fee=f"{participation_fee:.2f}",
-            task_results=task_results,
-            endowment=f"{endowment:.2f}",
-            total_advice_cost=f"{total_advice_cost:.2f}",
-            advice_purchased_any=total_advice_cost > 0,
-            advice_breakdown=advice_breakdown,  # ← new
-            endowment_remaining=f"{endowment_remaining:.2f}",
-            total_task_earnings=f"{total_task_earnings:.2f}",
-            grand_total=f"{grand_total:.2f}",
-            total_pre_earnings=f"{sum_pre_earnings:.2f}",
-            total_post_earnings=f"{sum_post_earnings:.2f}",
-            selected_report_label=selected_label,
-            selected_earnings=f"{selected_earnings:.2f}",
+            display_round=selected_round,
+            total_questions=C.NUM_ROUNDS,
+            stimulus_path=f"shared_stimulus/{selected_player.qid}.html",
+            bin_labels=json.loads(selected_player.bin_labels),
+            correct_bin=selected_player.correct_bin,
+            beliefs_json=json.dumps(beliefs),
+            num_tokens=selected_player.num_tokens,
+            alpha=selected_player.alpha,
+            beta=selected_player.beta,
+            endowment=f"{C.ENDOWMENT:.0f}",
+        )
+
+class Payoff(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        selected_round = player.participant.vars['selected_round']
+        selected_player = player.in_round(selected_round)
+
+        is_pre = selected_round in [1, 2, 5, 6, 9, 10, 13, 14]
+        beliefs_str = selected_player.pre_beliefs if is_pre else selected_player.post_beliefs
+        beliefs = json.loads(beliefs_str) if beliefs_str else [0] * 10
+        
+        tokens_allocated = int(beliefs[selected_player.correct_bin]) if selected_player.correct_bin >= 0 else 0
+        score = selected_player.pre_score if is_pre else selected_player.post_score
+        draw = selected_player.pre_BLP_draw if is_pre else selected_player.post_BLP_draw
+        earnings = int(selected_player.pre_earnings if is_pre else selected_player.post_earnings)
+
+        # Advice costs
+        total_advice_cost = 0
+        for r in range(1, C.NUM_ROUNDS + 1):
+            p = player.in_round(r)
+            if p.advice_purchased:
+                total_advice_cost += p.selected_value
+
+        endowment_remaining = max(round(C.ENDOWMENT - total_advice_cost, 2), 0)
+        total_earnings = earnings + C.PARTICIPATION_FEE + endowment_remaining
+
+        bin_labels = json.loads(selected_player.bin_labels)
+        correct_answer = bin_labels[selected_player.correct_bin] if selected_player.correct_bin >= 0 else "N/A"
+
+        return dict(
+            selected_round=selected_round,
+            correct_answer=correct_answer,
+            num_tokens=selected_player.num_tokens,
+            tokens_allocated=tokens_allocated,
+            score=score,
+            draw=draw,
+            earnings=earnings,
+            task_earnings=earnings,
+            participation_fee=C.PARTICIPATION_FEE,
+            endowment_remaining=endowment_remaining,
+            total_earnings=total_earnings,
+            tplural='' if tokens_allocated == 1 else 's',
+            splural='' if score == 1.0 else 's',
         )
 
 # FUNCTIONS
@@ -1226,6 +847,12 @@ def creating_session(subsession: Subsession):
             p.participant.vars['chosen_urn2']   = chosen_urn_pair[1][0]
             p.participant.vars['chosen_song1']  = chosen_song_pair[0][0]
             p.participant.vars['chosen_song2']  = chosen_song_pair[1][0]
+
+            # ── Select round for payment ──
+            import random as _random
+            rng = _random.Random(p.participant.code)
+            # Pick one round from all 16 rounds (each round has 1 report)
+            p.participant.vars['selected_round'] = rng.randint(1, 16)
         # else:
         #     # In rounds 2-10, read from participant.vars set in round 1
         #     pass    # participant.vars already set — just read below
@@ -1360,4 +987,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Consent, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, Results]
+page_sequence = [Consent, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, SelectedRound, Payoff]

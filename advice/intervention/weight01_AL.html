@@ -42,7 +42,7 @@
     <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead>
-            <tr><th colspan="3">GEMINI ALGORITHMIC ADVICE TABLE FOR WEIGHT ALLOCATION</th></tr>
+            <tr><th colspan="3">GEMINI PRO ALGORITHMIC ADVICE TABLE FOR WEIGHT ALLOCATION</th></tr>
             <tr>
                 <th>Weight Range</th>
                 <th>Token Allocation</th>
@@ -50,16 +50,16 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>&lt; 120</td><td>0</td><td>Negligible probability for height/frame.</td></tr>
-            <tr><td>120-129</td><td>2</td><td>Extreme outlier for a male of this height.</td></tr>
-            <tr><td>130&ndash;139</td><td>5</td><td>Represents the extreme low end of the slim profile.</td></tr>
-            <tr><td>140-149</td><td>15</td><td>A "buffer" if the subject is leaner than he appears.</td></tr>
-            <tr><td>150-159</td><td>35</td><td><strong>Primary target:</strong> Fits the slender, tall frame perfectly.</td></tr>
-            <tr><td>160-169</td><td>30</td><td><strong>Secondary target:</strong> Highly probable given his height.</td></tr>
-            <tr><td>170-179</td><td>10</td><td>A "buffer" if the subject has more muscle mass.</td></tr>
-            <tr><td>180-189</td><td>3</td><td>Unlikely, as he lacks visible bulk.</td></tr>
-            <tr><td>190-199</td><td>0</td><td>Not consistent with the visual evidence..</td></tr>
-            <tr><td>>=200/td><td>0</td><td>The individual does not exhibit a high mass profile.</td></tr>
+            <tr><td>&lt; 120</td><td>0</td><td>Not plausible.</td></tr>
+            <tr><td>120–129</td><td>0</td><td>Unlikely for an adult male.</td></tr>
+            <tr><td>130–139</td><td>5</td><td>Possible if much shorter than he appears.</td></tr>
+            <tr><td>140–149</td><td>20</td><td>Plausible lower range — he has a very slim build.</td></tr>
+            <tr><td>150–159</td><td>40</td><td>Most likely — thin frame and average-to-tall height.</td></tr>
+            <tr><td>160–169</td><td>25</td><td>Highly plausible if he is taller than average.</td></tr>
+            <tr><td>170–179</td><td>10</td><td>Possible upper range.</td></tr>
+            <tr><td>180–189</td><td>0</td><td>Unlikely — appears too slender for this range.</td></tr>
+            <tr><td>190–199</td><td>0</td><td>Very unlikely.</td></tr>
+            <tr><td>&gt;= 200</td><td>0</td><td>Not plausible.</td></tr>
         </tbody>
     </table>
     </div>
@@ -83,16 +83,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>&lt; 120</td><td>0</td><td>Not plausible.</td></tr>
-            <tr><td>120–129</td><td>1</td><td>Very unlikely given apparent stature.</td></tr>
-            <tr><td>130–139</td><td>5</td><td>Possible, but quite light for this apparent height.</td></tr>
-            <tr><td>140–149</td><td>14</td><td>Plausible lower range for a lean build.</td></tr>
-            <tr><td>150–159</td><td>28</td><td>Quite plausible.</td></tr>
-            <tr><td>160–169</td><td>34</td><td>Most likely range given the visible frame.</td></tr>
-            <tr><td>170–179</td><td>15</td><td>Plausible upper range.</td></tr>
-            <tr><td>180–189</td><td>3</td><td>Unlikely but possible.</td></tr>
-            <tr><td>190–199</td><td>0</td><td>Very unlikely.</td></tr>
-            <tr><td>&gt;= 200</td><td>0</td><td>Not plausible.</td></tr>
+            <tr><td>&lt; 120</td><td>2</td><td>Small lower-tail probability.</td></tr>
+            <tr><td>120–129</td><td>4</td><td>Possible, but assigned relatively little weight.</td></tr>
+            <tr><td>130–139</td><td>8</td><td>Retained for uncertainty in stature and build.</td></tr>
+            <tr><td>140–149</td><td>13</td><td>Plausible under the visual estimate.</td></tr>
+            <tr><td>150–159</td><td>18</td><td>Adjacent to the primary estimated interval.</td></tr>
+            <tr><td>160–169</td><td>20</td><td><strong>Primary target:</strong> Highest assigned probability in this estimate.</td></tr>
+            <tr><td>170–179</td><td>16</td><td><strong>Secondary target:</strong> Also plausible given uncertainty about height and body composition.</td></tr>
+            <tr><td>180–189</td><td>10</td><td>Allows for a heavier actual weight.</td></tr>
+            <tr><td>190–199</td><td>5</td><td>Upper-tail uncertainty.</td></tr>
+            <tr><td>&gt;= 200</td><td>4</td><td>Small probability retained for the open-ended upper interval.</td></tr>
+  </tbody>
+</table>
 
         </tbody>
     </table>

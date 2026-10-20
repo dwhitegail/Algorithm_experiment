@@ -1,25 +1,134 @@
 {% extends "global/Page.html" %}
+
+{% block style %}
+<style>
+    .thankyou-container {
+        max-width: 850px;
+        margin: 80px auto;
+    }
+    .thankyou-card {
+    background: linear-gradient(135deg, #f8fbff, #eef5ff);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid #dce8f7;
+    text-align: left;
+    }
+
+    .main-title {
+    font-size: 3rem;   /* larger */
+    font-weight: 700;
+    color: #1f3b64;
+    margin-bottom: 30px;
+    text-align: center;
+    }
+
+
+    .checkmark {
+        font-size: 70px;
+        color: #28a745;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+
+       .thank-you {
+        font-size: 1.4rem;
+        color: #444;
+        margin-bottom: 30px;
+    }
+
+
+    .thank-you-text {
+    font-size: 1.5rem;
+    line-height: 1.8;
+    color: #333;
+    }
+
+    .summary-box h4 {
+    margin-top: 30px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f3b64;
+    margin-bottom: 15px;
+    }
+
+    .summary-box ul {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    }
+
+    .payment-box {
+    margin-top: 25px;
+    font-size: 1.4rem;
+    line-height: 1.8;
+    }
+
+    .info-box {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 25px;
+        text-align: left;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        border-left: 5px solid #4a90e2;
+    }
+
+    .next-button-wrapper {
+        margin-top: 40px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<div style="text-align:center; margin-top:100px;">
-    <h2>You have completed all tasks in this experiment.</h2>
 
-    <p style="font-size:20px;">
-        Thank you for participating.
-    </p>
+<div class="thankyou-container">
+    <div class="thankyou-card">
 
-    <p style="font-size:18px;">
-        The subsequent pages will reveal:
-        <br>
-        1. The ground truth for your experiments
-        <br>
-        2. Your total earnings based on the allocations made for your tasks.
-    </p>
+        <div class="checkmark">🎉</div>
 
-    <br><br>
+        <div class="main-title">
+            Experiment Completed
+        </div>
 
-    {{ next_button }}
+
+    <div class="thank-you-text">
+        Thank you for participating in this research study.
+        You have successfully completed all study tasks and your responses have been recorded.
+
+    </div>
+
+
+    <div class="summary-box">
+        <h4>What You Completed</h4>
+        <ul>
+            <li> A Weight Task</li>
+            <li>A Height Task</li>
+            <li>An Urn Probability Assessment Task</li>
+            <li>A Billboard Hot 100 Song Ranking Task</li>
+        </ul>
+    </div>
+
+    <div class="payment-box">
+        On the next screen, you will see the <strong>report that has randomly</strong> been selected for payment. <br>
+        On the final screen, you will see your <strong>final earnings</strong> for the report that was randomly selected along with any additional earnings from this experiment.
+    </div>
+
+    <div class="next-button-wrapper">
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+    {% next_button %}
+
+    </div>
+
+</div>
 
 </div>
 
 {% endblock %}
+
+
+
+
+

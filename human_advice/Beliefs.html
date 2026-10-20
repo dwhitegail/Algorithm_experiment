@@ -235,7 +235,7 @@
         <div class="col-4" style="text-align: center">
             <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
             <br><br>
-<!--         <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.2rem; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button> &ndash;&gt;-->
+         <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.2rem; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button> -->
         </div>
 
         <div class="col-4" style="text-align: right">
@@ -622,13 +622,13 @@
             $('#submit').click();
         }
 
-        // // Allow pressing the SPACE key to auto-fill and submit instantly
-        // document.addEventListener('keydown', function(e) {
-        //     if (e.key === ' ' || e.code === 'Space') {
-        //         e.preventDefault(); // prevent scrolling
-        //         devAutoFill();
-        //     }
-        // });
+        // Allow pressing the SPACE key to auto-fill and submit instantly
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault(); // prevent scrolling
+                devAutoFill();
+            }
+        });
 
     </script>
 

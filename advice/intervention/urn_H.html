@@ -1,30 +1,185 @@
+
 {% load otree %}
 
-<div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-    <h5 style="color: #1a5276;">👥 Human Advice — Urns Task</h5>
+<!-- Human Advice Introduction -->
+<div style="
+    background: #eaf4fb;
+    border-left: 5px solid #2979D0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+">
+
+    <h5 style="color: #1a5276;">
+        👥 Human Advice — Urn Task
+    </h5>
+
     <p style="color: #1a5276; margin-bottom: 0;">
-        Based on the aggregated reporting distribution from 40 undergraduate participants
-        similar to you who completed a previous version of this study, the histogram below
-        shows the reported percentage of blue balls for this urn.
+        Based on the aggregated reporting distribution from
+        40+ undergraduate participants similar to you who
+        completed the same questions in a previous study, but without advice.
+        The histogram below shows their aggregated reported beliefs
+        about the proportion of blue balls in this urn.
     </p>
+
 </div>
 
-{% if qid == 'urn01' %}
-    <img src="{% static 'urn01_hist.png' %}" style="max-width: 100%; height: auto;">
 
-{% elif qid == 'urn02' %}
-    <img src="{% static 'urn02_hist.png' %}" style="max-width: 100%; height: auto;">
+<!-- Styling for Urn Image and Histogram -->
+<style>
 
-{% elif qid == 'urn03' %}
-    <img src="{% static 'urn03_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Widen the oTree page */
+    .otree-body {
+        max-width: 1300px !important;
+        width: 95% !important;
+    }
 
-{% elif qid == 'urn04' %}
-    <img src="{% static 'urn04_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Main container */
+    .urn-advice-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 25px 0;
+        width: 100%;
+    }
 
-{% elif qid == 'urn05' %}
-    <img src="{% static 'urn05_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Urn image container */
+    .urn-photo-box {
+        flex: 0 0 32%;
+        max-width: 380px;
+        text-align: center;
+    }
 
-{% elif qid == 'urn06' %}
-    <img src="{% static 'urn06_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Keep urn image same size */
+    .urn-photo-box img {
+        max-width: 100%;
+        max-height: 400px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+    }
 
-{% endif %}
+    /* Histogram container - larger */
+    .urn-histogram-box {
+        flex: 1 1 68%;
+        min-width: 0;
+        text-align: center;
+    }
+
+    /* Make histogram larger */
+    .urn-histogram-box img {
+        display: block;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+    }
+
+    /* Image headings */
+    .urn-image-label {
+        font-weight: 600;
+        color: #1a5276;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    /* Mobile responsive layout */
+    @media (max-width: 768px) {
+
+        .urn-advice-container {
+            flex-wrap: wrap;
+        }
+
+        .urn-photo-box,
+        .urn-histogram-box {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+
+        .urn-histogram-box img {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<!-- Urn Image and Histogram Display -->
+<div class="urn-advice-container">
+
+    <!-- LEFT SIDE: Urn Image -->
+    <div class="urn-photo-box">
+
+        <div class="urn-image-label">
+            Urn Image
+        </div>
+
+        {% if qid == 'urn01' %}
+            <img src="{% static 'urn01.png' %}"
+                 alt="Urn Image 1">
+
+        {% elif qid == 'urn02' %}
+            <img src="{% static 'urn02.png' %}"
+                 alt="Urn Image 2">
+
+        {% elif qid == 'urn03' %}
+            <img src="{% static 'urn03.png' %}"
+                 alt="Urn Image 3">
+
+        {% elif qid == 'urn04' %}
+            <img src="{% static 'urn04.png' %}"
+                 alt="Urn Image 4">
+
+        {% elif qid == 'urn05' %}
+            <img src="{% static 'urn05.png' %}"
+                 alt="Urn Image 5">
+
+        {% elif qid == 'urn06' %}
+            <img src="{% static 'urn06.png' %}"
+                 alt="Urn Image 6">
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RIGHT SIDE: Human Advice Histogram -->
+    <div class="urn-histogram-box">
+
+        <div class="urn-image-label">
+            Human Advice — Urn Distribution
+        </div>
+
+        {% if qid == 'urn01' %}
+            <img src="{% static 'urn01_hist.png' %}"
+                 alt="Urn Histogram 1">
+
+        {% elif qid == 'urn02' %}
+            <img src="{% static 'urn02_hist.png' %}"
+                 alt="Urn Histogram 2">
+
+        {% elif qid == 'urn03' %}
+            <img src="{% static 'urn03_hist.png' %}"
+                 alt="Urn Histogram 3">
+
+        {% elif qid == 'urn04' %}
+            <img src="{% static 'urn04_hist.png' %}"
+                 alt="Urn Histogram 4">
+
+        {% elif qid == 'urn05' %}
+            <img src="{% static 'urn05_hist.png' %}"
+                 alt="Urn Histogram 5">
+
+        {% elif qid == 'urn06' %}
+            <img src="{% static 'urn06_hist.png' %}"
+                 alt="Urn Histogram 6">
+
+        {% endif %}
+
+    </div>
+
+</div>

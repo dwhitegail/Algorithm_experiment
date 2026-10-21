@@ -1,57 +1,186 @@
+
 {% load otree %}
 
 <div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-    <h5 style="color: #1a5276;">👥 Human Advice — Height Task</h5>
+    <h5 style="color: #1a5276;">
+        👥 Human Advice — Height Task
+    </h5>
+
     <p style="color: #1a5276; margin-bottom: 0;">
-        Based on the aggregated reporting distribution from 40 undergraduate participants
-        similar to you who completed a previous version of this study, the histogram below
-        shows the reported height for this individual.
+        Based on the aggregated reporting distribution from
+        40+ undergraduate participants similar to you who
+        completed the same questions, but without advice,
+        the histogram below shows their reported heights
+        for this individual.
     </p>
 </div>
 
-{% if qid == 'height01' %}
-    <img src="{% static 'height01_hist.png' %}" style="max-width: 100%; height: auto;">
+<style>
+    .height-advice-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 25px 0;
+        width: 100%;
+    }
 
-{% elif qid == 'height02' %}
-    <img src="{% static 'height02_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-photo-box {
+        flex: 1 1 280px;
+        max-width: 380px;
+        text-align: center;
+    }
 
-{% elif qid == 'height03' %}
-    <img src="{% static 'height03_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-histogram-box {
+        flex: 1 1 1000px;
+        text-align: center;
+    }
 
-{% elif qid == 'height04' %}
-    <img src="{% static 'height04_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-advice-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
 
-{% elif qid == 'height05' %}
-    <img src="{% static 'height05_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-photo-box img {
+        max-height: 400px;
+        object-fit: contain;
+    }
 
-{% elif qid == 'height06' %}
-    <img src="{% static 'height06_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-histogram-box img {
+        width: 100%;
+        object-fit: contain;
+    }
 
-{% elif qid == 'height07' %}
-    <img src="{% static 'height07_hist.png' %}" style="max-width: 100%; height: auto;">
+    .height-image-label {
+        font-weight: 600;
+        color: #1a5276;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
 
-{% elif qid == 'height08' %}
-    <img src="{% static 'height08_hist.png' %}" style="max-width: 100%; height: auto;">
+    @media (max-width: 768px) {
+        .height-photo-box,
+        .height-histogram-box {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+    }
+</style>
 
-{% elif qid == 'height09' %}
-    <img src="{% static 'height09_hist.png' %}" style="max-width: 100%; height: auto;">
+<div class="height-advice-container">
 
-{% elif qid == 'height10' %}
-    <img src="{% static 'height10_hist.png' %}" style="max-width: 100%; height: auto;">
+    <!-- Corresponding Height Photograph -->
+    <div class="height-photo-box">
 
-{% elif qid == 'height11' %}
-    <img src="{% static 'height11_hist.png' %}" style="max-width: 100%; height: auto;">
+        <div class="height-image-label">
+            What is the height of this person?
+        </div>
 
-{% elif qid == 'height12' %}
-    <img src="{% static 'height12_hist.png' %}" style="max-width: 100%; height: auto;">
+        {% if qid == 'height01' %}
+            <img src="{% static 'height01.png' %}">
 
-{% elif qid == 'height13' %}
-    <img src="{% static 'height13_hist.png' %}" style="max-width: 100%; height: auto;">
+        {% elif qid == 'height02' %}
+            <img src="{% static 'height02.png' %}">
 
-{% elif qid == 'height14' %}
-    <img src="{% static 'height14_hist.png' %}" style="max-width: 100%; height: auto;">
+        {% elif qid == 'height03' %}
+            <img src="{% static 'height03.png' %}">
 
-{% elif qid == 'height15' %}
-    <img src="{% static 'height15_hist.png' %}" style="max-width: 100%; height: auto;">
+        {% elif qid == 'height04' %}
+            <img src="{% static 'height04.png' %}">
 
-{% endif %}
+        {% elif qid == 'height05' %}
+            <img src="{% static 'height05.png' %}">
+
+        {% elif qid == 'height06' %}
+            <img src="{% static 'height06.png' %}">
+
+        {% elif qid == 'height07' %}
+            <img src="{% static 'height07.png' %}">
+
+        {% elif qid == 'height08' %}
+            <img src="{% static 'height08.png' %}">
+
+        {% elif qid == 'height09' %}
+            <img src="{% static 'height09.png' %}">
+
+        {% elif qid == 'height10' %}
+            <img src="{% static 'height10.png' %}">
+
+        {% elif qid == 'height11' %}
+            <img src="{% static 'height11.png' %}">
+
+        {% elif qid == 'height12' %}
+            <img src="{% static 'height12.png' %}">
+
+        {% elif qid == 'height13' %}
+            <img src="{% static 'height13.png' %}">
+
+        {% elif qid == 'height14' %}
+            <img src="{% static 'height14.png' %}">
+
+        {% elif qid == 'height15' %}
+            <img src="{% static 'height15.png' %}">
+
+        {% endif %}
+
+    </div>
+
+    <!-- Corresponding Human Advice Histogram -->
+    <div class="height-histogram-box">
+
+        <div class="height-image-label">
+            Human Advice — Aggregated Height Distribution
+        </div>
+
+        {% if qid == 'height01' %}
+            <img src="{% static 'height01_hist.png' %}">
+
+        {% elif qid == 'height02' %}
+            <img src="{% static 'height02_hist.png' %}">
+
+        {% elif qid == 'height03' %}
+            <img src="{% static 'height03_hist.png' %}">
+
+        {% elif qid == 'height04' %}
+            <img src="{% static 'height04_hist.png' %}">
+
+        {% elif qid == 'height05' %}
+            <img src="{% static 'height05_hist.png' %}">
+
+        {% elif qid == 'height06' %}
+            <img src="{% static 'height06_hist.png' %}">
+
+        {% elif qid == 'height07' %}
+            <img src="{% static 'height07_hist.png' %}">
+
+        {% elif qid == 'height08' %}
+            <img src="{% static 'height08_hist.png' %}">
+
+        {% elif qid == 'height09' %}
+            <img src="{% static 'height09_hist.png' %}">
+
+        {% elif qid == 'height10' %}
+            <img src="{% static 'height10_hist.png' %}">
+
+        {% elif qid == 'height11' %}
+            <img src="{% static 'height11_hist.png' %}">
+
+        {% elif qid == 'height12' %}
+            <img src="{% static 'height12_hist.png' %}">
+
+        {% elif qid == 'height13' %}
+            <img src="{% static 'height13_hist.png' %}">
+
+        {% elif qid == 'height14' %}
+            <img src="{% static 'height14_hist.png' %}">
+
+        {% elif qid == 'height15' %}
+            <img src="{% static 'height15_hist.png' %}">
+
+        {% endif %}
+
+    </div>
+
+</div>

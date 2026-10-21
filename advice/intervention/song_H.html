@@ -1,49 +1,266 @@
+
 {% load otree %}
 
-<div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-    <h5 style="color: #1a5276;">👥 Human Advice — Song Ranking Task</h5>
+<!-- Human Advice Introduction -->
+<div style="
+    background: #eaf4fb;
+    border-left: 5px solid #2979D0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+">
+
+    <h5 style="color: #1a5276;">
+        👥 Human Advice — Song Task
+    </h5>
+
     <p style="color: #1a5276; margin-bottom: 0;">
-        Based on the aggregated reporting distribution from 40 undergraduate participants
-        similar to you who completed a previous version of this study, the histogram below
-        shows the reported Billboard Hot 100 ranking for this song.
+        Based on the aggregated reporting distribution from
+        40+ undergraduate participants similar to you who
+        completed the same questions in a previous study, but without advice.
+        The histogram below shows their reported rankings
+        for this song.
     </p>
+
 </div>
 
-<!-- Song title -->
-<h4 style="text-align:center; margin:20px 0;">
-    {{ song_title }}
-</h4>
 
-{% if qid == 'song01' %}
-    <img src="{% static 'song01_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song02' %}
-    <img src="{% static 'song02_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song03' %}
-    <img src="{% static 'song03_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song04' %}
-    <img src="{% static 'song04_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song05' %}
-    <img src="{% static 'song05_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song06' %}
-    <img src="{% static 'song06_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song07' %}
-    <img src="{% static 'song07_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song08' %}
-    <img src="{% static 'song08_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song09' %}
-    <img src="{% static 'song09_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song10' %}
-    <img src="{% static 'song10_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song11' %}
-    <img src="{% static 'song11_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song12' %}
-    <img src="{% static 'song12_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song13' %}
-    <img src="{% static 'song13_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song14' %}
-    <img src="{% static 'song14_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song15' %}
-    <img src="{% static 'song15_hist.png' %}" style="max-width: 100%; height: auto;">
-{% elif qid == 'song16' %}
-    <img src="{% static 'song16_hist.png' %}" style="max-width: 100%; height: auto;">
-{% endif %}
+<!-- Styling for Song Photograph and Histogram -->
+<style>
+
+    /* Widen the oTree page */
+    .otree-body {
+        max-width: 1300px !important;
+        width: 95% !important;
+    }
+
+    /* Main container */
+    .song-advice-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 25px 0;
+        width: 100%;
+    }
+
+    /* Photograph container */
+    .song-photo-box {
+        flex: 0 0 32%;
+        max-width: 380px;
+        text-align: center;
+    }
+
+    /* Keep photograph same size */
+    .song-photo-box img {
+        max-width: 100%;
+        max-height: 400px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    /* Histogram container - larger */
+    .song-histogram-box {
+        flex: 1 1 68%;
+        min-width: 0;
+        text-align: center;
+    }
+
+    /* Make histogram larger */
+    .song-histogram-box img {
+        display: block;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+    }
+
+    /* Image headings */
+    .song-image-label {
+        font-weight: 600;
+        color: #1a5276;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    /* Mobile responsive layout */
+    @media (max-width: 768px) {
+
+        .song-advice-container {
+            flex-wrap: wrap;
+        }
+
+        .song-photo-box,
+        .song-histogram-box {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+
+        .song-histogram-box img {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<!-- Photograph and Histogram Display -->
+<div class="song-advice-container">
+
+
+    <!-- LEFT SIDE: Song Photograph -->
+    <div class="song-photo-box">
+
+        <div class="song-image-label">
+            What was this song's ranking?
+        </div>
+
+        {% if qid == 'song01' %}
+            <img src="{% static 'song01.png' %}"
+                 alt="Song Image 1">
+
+        {% elif qid == 'song02' %}
+            <img src="{% static 'song02.png' %}"
+                 alt="Song Image 2">
+
+        {% elif qid == 'song03' %}
+            <img src="{% static 'song03.png' %}"
+                 alt="Song Image 3">
+
+        {% elif qid == 'song04' %}
+            <img src="{% static 'song04.png' %}"
+                 alt="Song Image 4">
+
+        {% elif qid == 'song05' %}
+            <img src="{% static 'song05.png' %}"
+                 alt="Song Image 5">
+
+        {% elif qid == 'song06' %}
+            <img src="{% static 'song06.png' %}"
+                 alt="Song Image 6">
+
+        {% elif qid == 'song07' %}
+            <img src="{% static 'song07.png' %}"
+                 alt="Song Image 7">
+
+        {% elif qid == 'song08' %}
+            <img src="{% static 'song08.png' %}"
+                 alt="Song Image 8">
+
+        {% elif qid == 'song09' %}
+            <img src="{% static 'song09.png' %}"
+                 alt="Song Image 9">
+
+        {% elif qid == 'song10' %}
+            <img src="{% static 'song10.png' %}"
+                 alt="Song Image 10">
+
+        {% elif qid == 'song11' %}
+            <img src="{% static 'song11.png' %}"
+                 alt="Song Image 11">
+
+        {% elif qid == 'song12' %}
+            <img src="{% static 'song12.png' %}"
+                 alt="Song Image 12">
+
+        {% elif qid == 'song13' %}
+            <img src="{% static 'song13.png' %}"
+                 alt="Song Image 13">
+
+        {% elif qid == 'song14' %}
+            <img src="{% static 'song14.png' %}"
+                 alt="Song Image 14">
+
+        {% elif qid == 'song15' %}
+            <img src="{% static 'song15.png' %}"
+                 alt="Song Image 15">
+
+        {% elif qid == 'song16' %}
+            <img src="{% static 'song16.png' %}"
+                 alt="Song Image 16">
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RIGHT SIDE: Human Advice Histogram -->
+    <div class="song-histogram-box">
+
+        <div class="song-image-label">
+            Human Advice — Aggregated Song Ranking Distribution
+        </div>
+
+        {% if qid == 'song01' %}
+            <img src="{% static 'song01_hist.png' %}"
+                 alt="Song Histogram 1">
+
+        {% elif qid == 'song02' %}
+            <img src="{% static 'song02_hist.png' %}"
+                 alt="Song Histogram 2">
+
+        {% elif qid == 'song03' %}
+            <img src="{% static 'song03_hist.png' %}"
+                 alt="Song Histogram 3">
+
+        {% elif qid == 'song04' %}
+            <img src="{% static 'song04_hist.png' %}"
+                 alt="Song Histogram 4">
+
+        {% elif qid == 'song05' %}
+            <img src="{% static 'song05_hist.png' %}"
+                 alt="Song Histogram 5">
+
+        {% elif qid == 'song06' %}
+            <img src="{% static 'song06_hist.png' %}"
+                 alt="Song Histogram 6">
+
+        {% elif qid == 'song07' %}
+            <img src="{% static 'song07_hist.png' %}"
+                 alt="Song Histogram 7">
+
+        {% elif qid == 'song08' %}
+            <img src="{% static 'song08_hist.png' %}"
+                 alt="Song Histogram 8">
+
+        {% elif qid == 'song09' %}
+            <img src="{% static 'song09_hist.png' %}"
+                 alt="Song Histogram 9">
+
+        {% elif qid == 'song10' %}
+            <img src="{% static 'song10_hist.png' %}"
+                 alt="Song Histogram 10">
+
+        {% elif qid == 'song11' %}
+            <img src="{% static 'song11_hist.png' %}"
+                 alt="Song Histogram 11">
+
+        {% elif qid == 'song12' %}
+            <img src="{% static 'song12_hist.png' %}"
+                 alt="Song Histogram 12">
+
+        {% elif qid == 'song13' %}
+            <img src="{% static 'song13_hist.png' %}"
+                 alt="Song Histogram 13">
+
+        {% elif qid == 'song14' %}
+            <img src="{% static 'song14_hist.png' %}"
+                 alt="Song Histogram 14">
+
+        {% elif qid == 'song15' %}
+            <img src="{% static 'song15_hist.png' %}"
+                 alt="Song Histogram 15">
+
+        {% elif qid == 'song16' %}
+            <img src="{% static 'song16_hist.png' %}"
+                 alt="Song Histogram 16">
+
+        {% endif %}
+
+    </div>
+
+</div>

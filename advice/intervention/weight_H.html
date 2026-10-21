@@ -1,57 +1,258 @@
+
 {% load otree %}
 
-<div style="background: #eaf4fb; border-left: 5px solid #2979D0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-    <h5 style="color: #1a5276;">👥 Human Advice — Weight Task</h5>
+<!-- Human Advice Introduction -->
+<div style="
+    background: #eaf4fb;
+    border-left: 5px solid #2979D0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+">
+
+    <h5 style="color: #1a5276;">
+        👥 Human Advice — Weight Task
+    </h5>
+
     <p style="color: #1a5276; margin-bottom: 0;">
-        Based on the aggregated reporting distribution from 40 undergraduate participants
-        similar to you who completed a previous version of this study, the histogram below
-        shows the reported weight for this individual.
+        Based on the aggregated reporting distribution from
+        40+ undergraduate participants similar to you who
+        completed a previous version of this study,
+        the histogram below shows the reported weight
+        for this individual.
     </p>
+
 </div>
 
-{% if qid == 'weight01' %}
-    <img src="{% static 'weight01_hist.png' %}" style="max-width: 100%; height: auto;">
 
-{% elif qid == 'weight02' %}
-    <img src="{% static 'weight02_hist.png' %}" style="max-width: 100%; height: auto;">
+<!-- Styling for Photograph and Histogram -->
+<style>
 
-{% elif qid == 'weight03' %}
-    <img src="{% static 'weight03_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Widen the oTree page */
+    .otree-body {
+        max-width: 1300px !important;
+        width: 95% !important;
+    }
 
-{% elif qid == 'weight04' %}
-    <img src="{% static 'weight04_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Main container */
+    .weight-advice-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 25px 0;
+        width: 100%;
+    }
 
-{% elif qid == 'weight05' %}
-    <img src="{% static 'weight05_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Photograph container */
+    .weight-photo-box {
+        flex: 0 0 32%;
+        max-width: 380px;
+        text-align: center;
+    }
 
-{% elif qid == 'weight06' %}
-    <img src="{% static 'weight06_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Keep photograph same size */
+    .weight-photo-box img {
+        max-width: 100%;
+        max-height: 400px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+    }
 
-{% elif qid == 'weight07' %}
-    <img src="{% static 'weight07_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Histogram container - larger */
+    .weight-histogram-box {
+        flex: 1 1 68%;
+        min-width: 0;
+        text-align: center;
+    }
 
-{% elif qid == 'weight08' %}
-    <img src="{% static 'weight08_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Make histogram larger */
+    .weight-histogram-box img {
+        display: block;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+    }
 
-{% elif qid == 'weight09' %}
-    <img src="{% static 'weight09_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Image headings */
+    .weight-image-label {
+        font-weight: 600;
+        color: #1a5276;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
 
-{% elif qid == 'weight10' %}
-    <img src="{% static 'weight10_hist.png' %}" style="max-width: 100%; height: auto;">
+    /* Mobile responsive layout */
+    @media (max-width: 768px) {
 
-{% elif qid == 'weight11' %}
-    <img src="{% static 'weight11_hist.png' %}" style="max-width: 100%; height: auto;">
+        .weight-advice-container {
+            flex-wrap: wrap;
+        }
 
-{% elif qid == 'weight12' %}
-    <img src="{% static 'weight12_hist.png' %}" style="max-width: 100%; height: auto;">
+        .weight-photo-box,
+        .weight-histogram-box {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
 
-{% elif qid == 'weight13' %}
-    <img src="{% static 'weight13_hist.png' %}" style="max-width: 100%; height: auto;">
+        .weight-histogram-box img {
+            width: 100%;
+        }
 
-{% elif qid == 'weight14' %}
-    <img src="{% static 'weight14_hist.png' %}" style="max-width: 100%; height: auto;">
+    }
 
-{% elif qid == 'weight15' %}
-    <img src="{% static 'weight15_hist.png' %}" style="max-width: 100%; height: auto;">
+</style>
 
-{% endif %}
+
+<!-- Photograph and Histogram Display -->
+<div class="weight-advice-container">
+
+
+    <!-- LEFT SIDE: Individual Photograph -->
+    <div class="weight-photo-box">
+
+        <div class="weight-image-label">
+            What is the weight of this person?
+        </div>
+
+        {% if qid == 'weight01' %}
+            <img src="{% static 'weight01.png' %}"
+                 alt="Weight Photograph 1">
+
+        {% elif qid == 'weight02' %}
+            <img src="{% static 'weight02.png' %}"
+                 alt="Weight Photograph 2">
+
+        {% elif qid == 'weight03' %}
+            <img src="{% static 'weight03.png' %}"
+                 alt="Weight Photograph 3">
+
+        {% elif qid == 'weight04' %}
+            <img src="{% static 'weight04.png' %}"
+                 alt="Weight Photograph 4">
+
+        {% elif qid == 'weight05' %}
+            <img src="{% static 'weight05.png' %}"
+                 alt="Weight Photograph 5">
+
+        {% elif qid == 'weight06' %}
+            <img src="{% static 'weight06.png' %}"
+                 alt="Weight Photograph 6">
+
+        {% elif qid == 'weight07' %}
+            <img src="{% static 'weight07.png' %}"
+                 alt="Weight Photograph 7">
+
+        {% elif qid == 'weight08' %}
+            <img src="{% static 'weight08.png' %}"
+                 alt="Weight Photograph 8">
+
+        {% elif qid == 'weight09' %}
+            <img src="{% static 'weight09.png' %}"
+                 alt="Weight Photograph 9">
+
+        {% elif qid == 'weight10' %}
+            <img src="{% static 'weight10.png' %}"
+                 alt="Weight Photograph 10">
+
+        {% elif qid == 'weight11' %}
+            <img src="{% static 'weight11.png' %}"
+                 alt="Weight Photograph 11">
+
+        {% elif qid == 'weight12' %}
+            <img src="{% static 'weight12.png' %}"
+                 alt="Weight Photograph 12">
+
+        {% elif qid == 'weight13' %}
+            <img src="{% static 'weight13.png' %}"
+                 alt="Weight Photograph 13">
+
+        {% elif qid == 'weight14' %}
+            <img src="{% static 'weight14.png' %}"
+                 alt="Weight Photograph 14">
+
+        {% elif qid == 'weight15' %}
+            <img src="{% static 'weight15.png' %}"
+                 alt="Weight Photograph 15">
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RIGHT SIDE: Human Advice Histogram -->
+    <div class="weight-histogram-box">
+
+        <div class="weight-image-label">
+            Human Advice — Aggregated Reporting Distribution
+        </div>
+
+        {% if qid == 'weight01' %}
+            <img src="{% static 'weight01_hist.png' %}"
+                 alt="Weight Histogram 1">
+
+        {% elif qid == 'weight02' %}
+            <img src="{% static 'weight02_hist.png' %}"
+                 alt="Weight Histogram 2">
+
+        {% elif qid == 'weight03' %}
+            <img src="{% static 'weight03_hist.png' %}"
+                 alt="Weight Histogram 3">
+
+        {% elif qid == 'weight04' %}
+            <img src="{% static 'weight04_hist.png' %}"
+                 alt="Weight Histogram 4">
+
+        {% elif qid == 'weight05' %}
+            <img src="{% static 'weight05_hist.png' %}"
+                 alt="Weight Histogram 5">
+
+        {% elif qid == 'weight06' %}
+            <img src="{% static 'weight06_hist.png' %}"
+                 alt="Weight Histogram 6">
+
+        {% elif qid == 'weight07' %}
+            <img src="{% static 'weight07_hist.png' %}"
+                 alt="Weight Histogram 7">
+
+        {% elif qid == 'weight08' %}
+            <img src="{% static 'weight08_hist.png' %}"
+                 alt="Weight Histogram 8">
+
+        {% elif qid == 'weight09' %}
+            <img src="{% static 'weight09_hist.png' %}"
+                 alt="Weight Histogram 9">
+
+        {% elif qid == 'weight10' %}
+            <img src="{% static 'weight10_hist.png' %}"
+                 alt="Weight Histogram 10">
+
+        {% elif qid == 'weight11' %}
+            <img src="{% static 'weight11_hist.png' %}"
+                 alt="Weight Histogram 11">
+
+        {% elif qid == 'weight12' %}
+            <img src="{% static 'weight12_hist.png' %}"
+                 alt="Weight Histogram 12">
+
+        {% elif qid == 'weight13' %}
+            <img src="{% static 'weight13_hist.png' %}"
+                 alt="Weight Histogram 13">
+
+        {% elif qid == 'weight14' %}
+            <img src="{% static 'weight14_hist.png' %}"
+                 alt="Weight Histogram 14">
+
+        {% elif qid == 'weight15' %}
+            <img src="{% static 'weight15_hist.png' %}"
+                 alt="Weight Histogram 15">
+
+        {% endif %}
+
+    </div>
+
+</div>

@@ -492,8 +492,7 @@ class Task_Intro(Page):
                     "You will observe <strong>2 photographs</strong> of 2 different people.",
                     "You will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating <strong>100 tokens across 10 bins.</strong>",
                     "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than or equal to  200 lbs</strong>.",
-                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
-                    "You may <strong>purchase advice</strong> between round 1 and round 2 if selected to receive advice.",
+                    "You may <strong>purchase advice</strong> after round 1, before proceeding to round 2.",
 
                 ],
             },
@@ -521,8 +520,7 @@ class Task_Intro(Page):
                 'Expectations': [
                     "You will be asked to report your beliefs about the height in <strong>feet and inches</strong> of <strong>2 people</strong>.",
                     "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Greater than or Equal to 7 feet (7'0\")</strong>.",
-                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
-                    "You may <strong>purchase advice</strong> between Round 1 and Round 2 if selected to receive advice.",
+                    "You may <strong>purchase advice</strong> after Round 1, before proceeding to Round 2.",
 
                 ],
             },

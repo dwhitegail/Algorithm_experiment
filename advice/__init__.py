@@ -474,7 +474,7 @@ class Task_Intro(Page):
                 'intro': (
                     "In this task, you will view <strong>2 photographs</strong> of "
                     "real people and asked to report your beliefs about their weight in pounds. "
-                    "You will allocate <strong>100 tokens</strong> across a range of weight intervals across <strong>10 bins</strong>. " 
+                    "You will allocate <strong>100 tokens</strong> across a range of weight intervals in <strong>10 bins</strong>. " 
                     "Place the tokens in the bin or bins that you think represents the correct answer(s). "
                     "Bin 1 represents a weight of less than 120 lbs., bin 2 represents an interval of 120-129 lbs., bin 3, 130-139 lbs, and so on. "
                     "Bin 10 represents the interval of greater than or equal to 200 lbs."
@@ -490,9 +490,10 @@ class Task_Intro(Page):
 
                 'Expectations': [
                     "You will observe <strong>2 photographs</strong> of 2 different people.",
-                    "You will be asked to report your beliefs  about their <strong>weight in pounds (lbs.)</strong> by allocating <strong>100 tokens across 10 bins.</strong>",
+                    "You will be asked to report your beliefs  about the weight in <strong>pounds (lbs.)</strong> by allocating <strong>100 tokens across 10 bins.</strong>",
                     "The weight intervals are from <strong>less than 120 lbs</strong> to <strong>greater than or equal to  200 lbs</strong>.",
-                    "You have the option to <strong>purchase advice</strong> after round 1, before proceeding to round 2.",
+                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
+                    "You may <strong>purchase advice</strong> between round 1 and round 2 if selected to receive advice.",
 
                 ],
             },
@@ -518,9 +519,11 @@ class Task_Intro(Page):
                 ),
 
                 'Expectations': [
-                    "You will be asked to report your beliefs about the <strong>height in feet and inches</strong> of <strong>2 people</strong>.",
+                    "You will be asked to report your beliefs about the height in <strong>feet and inches</strong> of <strong>2 people</strong>.",
                     "The height intervals are from <strong>Under 5 feet (5'0\")</strong> to <strong>Greater than or Equal to 7 feet (7'0\")</strong>.",
-                    "You may <strong>purchase advice</strong> after completing Round 1 and before proceeding to Round 2."
+                    "Each report pays up to <strong>${}</strong> based on accuracy.".format(C.MAX_EARNINGS_PER_REPORT),
+                    "You may <strong>purchase advice</strong> between Round 1 and Round 2 if selected to receive advice.",
+
                 ],
             },
             9: {

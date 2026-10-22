@@ -14,7 +14,7 @@
         👥 Human Advice — Song Task
     </h5>
 
-    <p style="color: #1a5276; margin-bottom: 0;">
+    <p style="color: #1a5276; font-size: 20px; margin-bottom: 0;">
         Based on the aggregated reporting distribution from
         40+ undergraduate participants similar to you who
         completed the same questions in a previous study, but without advice.
@@ -72,9 +72,9 @@
     /* Make histogram larger */
     .song-histogram-box img {
         display: block;
-        width: 100%;
-        max-width: none;
-        height: auto;
+        width: 108% !important;
+        max-width: none !important;
+        height: auto !important;
         object-fit: contain;
     }
 
@@ -85,6 +85,41 @@
         margin-bottom: 12px;
         font-size: 16px;
     }
+
+
+    /* Small song cover above ranking history */
+    .song-cover-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .song-photo-box .song-cover-box img {
+        display: block;
+        width: 170px !important;
+        height: auto !important;
+        max-width: 170px !important;
+        max-height: 180px !important;
+        object-fit: contain;
+        border-radius: 6px;
+        margin: 0 auto;
+    }
+
+    /* Keep ranking history underneath */
+    .song-photo-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-width: 0;
+    }
+
+    /* Align histogram near top */
+    .song-advice-container {
+        align-items: flex-start;
+    }
+
 
     /* Mobile responsive layout */
     @media (max-width: 768px) {
@@ -114,6 +149,63 @@
 
     <!-- LEFT SIDE: Song Photograph -->
     <div class="song-photo-box">
+
+         <!-- SMALL SONG COVER AT TOP -->
+    <div class="song-cover-box">
+
+        {% if qid == 'song01' %}
+            <img src="{% static 'Daisies01.jpg' %}" alt="Song 1 cover">
+
+        {% elif qid == 'song02' %}
+            <img src="{% static 'Ordinary02.jpg' %}" alt="Song 2 cover">
+
+        {% elif qid == 'song03' %}
+            <img src="{% static 'Lovenot03.jpg' %}" alt="Song 3 cover">
+
+        {% elif qid == 'song04' %}
+            <img src="{% static 'Golden04.jpg' %}" alt="Song 4 cover">
+
+        {% elif qid == 'song05' %}
+            <img src="{% static 'Losecontrol05.jpg' %}" alt="Song 5 cover">
+
+        {% elif qid == 'song06' %}
+            <img src="{% static 'Just_in_case06.jpg' %}" alt="Song 6 cover">
+
+        {% elif qid == 'song07' %}
+            <img src="{% static 'Bar_song07.jpg' %}" alt="Song 7 cover">
+
+        {% elif qid == 'song08' %}
+            <img src="{% static 'what_i_want08.jpg' %}" alt="Song 8 cover">
+
+        {% elif qid == 'song09' %}
+            <img src="{% static 'soda_pop09.jpg' %}" alt="Song 9 cover">
+
+        {% elif qid == 'song10' %}
+            <img src="{% static 'Luther10.jpg' %}" alt="Song 10 cover">
+
+        {% elif qid == 'song11' %}
+            <img src="{% static 'Die_smile11.jpg' %}" alt="Song 11 cover">
+
+        {% elif qid == 'song12' %}
+            <img src="{% static 'idol12.jpg' %}" alt="Song 12 cover">
+
+        {% elif qid == 'song13' %}
+            <img src="{% static 'Not_like_us13.jpg' %}" alt="Song 13 cover">
+
+        {% elif qid == 'song14' %}
+            <img src="{% static 'birds_feather14.jpg' %}" alt="Song 14 cover">
+
+        {% elif qid == 'song15' %}
+            <img src="{% static 'APT15.jpg' %}" alt="Song 15 cover">
+
+        {% elif qid == 'song16' %}
+            <img src="{% static 'tv_off16.jpg' %}" alt="Song 16 cover">
+
+        {% endif %}
+
+    </div>
+
+
 
         <div class="song-image-label">
             What was this song's ranking?

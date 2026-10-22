@@ -6,7 +6,7 @@
         👥 Human Advice — Height Task
     </h5>
 
-    <p style="color: #1a5276; margin-bottom: 0;">
+    <p style="color: #1a5276; font-size: 20px; margin-bottom: 0;">
         Based on the aggregated reporting distribution from
         40+ undergraduate participants similar to you who
         completed the same questions, but without advice,
@@ -15,59 +15,127 @@
     </p>
 </div>
 
+
 <style>
+
+/* =========================================
+   EXPAND THE ENTIRE OTREE PAGE
+   ========================================= */
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body .otree-body,
+body .container.otree-body,
+.otree-body {
+    width: 96% !important;
+    max-width: 1400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   HEIGHT ADVICE: SIDE-BY-SIDE LAYOUT
+   ========================================= */
+
+.height-advice-container {
+    display: grid !important;
+    grid-template-columns: minmax(0, 28%) minmax(0, 1fr);
+    gap: 30px;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    margin: 30px auto;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   LEFT: HEIGHT PHOTOGRAPH
+   ========================================= */
+
+.height-photo-box {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    text-align: center;
+}
+
+.height-photo-box img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   RIGHT: HUMAN ADVICE HISTOGRAM
+   ========================================= */
+
+.height-histogram-box {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    text-align: center;
+}
+
+.height-histogram-box img {
+    display: block;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+/* =========================================
+   LABELS ABOVE IMAGES
+   ========================================= */
+
+.height-image-label {
+    font-weight: 600;
+    color: #1a5276;
+    margin-bottom: 15px;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* =========================================
+   RESPONSIVE LAYOUT
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    .otree-body {
+        width: 98% !important;
+    }
+
     .height-advice-container {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 15px;
-        align-items: center;
-        justify-content: space-between;
-        margin: 25px 0;
-        width: 100%;
-    }
-
-    .height-photo-box {
-        flex: 1 1 280px;
-        max-width: 380px;
-        text-align: center;
-    }
-
-    .height-histogram-box {
-        flex: 1 1 1000px;
-        text-align: center;
-    }
-
-    .height-advice-container img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 25px;
     }
 
     .height-photo-box img {
-        max-height: 400px;
-        object-fit: contain;
+        max-height: 450px;
     }
 
     .height-histogram-box img {
-        width: 100%;
-        object-fit: contain;
+        width: 100% !important;
     }
 
     .height-image-label {
-        font-weight: 600;
-        color: #1a5276;
-        margin-bottom: 12px;
-        font-size: 16px;
+        font-size: 18px;
     }
+}
 
-    @media (max-width: 768px) {
-        .height-photo-box,
-        .height-histogram-box {
-            flex: 1 1 100%;
-            max-width: 100%;
-        }
-    }
 </style>
+
 
 <div class="height-advice-container">
 

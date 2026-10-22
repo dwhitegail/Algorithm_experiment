@@ -288,17 +288,15 @@ class Advice(Page):
 
     @staticmethod
     def is_displayed(player):
-        # Show advice on MPL round AND the round immediately after
-        # BUT only if advice was purchased on the MPL round of this task
         advice_rounds = {
-            2:  2,   # weight task MPL round
-            3:  2,   # weight task carry-over → check round 2 for purchase
-            6:  6,   # height task MPL round
-            7:  6,   # height task carry-over → check round 6
-            10: 10,  # urn task MPL round
-            11: 10,  # urn task carry-over → check round 10
-            14: 14,  # song task MPL round
-            15: 14,  # song task carry-over → check round 14
+            3: 2,  # weight task Q1 → check round 2 for purchase
+            4: 2,  # weight task Q2 → check round 2 for purchase
+            7: 6,  # height task Q1
+            8: 6,  # height task Q2
+            11: 10,  # urn task Q1
+            12: 10,  # urn task Q2
+            15: 14,  # song task Q1
+            16: 14,  # song task Q2
         }
         r = player.round_number
         if r not in advice_rounds:
@@ -378,14 +376,14 @@ class Advice(Page):
 
         # ── Label so subject knows which question this advice is for ──
         task_labels = {
-            2: 'Weight Task — Photo 1',
-            3: 'Weight Task — Photo 2',
-            6: 'Height Task — Photo 1',
-            7: 'Height Task — Photo 2',
-            10: 'Urns Task — Sample 1',
-            11: 'Urns Task — Sample 2',
-            14: 'Song Ranking — Song 1',
-            15: 'Song Ranking — Song 2',
+            3: 'Weight Task — Photo 1',
+            4: 'Weight Task — Photo 2',
+            7: 'Height Task — Photo 1',
+            8: 'Height Task — Photo 2',
+            11: 'Urns Task — Sample 1',
+            12: 'Urns Task — Sample 2',
+            15: 'Song Ranking — Song 1',
+            16: 'Song Ranking — Song 2',
         }
         advice_label = task_labels.get(player.round_number, '')
 

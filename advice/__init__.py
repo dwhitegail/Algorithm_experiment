@@ -106,6 +106,11 @@ class Consent(Page):
         # Show only once at the beginning
         return player.round_number == 1
 
+class Video(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
 class Instructions(Page):
 
     @staticmethod
@@ -984,4 +989,4 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Consent, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, SelectedRound, Payoff]
+page_sequence = [Consent, Video, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, SelectedRound, Payoff]

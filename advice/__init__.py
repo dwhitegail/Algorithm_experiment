@@ -531,7 +531,7 @@ class Task_Intro(Page):
             },
             9: {
                 'task_number': 'Task 3 of 4',
-                'task_name': 'Urns Task — What is the percentage of blue balls in the urn?',
+                'task_name': 'Urn Task — What is the percentage of blue balls in the urn?',
                 'icon': '🏺',
                 'intro': (
                     "This task has an urn containing exactly <strong>100 balls</strong>. Each ball is either "
@@ -989,4 +989,14 @@ def score_response(player: Player, response, draw):
     return score, earnings, accuracy, efficiency
 
 
-page_sequence = [Consent, Video, Instructions, Preview_Advice, Task_Intro, Pre_beliefs,  Mpl, Mpl_results, Advice, Post_beliefs, ThankYou, SelectedRound, Payoff]
+page_sequence = [Consent,
+                #Video,
+                Instructions,
+                 Preview_Advice,
+                 Task_Intro,
+                 Pre_beliefs,
+                 Mpl, Mpl_results,
+                 Advice, Post_beliefs,
+                 ThankYou,
+                 SelectedRound,
+                 Payoff]

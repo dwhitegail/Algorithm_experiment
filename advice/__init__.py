@@ -990,7 +990,7 @@ def score_response(player: Player, response, draw):
 
 
 page_sequence = [Consent,
-                #Video,
+                Video,
                 Instructions,
                  Preview_Advice,
                  Task_Intro,

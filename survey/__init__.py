@@ -37,6 +37,7 @@ class Qualtrics(Page):
     def vars_for_template(player):
         participant_code = player.participant.code
         session_code = player.session.code
+        participant_label = player.participant.label
         qualtrics_base_url = player.session.config['qualtrics_url']
         full_url_to_qualtrics = (
             f"{qualtrics_base_url}"

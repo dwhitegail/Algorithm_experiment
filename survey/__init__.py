@@ -1,6 +1,8 @@
 from otree.api import *
 from urllib.parse import quote
 
+from otree.constants import participant_label
+
 doc = """
 Your app description
 """
@@ -40,6 +42,7 @@ class Qualtrics(Page):
             f"{qualtrics_base_url}"
             f"?session_code={session_code}"
             f"&participant_code={participant_code}"
+            f"&user_name={participant_label}"
         )
 
         return {

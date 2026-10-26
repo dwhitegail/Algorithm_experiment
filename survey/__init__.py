@@ -43,7 +43,7 @@ class Qualtrics(Page):
             f"{qualtrics_base_url}"
             f"?session_code={session_code}"
             f"&participant_code={participant_code}"
-            f"&user_name={participant_label}"
+            f"&username={participant_label}"
         )
 
         return {

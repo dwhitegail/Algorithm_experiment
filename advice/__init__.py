@@ -168,6 +168,7 @@ class Pre_beliefs(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        bin_labels = json.loads(player.bin_labels)
         return dict(
             qid=player.qid,
             stimulus_path=f"shared_stimulus/{player.qid}.html",
@@ -175,7 +176,8 @@ class Pre_beliefs(Page):
             beta=player.beta,
             num_tokens=player.num_tokens,
             color=json.loads(player.color),
-            bin_labels=json.loads(player.bin_labels),
+            bin_labels=bin_labels,
+            initial_beliefs=[0] * len(bin_labels),
             display_round=1,  # ← always show "Round 1" for pre-beliefs
             report_number=player.round_number,
             endowment=f"{C.ENDOWMENT:.0f}",
@@ -444,6 +446,22 @@ class Post_beliefs(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        bin_labels = json.loads(player.bin_labels)
+        pre_round_map = {
+            3: 1,
+            4: 2,
+            7: 5,
+            8: 6,
+            11: 9,
+            12: 10,
+            15: 13,
+            16: 14,
+        }
+        pre_round = pre_round_map.get(player.round_number, player.round_number - 2)
+        pre_player = player.in_round(pre_round)
+        pre_beliefs_raw = pre_player.field_maybe_none('pre_beliefs')
+        initial_beliefs = json.loads(pre_beliefs_raw) if pre_beliefs_raw else [0] * len(bin_labels)
+
         return dict(
             qid=player.qid,
             stimulus_path=f"shared_stimulus/{player.qid}.html",
@@ -451,7 +469,8 @@ class Post_beliefs(Page):
             beta=player.beta,
             num_tokens=player.num_tokens,
             color=json.loads(player.color),
-            bin_labels=json.loads(player.bin_labels),
+            bin_labels=bin_labels,
+            initial_beliefs=initial_beliefs,
             display_round=2,  # ← always show "Round 2" for post-beliefs
             report_number=player.round_number,
             endowment=f"{C.ENDOWMENT:.0f}",

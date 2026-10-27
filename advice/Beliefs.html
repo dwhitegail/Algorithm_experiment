@@ -175,9 +175,13 @@
 
 {% block content %}
 {#    <div id="laptop_border"></div>#}
-    <p>
-        <span id="round_text"></span>
-    </p>
+<!--    <p>-->
+<!--        <span id="round_text"></span>-->
+<!--    </p>-->
+    <h5 style="font-weight: 700; color: #333; margin-bottom: 4px;">
+        <span id="round_main"></span>
+        <span id="round_sub" style="font-size: 0.75em; font-weight: 700; color: ##2979D0; margin-left: 10px;"></span>
+    </h5>
     <br>
 
     <div class="row">
@@ -338,10 +342,12 @@
 
         document.addEventListener( 'DOMContentLoaded', function() {
 
-            $('#round_text').text(    'Round ' + {{subsession.round_number}});
+            // $('#round_text').text(    'Round ' + {{subsession.round_number}});
+            //
+            // $('#round_text').text('Round ' + {{display_round}});
 
-            $('#round_text').text('Round ' + {{display_round}});
-
+            $('#round_main').text('Round ' + {{display_round}} + ' of 2 ');
+            $('#round_sub').text('(Report ' + {{report_number}} + ' of 16)');
             $('#submit_text').text(submit);
 
 

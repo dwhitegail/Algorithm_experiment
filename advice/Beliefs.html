@@ -21,11 +21,15 @@
             padding-top: 10px;
         }
 
-        .otree-body{
-            max-width: 1600px;
+        html body .otree-body,
+        html body .container.otree-body {
+            max-width: 1600px !important;
+            width: 100% !important;
         }
 
-        .bins{}
+        .bins {
+            flex-wrap: nowrap;
+        }
 
         .quantity {
             position: relative;
@@ -126,47 +130,86 @@
             height: 768px;
             z-index: -1;
         }
-            /* Optional written instructions panel */
-        .written-instructions {
-        max-width: 900px;
-        margin: 20px auto 5px auto;
-        border: 1px solid #b8cfe3;
-        border-radius: 6px;
-        background-color: #f8fbfd;
-        overflow: hidden;
+
+        /* Bottom tabs bar & collapsible content panels */
+        .bottom-tabs-bar {
+            display: flex;
+            gap: 15px;
+            max-width: 900px;
+            margin: 20px auto 5px auto;
+            justify-content: center;
+            align-items: stretch;
         }
 
-        /* Clickable tab */
-        .written-instructions summary {
-        cursor: pointer;
-        padding: 9px 15px;
-        background-color: #eef6fb;
-        color: #2b5f87;
-        font-size: 0.95rem;
-        font-weight: 600;
-        text-align: center;
-        transition: background-color 0.2s ease;
+        .bottom-tab-btn {
+            flex: 1 1 350px;
+            max-width: 100%;
+            cursor: pointer;
+            padding: 9px 15px;
+            border: 1px solid #b8cfe3;
+            border-radius: 6px;
+            background-color: #eef6fb;
+            color: #2b5f87;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            user-select: none;
         }
 
-        /* Hover effect */
-        .written-instructions summary:hover {
-        background-color: #e3f0f8;
+        .bottom-tab-btn:hover {
+            background-color: #e3f0f8;
         }
 
-        /* Content revealed when opened */
-        .written-instructions-content {
-        padding: 12px 20px 15px 20px;
-        background-color: #ffffff;
-        border-top: 1px solid #d8e4ed;
+        .bottom-tab-btn.active {
+            background-color: #d8ecf8;
+            border-color: #2979D0;
+        }
+
+        .bottom-tab-panel {
+            display: none;
+            max-width: 900px;
+            margin: 8px auto 10px auto;
+            padding: 12px 20px 15px 20px;
+            background-color: #ffffff;
+            border: 1px solid #b8cfe3;
+            border-radius: 6px;
+        }
+
+        .bottom-tab-panel.advice-panel-wide {
+            max-width: 1400px;
         }
 
         /* Small optional label */
         .instructions-label {
-        text-align: center;
-        color: #666;
-        font-size: 0.9rem;
-        font-style: italic;
-        margin-bottom: 15px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        /* Round 2 prior report banner & confirmation widget */
+        .prior-report-banner {
+            background-color: #eef6fb;
+            border: 1px solid #b8cfe3;
+            border-left: 4px solid #2979D0;
+            color: #1f4e78;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .prior-confirm-box {
+            display: inline-block;
+            background-color: #f8fbfd;
+            border: 1px solid #b8cfe3;
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin-bottom: 10px;
+            font-size: 0.92rem;
         }
 
 
@@ -182,7 +225,15 @@
         <span id="round_main"></span>
         <span id="round_sub" style="font-size: 0.75em; font-weight: 700; color: ##2979D0; margin-left: 10px;"></span>
     </h5>
+
+    {% if display_round == 2 %}
+    <div id="post_beliefs_banner" class="prior-report-banner">
+        <strong>Your Round 1 Allocation is Pre-Loaded Below:</strong>
+        The chart currently displays the token allocation from your first report on this question. You are free to adjust your tokens across the bins using the arrows below, or keep your previous allocation as is.
+    </div>
+    {% else %}
     <br>
+    {% endif %}
 
     <div class="row">
         <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center">
@@ -237,6 +288,15 @@
             <span id="unallocated_tokens"></span>
         </div>
         <div class="col-4" style="text-align: center">
+            {% if display_round == 2 %}
+            <div id="prior_confirm_widget" class="prior-confirm-box">
+                <label style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: #2b5f87;">
+                    <input type="checkbox" id="confirm_prior_checkbox" style="width: 17px; height: 17px; cursor: pointer;">
+                    <span>I have reviewed my Round 1 allocation and am ready to submit.</span>
+                </label>
+            </div>
+            <br id="prior_confirm_break">
+            {% endif %}
             <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
             {{ if DEBUG }}
             <br><br>
@@ -249,18 +309,41 @@
         </div>
     </div>
 
-<details class="written-instructions">
-    <summary>
-        📖 &nbsp; View Written Instructions
-    </summary>
+    <div class="bottom-tabs-bar">
+        <button type="button" class="bottom-tab-btn" id="btn_instructions_tab" onclick="toggleBottomTab('instructions')">
+            <span id="arrow_instructions">▸</span> &nbsp; 📖 &nbsp; View Written Instructions
+        </button>
 
-    <div class="written-instructions-content">
-
-        {{ include_sibling "instructions_div.html" }}
-
+        {% if display_round == 2 and advice_purchased %}
+        <button type="button" class="bottom-tab-btn" id="btn_advice_tab" onclick="toggleBottomTab('advice')">
+            <span id="arrow_advice">▸</span> &nbsp; 📋 &nbsp; View Advice
+        </button>
+        {% endif %}
     </div>
 
-</details>
+    <div class="bottom-tab-panel" id="panel_instructions">
+        {{ include_sibling "instructions_div.html" }}
+    </div>
+
+    {% if display_round == 2 and advice_purchased %}
+    <div class="bottom-tab-panel advice-panel-wide" id="panel_advice">
+        <div style="background: #1a1a2e; color: #D4AF37; border-radius: 8px;
+                    padding: 12px 20px; margin-bottom: 20px; text-align: center;">
+            <strong style="font-size: 1.1em;">
+                📋 Advice for: {{ advice_label }}
+            </strong>
+        </div>
+
+        {{ include advice_path }}
+        <style>
+            html body .otree-body,
+            html body .container.otree-body {
+                max-width: 1600px !important;
+                width: 100% !important;
+            }
+        </style>
+    </div>
+    {% endif %}
 
 {% endblock %}
 
@@ -276,6 +359,8 @@
         console.log(bin_labels);
         let num_bins = bin_labels.length;
         let initial_beliefs = {{initial_beliefs}};
+        let is_post_round = ({{display_round}} === 2);
+        let has_adjusted_tokens = false;
         let response = new Array(num_bins);
         let scores = new Array(num_bins);
         let allocated_tokens = 0;
@@ -304,8 +389,39 @@
         round_c = '';
         unallocated_text = 'Unallocated tokens: ';
         allocate_all = 'You must allocate all tokens before you are able to submit';
+        confirm_prior_text = 'Please adjust your tokens or check the confirmation box to submit';
         submit_text = 'Submit your decision or continue making choices';
         tokens = 'tokens';
+
+        function toggleBottomTab(tabName) {
+            const tabs = ['instructions', 'advice'];
+            tabs.forEach(function(name) {
+                const btn = document.getElementById('btn_' + name + '_tab');
+                const panel = document.getElementById('panel_' + name);
+                const arrow = document.getElementById('arrow_' + name);
+                if (!btn || !panel) return;
+
+                if (name === tabName) {
+                    const isOpen = (panel.style.display === 'block');
+                    panel.style.display = isOpen ? 'none' : 'block';
+                    btn.classList.toggle('active', !isOpen);
+                    if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+                } else {
+                    panel.style.display = 'none';
+                    btn.classList.remove('active');
+                    if (arrow) arrow.textContent = '▸';
+                }
+            });
+        }
+
+        function mark_tokens_adjusted() {
+            if (!has_adjusted_tokens) {
+                has_adjusted_tokens = true;
+                $('#post_beliefs_banner').hide();
+                $('#prior_confirm_widget').hide();
+                $('#prior_confirm_break').hide();
+            }
+        }
 
         function scoring_rule(index) {
             //console.log('in scoring rule')
@@ -332,13 +448,19 @@
                 // update hidden form field
                  $("#response").val(JSON.stringify(response));
 
-                // enable submit button if all tokens allocated
-                if (unallocated_tokens==0) {
-                    $('#submit').prop('disabled', false);
-                    $('#directions').text(submit_text)
+                // enable submit button if all tokens allocated (and confirmed if unchanged in Round 2)
+                if (unallocated_tokens == 0) {
+                    let is_confirmed = !is_post_round || has_adjusted_tokens || $('#confirm_prior_checkbox').is(':checked');
+                    if (is_confirmed) {
+                        $('#submit').prop('disabled', false);
+                        $('#directions').text(submit_text);
+                    } else {
+                        $('#submit').prop('disabled', true);
+                        $('#directions').text(confirm_prior_text);
+                    }
                 } else {
                     $('#submit').prop('disabled', true);
-                    $('#directions').text(allocate_all)
+                    $('#directions').text(allocate_all);
                 }
         };
 
@@ -351,6 +473,10 @@
             $('#round_main').text('Round ' + {{display_round}} + ' of 2 ');
             $('#round_sub').text('(Report ' + {{report_number}} + ' of 16)');
             $('#submit_text').text(submit);
+
+            $('#confirm_prior_checkbox').on('change', function() {
+                response_changed();
+            });
 
 
             my_chart = Highcharts.chart('chart_container', {
@@ -511,6 +637,7 @@
                                     unallocated_tokens -= 1;
                                     console.log(response)
                                     response[bin_num] += 1;
+                                    mark_tokens_adjusted();
                                     response_changed();
                                 }
                                 $('#tokens_span_'+bin_num).text(newVal);
@@ -553,6 +680,7 @@
                                     newVal = oldValue - 1;
                                     unallocated_tokens += 1;
                                     response[bin_num] -= 1;
+                                    mark_tokens_adjusted();
                                     response_changed();
                                 }
                                 $('#tokens_span_'+bin_num).text(newVal);
@@ -628,9 +756,9 @@
                         $('#tokens_span_' + b).text(response[b]);
                     }
                 }
-
-                response_changed();
             }
+            mark_tokens_adjusted();
+            response_changed();
             $('#submit').click();
         }
 

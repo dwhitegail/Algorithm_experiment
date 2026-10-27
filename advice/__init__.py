@@ -169,6 +169,7 @@ class Pre_beliefs(Page):
     @staticmethod
     def vars_for_template(player: Player):
         bin_labels = json.loads(player.bin_labels)
+        advice_vars = Advice.vars_for_template(player)
         return dict(
             qid=player.qid,
             stimulus_path=f"shared_stimulus/{player.qid}.html",
@@ -182,6 +183,12 @@ class Pre_beliefs(Page):
             report_number=player.round_number,
             endowment=f"{C.ENDOWMENT:.0f}",
             DEBUG=settings.DEBUG,
+            advice_purchased=False,
+            advice_path=advice_vars['advice_path'],
+            treatment=advice_vars['treatment'],
+            al_advice_source=advice_vars['al_advice_source'],
+            song_title=advice_vars['song_title'],
+            advice_label=advice_vars['advice_label'],
         )
 
 class Preview_Advice(Page):
@@ -462,6 +469,9 @@ class Post_beliefs(Page):
         pre_beliefs_raw = pre_player.field_maybe_none('pre_beliefs')
         initial_beliefs = json.loads(pre_beliefs_raw) if pre_beliefs_raw else [0] * len(bin_labels)
 
+        advice_purchased = Advice.is_displayed(player)
+        advice_vars = Advice.vars_for_template(player)
+
         return dict(
             qid=player.qid,
             stimulus_path=f"shared_stimulus/{player.qid}.html",
@@ -475,6 +485,12 @@ class Post_beliefs(Page):
             report_number=player.round_number,
             endowment=f"{C.ENDOWMENT:.0f}",
             DEBUG=settings.DEBUG,
+            advice_purchased=advice_purchased,
+            advice_path=advice_vars['advice_path'],
+            treatment=advice_vars['treatment'],
+            al_advice_source=advice_vars['al_advice_source'],
+            song_title=advice_vars['song_title'],
+            advice_label=advice_vars['advice_label'],
         )
 
 

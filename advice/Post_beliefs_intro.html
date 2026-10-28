@@ -2,18 +2,53 @@
 {% load otree %}
 
 {% block content %}
-<div style="max-width: 960px; margin: 40px auto; padding: 0 40px;">
+
+<style>
+    #content, .container, .otree-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+    }
+</style>
+
+<div style="max-width: 1200px; margin: 40px auto; padding: 0 24px;">
 
     <div style="border-bottom: 2px solid #2979D0; padding-bottom: 20px; margin-bottom: 32px;">
         <h2 style="font-weight: 700; color: #1a1a2e; margin: 0 0 10px 0; font-size: 1.8rem;">
             Round 1 Complete — {{ task_name }} Task ({{ photo_label }})
         </h2>
-        <p style="margin: 0 0 16px 0; color: #555; font-size: 1.5rem; line-height: 1.7;">
-            You have completed <strong>Round 1</strong> for the <strong>{{ task_name }} Task ({{ photo_label }})</strong>. <br>If you purchased and received advice,
-            you will still have access to advice via an <strong>advice tab</strong> as illustrated below. <br>
-            The advice tab is at the bottom of the next (Round 2) page for your reference.
+        <p style="margin: 0 0 16px 0; color: #555; font-size: 1.2rem; line-height: 1.7;">
+            You have completed <strong>Round 1</strong> for the <strong>{{ task_name }} Task ({{ photo_label }})</strong>. <br><br>
+            ON THE NEXT PAGE: You will see your
+                <span style="
+                    display: inline-block;
+                    background: #FFE600;
+                    color: #1a1a2e;
+                    font-weight: 700;
+                    font-size: 1.2rem;
+                    padding: 3px 12px;
+                    border-radius: 4px;
+                    vertical-align: middle;
+                ">Round 1 allocation preloaded into Round 2</span>
+                as shown in the example below.<br><br>
+
+            If you purchased and received advice, you will still have access to it via the
+            <span style="
+                display: inline-block;
+                background: #E8F0FE;
+                color: #1a1a2e;
+                font-weight: 600;
+                font-size: 1.1rem;
+                padding: 4px 14px;
+                border-radius: 4px;
+                border: 1px solid #2979D0;
+                vertical-align: middle;
+            ">Advice Tab</span>
+            located at the bottom of the page. <br>
+            If you did NOT purchase advice, you will see everything else except the advice tab.
         </p>
-        <img src="{% static 'advice/post_belief_into.png' %}"
+        <img src="{% static 'post_belief_intro.jpg' %}"
              alt="Advice tab illustration"
              style="max-width: 100%; border: 1px solid #dce3f0; border-radius: 6px; display: block;">
     </div>
@@ -28,8 +63,7 @@
         <p style="margin: 0 0 14px 0; font-size: 1.5rem; color: #1a1a2e;">
             <strong>What happens next:</strong>
         </p>
-        <ul style="margin: 0; padding-left: 24px; color: #333; font-size: 1.5rem; line-height: 2.2;">
-            <li>ON THE NEXT PAGE: You will see your token allocation from <strong>Round 1</strong> which has been pre-loaded.</li>
+        <ul style="margin: 0; padding-left: 24px; color: #333; font-size: 1.3rem; line-height: 2.2;">
             <li>You may <strong>adjust your tokens</strong> to update your beliefs, or <strong>keep your previous (Round 1) allocation</strong>.</li>
             <li>Your Round 2 report will be submitted when you click <strong>Submit</strong>.</li>
         </ul>

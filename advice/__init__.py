@@ -302,9 +302,8 @@ class Advice(Page):
     #     )
 
     @staticmethod
-    def is_displayed(player):
-        # Show advice on MPL round AND the round immediately after
-        # BUT only if advice was purchased on the MPL round of this task
+    def is_advice_purchased(player):
+        # Check whether advice was purchased on the MPL round of this task
         advice_rounds = {
             3:  2,   # weight task MPL round
             4:  2,   # weight task carry-over → check round 2 for purchase
@@ -319,8 +318,12 @@ class Advice(Page):
         if r not in advice_rounds:
             return False
         mpl_round = advice_rounds[r]
-        purchased = player.in_round(mpl_round).advice_purchased
-        return purchased
+        return player.in_round(mpl_round).advice_purchased
+
+    @staticmethod
+    def is_displayed(player):
+        # Show Q1 advice at the start of each task's post-belief phase if advice was purchased
+        return player.round_number in [3, 7, 11, 15] and Advice.is_advice_purchased(player)
 
 
     @staticmethod
@@ -413,11 +416,28 @@ class Advice(Page):
             advice_label=advice_label,
         )
 
+
+class Advice_Q2(Page):
+    form_model = 'player'
+    template_name = 'advice/Advice.html'
+
+    @staticmethod
+    def is_displayed(player):
+        # Show Q2 advice immediately after Q1 advice at the start of each task's post-belief phase
+        return player.round_number in [3, 7, 11, 15] and Advice.is_advice_purchased(player)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        q2_player = player.in_round(player.round_number + 1)
+        return Advice.vars_for_template(q2_player)
+
+
 class Post_beliefs_intro(Page):
 
     @staticmethod
     def is_displayed(player):
-        return player.round_number in [3, 4, 7, 8, 11, 12, 15, 16]
+        # Show once per task before the two Round 2 post-belief reports
+        return player.round_number in [3, 7, 11, 15]
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -492,7 +512,7 @@ class Post_beliefs(Page):
         pre_beliefs_raw = pre_player.field_maybe_none('pre_beliefs')
         initial_beliefs = json.loads(pre_beliefs_raw) if pre_beliefs_raw else [0] * len(bin_labels)
 
-        advice_purchased = Advice.is_displayed(player)
+        advice_purchased = Advice.is_advice_purchased(player)
         advice_vars = Advice.vars_for_template(player)
 
         return dict(
@@ -885,7 +905,7 @@ def creating_session(subsession: Subsession):
             pair.sort(key=lambda q: q[0])
             song_pairs.append(pair)
 
-    # song_questions = [q for q in questions if q[0].startswith('song')]
+    # song_questions = [q for q in questions if q[0].startswith('song')]\
     # song_pairs = [
     #     song_questions[i:i + 2]
     #     for i in range(0, len(song_questions) - 1, 2)
@@ -1056,7 +1076,7 @@ page_sequence = [Consent,
                  Task_Intro,
                  Pre_beliefs,
                  Mpl, Mpl_results,
-                 Advice, Post_beliefs_intro, Post_beliefs,
+                 Advice, Advice_Q2, Post_beliefs_intro, Post_beliefs,
                  ThankYou,
                  SelectedRound,
                  Payoff]

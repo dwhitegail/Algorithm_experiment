@@ -16,41 +16,52 @@
 
     <div style="border-bottom: 2px solid #2979D0; padding-bottom: 20px; margin-bottom: 32px;">
         <h2 style="font-weight: 700; color: #1a1a2e; margin: 0 0 10px 0; font-size: 1.8rem;">
-            Round 1 Complete — {{ task_name }} Task ({{ photo_label }})
+            Round 1 Complete — {{ task_name }} Task <br>
         </h2>
         <p style="margin: 0 0 16px 0; color: #555; font-size: 1.2rem; line-height: 1.7;">
-            You have completed <strong>Round 1</strong> for the <strong>{{ task_name }} Task ({{ photo_label }})</strong>. <br><br>
-            ON THE NEXT PAGE: You will see your
-                <span style="
-                    display: inline-block;
-                    background: #FFE600;
-                    color: #1a1a2e;
-                    font-weight: 700;
-                    font-size: 1.2rem;
-                    padding: 3px 12px;
-                    border-radius: 4px;
-                    vertical-align: middle;
-                ">Round 1 allocation preloaded into Round 2</span>
-                as shown in the example below.<br><br>
+            YOU HAVE COMPLETED <strong>Round 1</strong> for the <strong>{{ task_name }} Task </strong>. <br>
+<!--            <strong>ON THE NEXT PAGE</strong>: You will see your-->
+<!--                <span style="-->
+<!--                    display: inline-block;-->
+<!--                    background: #FFE600;-->
+<!--                    color: #1a1a2e;-->
+<!--                    font-weight: 700;-->
+<!--                    font-size: 1.2rem;-->
+<!--                    padding: 3px 12px;-->
+<!--                    border-radius: 4px;-->
+<!--                    vertical-align: middle;-->
+<!--                ">Round 1 allocation preloaded into Round 2</span>-->
+<!--                as shown in the example below.<br><br>-->
+<!--            If you want your Round 2 allocations to remain the same as in Round 1, then check the box that states-->
+<!--            <span style="-->
+<!--                    display: inline-block;-->
+<!--                    background: #E8F0FE;-->
+<!--                    color: #1a1a2e;-->
+<!--                    font-weight: 700;-->
+<!--                    font-size: 1.2rem;-->
+<!--                    padding: 3px 12px;-->
+<!--                    border-radius: 4px;-->
+<!--                    border: 1px solid #2979D0;-->
+<!--                    vertical-align: middle;-->
+<!--                ">I have reviewed my Round 1 allocation and am ready to submit.</span>-->
+<!--                This button is located just above the "Submit" button.<br><br>-->
 
-            If you purchased and received advice, you will still have access to it via the
-            <span style="
-                display: inline-block;
-                background: #E8F0FE;
-                color: #1a1a2e;
-                font-weight: 600;
-                font-size: 1.1rem;
-                padding: 4px 14px;
-                border-radius: 4px;
-                border: 1px solid #2979D0;
-                vertical-align: middle;
-            ">Advice Tab</span>
-            located at the bottom of the page. <br>
-            If you did NOT purchase advice, you will see everything else except the advice tab.
-        </p>
-        <img src="{% static 'post_belief_intro.jpg' %}"
-             alt="Advice tab illustration"
-             style="max-width: 100%; border: 1px solid #dce3f0; border-radius: 6px; display: block;">
+<!--            If you purchased and received advice, you will still have access to it via the-->
+<!--            <span style="-->
+<!--                display: inline-block;-->
+<!--                background: #E8F0FE;-->
+<!--                color: #1a1a2e;-->
+<!--                font-weight: 600;-->
+<!--                font-size: 1.1rem;-->
+<!--                padding: 4px 14px;-->
+<!--                border-radius: 4px;-->
+<!--                border: 1px solid #2979D0;-->
+<!--                vertical-align: middle;-->
+<!--            ">Advice Tab</span>-->
+<!--            located at the bottom of the page. <br>-->
+<!--            If you did NOT purchase advice, you will see everything else except the advice tab.-->
+<!--        </p>-->
+
     </div>
 
     <div style="
@@ -64,9 +75,52 @@
             <strong>What happens next:</strong>
         </p>
         <ul style="margin: 0; padding-left: 24px; color: #333; font-size: 1.3rem; line-height: 2.2;">
+            <li><strong>ON THE NEXT PAGE</strong>: You will see your
+                <span style="
+                    display: inline-block;
+                    background: #FFE600;
+                    color: #1a1a2e;
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    padding: 3px 12px;
+                    border-radius: 4px;
+                    vertical-align: middle;
+                ">Round 1 allocation preloaded into Round 2</span>
+                as shown in the example below.</li>
             <li>You may <strong>adjust your tokens</strong> to update your beliefs, or <strong>keep your previous (Round 1) allocation</strong>.</li>
+            <li>If you want to keep your previous Round 1 allocations in Round 2, then check the box that states
+            <span style="
+                    display: inline-block;
+                    background: #E8F0FE;
+                    color: #1a1a2e;
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    padding: 3px 12px;
+                    border-radius: 4px;
+                    border: 1px solid #2979D0;
+                    vertical-align: middle;
+                ">I have reviewed my Round 1 allocation and am ready to submit.</span>
+                This box is located just above the "Submit" button.</li>
+            <li>If you purchased and received advice, you will still have access to it via the
+            <span style="
+                display: inline-block;
+                background: #E8F0FE;
+                color: #1a1a2e;
+                font-weight: 600;
+                font-size: 1.1rem;
+                padding: 4px 14px;
+                border-radius: 4px;
+                border: 1px solid #2979D0;
+                vertical-align: middle;
+            ">Advice Tab</span>
+            located at the bottom of the page. <br>
+            <li>If you did NOT purchase advice, you will see everything else except the advice tab.</li>
             <li>Your Round 2 report will be submitted when you click <strong>Submit</strong>.</li>
         </ul>
+
+        <img src="{% static 'post_pic.jpg' %}"
+             alt="Advice tab illustration"
+             style="max-width: 100%; border: 1px solid #dce3f0; border-radius: 6px; display: block;">
     </div>
 
     <div style="text-align: center;">

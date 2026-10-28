@@ -413,6 +413,29 @@ class Advice(Page):
             advice_label=advice_label,
         )
 
+class Post_beliefs_intro(Page):
+
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number in [3, 4, 7, 8, 11, 12, 15, 16]
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        task_info = {
+            3:  {'task': 'Weight',  'photo': 'Photo 1'},
+            4:  {'task': 'Weight',  'photo': 'Photo 2'},
+            7:  {'task': 'Height',  'photo': 'Photo 1'},
+            8:  {'task': 'Height',  'photo': 'Photo 2'},
+            11: {'task': 'Urn',     'photo': 'Sample 1'},
+            12: {'task': 'Urn',     'photo': 'Sample 2'},
+            15: {'task': 'Song',    'photo': 'Song 1'},
+            16: {'task': 'Song',    'photo': 'Song 2'},
+        }
+        info = task_info.get(player.round_number, {'task': '', 'photo': ''})
+        return dict(
+            task_name=info['task'],
+            photo_label=info['photo'],
+        )
 
 class Post_beliefs(Page):
     form_model = 'player'
@@ -1033,7 +1056,7 @@ page_sequence = [Consent,
                  Task_Intro,
                  Pre_beliefs,
                  Mpl, Mpl_results,
-                 Advice, Post_beliefs,
+                 Advice, Post_beliefs_intro, Post_beliefs,
                  ThankYou,
                  SelectedRound,
                  Payoff]

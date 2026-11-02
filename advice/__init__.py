@@ -1000,7 +1000,11 @@ def creating_session(subsession: Subsession):
         p.display_round = 1
 
         layout_input = str(question_data[3]).lower() if len(question_data) > 3 else 'h'
-        p.layout = 'h' if layout_input in ['h', 'horizontal'] else 'v'
+
+        if p.qid.startswith('urn'):
+            p.layout = 'h'
+        else:
+            p.layout = 'h' if layout_input in ['h', 'horizontal'] else 'v'
 
         p.pre_BLP_draw  = round(random.uniform(0, 100), 2)
         p.post_BLP_draw = round(random.uniform(0, 100), 2)

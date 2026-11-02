@@ -213,6 +213,45 @@
         }
 
 
+                /* ---------- Round 2 left column: smaller photo, bigger table ---------- */
+
+        /* Shrink the task photograph (any image in the left column except the table) */
+        .round2-left img:not(.algorithm-table-image) {
+            max-height: 400px !important;   /* adjust: smaller number = smaller photo */
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Let the advice table use the full column width */
+        .round2-algorithm-table {
+            width: 100%;
+            max-width: 85%;
+            margin: 14px auto 18px;
+            text-align: center;
+        }
+
+        .algorithm-table-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .round2-left img.algorithm-table-image {
+            display: block;
+            width: 100% !important;
+            max-width: none !important;
+            height: auto !important;
+            margin: 0 auto;
+            image-rendering: -webkit-optimize-contrast;  /* sharper upscaling in Chrome */
+        }
+
+
+
     </style>
 {% endblock %}
 
@@ -235,10 +274,41 @@
     <br>
     {% endif %}
 
+<!--    <div class="row">-->
+<!--        <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center">-->
+<!--            {{ include stimulus_path | safe }}-->
+<!--        </div>-->
+
+
     <div class="row">
-        <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center">
+
+        <!-- LEFT SIDE: Photograph and Algorithmic Advice -->
+        <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center {% if display_round == 2 %}round2-left{% endif %}">
+
+            <!-- Existing task photograph -->
             {{ include stimulus_path | safe }}
+
+            <!-- Algorithmic advice table for Round 2 only -->
+            {% if display_round == 2 and algorithm_table_image %}
+
+            <div class="round2-algorithm-table">
+
+                <div class="algorithm-table-title">
+                    Algorithmic Advice — Token Allocation
+                </div>
+
+                <img
+                    src="{% static algorithm_table_image %}"
+                    alt="Algorithmic advice token allocation"
+                    class="algorithm-table-image"
+                >
+
+            </div>
+
+            {% endif %}
+
         </div>
+
 
         {% if player.layout == 'h' %}
         <div class="col-7">

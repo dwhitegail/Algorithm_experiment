@@ -515,6 +515,26 @@ class Post_beliefs(Page):
         advice_purchased = Advice.is_advice_purchased(player)
         advice_vars = Advice.vars_for_template(player)
 
+        # Select the matching algorithmic advice table image
+        source_names = {
+            0: 'claude',
+            1: 'gemini',
+            2: 'chatgpt',
+        }
+
+        source_name = source_names.get(player.al_advice_source)
+
+        algorithm_table_image = None
+
+        if (
+                advice_purchased
+                and player.treatment == 'algorithmic'
+                and source_name is not None
+        ):
+            algorithm_table_image = (
+                f"algorithm_tables/{player.qid}_{source_name}.png"
+            )
+
         return dict(
             qid=player.qid,
             stimulus_path=f"shared_stimulus/{player.qid}.html",
@@ -534,6 +554,7 @@ class Post_beliefs(Page):
             al_advice_source=advice_vars['al_advice_source'],
             song_title=advice_vars['song_title'],
             advice_label=advice_vars['advice_label'],
+            algorithm_table_image=algorithm_table_image,
         )
 
 

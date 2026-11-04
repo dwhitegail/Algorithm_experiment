@@ -213,11 +213,11 @@
         }
 
 
-                /* ---------- Round 2 left column: smaller photo, bigger table ---------- */
+        /* ---------- Round 2 left column: compact stimulus + read-only advice histogram ---------- */
 
-        /* Shrink the task photograph (any image in the left column except the table) */
+        /* Shrink the task photograph in Round 2 so the advice histogram fits underneath */
         .round2-left img:not(.algorithm-table-image) {
-            max-height: 400px !important;   /* adjust: smaller number = smaller photo */
+            max-height: 310px !important;
             width: auto !important;
             height: auto !important;
             max-width: 100% !important;
@@ -226,31 +226,74 @@
             margin: 0 auto;
         }
 
-        /* Let the advice table use the full column width */
-        .round2-algorithm-table {
+        .round2-advice-widget {
             width: 100%;
-            max-width: 85%;
-            margin: 14px auto 18px;
-            text-align: center;
+            margin: 14px auto 10px;
+            padding: 12px 10px 10px 10px;
+            background: #ffffff;
+            border: 1px solid #d1dce5;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
         .algorithm-table-title {
             font-size: 15px;
             font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 2px;
         }
 
-        .round2-left img.algorithm-table-image {
+        .round2-advice-subtitle {
+            font-size: 12.5px;
+            font-style: italic;
+            color: #4b5563;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .round2-advice-bins {
+            flex-wrap: nowrap;
+            margin-top: 2px;
+        }
+
+        .round2-advice-token-cell {
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.15;
+            color: #1f2937;
+            padding: 5px 1px;
+            margin: 0 1.5px;
+            background-color: #eef6fb;
+            border: 1px solid #b8cfe3;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .round2-advice-token-cell .tok-num {
+            font-weight: 800;
+            font-size: 14.5px;
+            color: #1f4e78;
             display: block;
-            width: 100% !important;
-            max-width: none !important;
-            height: auto !important;
-            margin: 0 auto;
-            image-rendering: -webkit-optimize-contrast;  /* sharper upscaling in Chrome */
         }
 
+        .round2-advice-token-cell .tok-lbl {
+            font-size: 10.5px;
+            color: #4b5563;
+            display: block;
+            margin-top: 1px;
+        }
 
+        .right-submit-section {
+            margin-top: 62px;
+            text-align: center;
+        }
+
+        .directions-status {
+            margin-top: 8px;
+            font-size: 0.92rem;
+            color: #4b5563;
+        }
 
     </style>
 {% endblock %}
@@ -262,7 +305,7 @@
 <!--    </p>-->
     <h5 style="font-weight: 700; color: #333; margin-bottom: 4px;">
         <span id="round_main"></span>
-        <span id="round_sub" style="font-size: 0.75em; font-weight: 700; color: ##2979D0; margin-left: 10px;"></span>
+        <span id="round_sub" style="font-size: 0.75em; font-weight: 700; color: #2979D0; margin-left: 10px;"></span>
     </h5>
 
     {% if display_round == 2 %}
@@ -274,31 +317,31 @@
     <br>
     {% endif %}
 
+    {{ for field in form }}
+        <input type="hidden" name={{field.name}} id="response" />
+    {{ endfor }}
+
     <div class="row">
 
-        <!-- LEFT SIDE: Photograph and Algorithmic Advice -->
+        <!-- LEFT SIDE: Stimulus and (in Round 2 if purchased) Read-Only Advice Histogram -->
         <div class="{% if player.layout == 'h' %}col-5{% else %}col-12{% endif %} justify-content-center {% if display_round == 2 %}round2-left{% endif %}">
 
-            <!-- Existing task photograph -->
+            <!-- Existing task stimulus -->
             {{ include stimulus_path | safe }}
 
-            <!-- Algorithmic advice table for Round 2 only -->
-            {% if display_round == 2 and algorithm_table_image %}
-
-            <div class="round2-algorithm-table">
-
+            <!-- Read-only advice histogram for Round 2 (both Algorithmic and Human treatments) -->
+            {% if display_round == 2 and advice_purchased %}
+            <div class="round2-advice-widget">
                 <div class="algorithm-table-title">
-                    Algorithmic Advice — Token Allocation
+                    {{ advice_short_title }}
+                </div>
+                <div class="round2-advice-subtitle">
+                    {{ advice_subheader }}
                 </div>
 
-                <img
-                    src="{% static algorithm_table_image %}"
-                    alt="Algorithmic advice token allocation"
-                    class="algorithm-table-image"
-                >
-
+                <div id="round2_advice_chart_container"></div>
+                <div class="row round2-advice-bins g-0" id="round2_advice_tokens_div"></div>
             </div>
-
             {% endif %}
 
         </div>
@@ -313,9 +356,31 @@
                 </h5>
             </div>
             <div id="chart_container"></div>
-            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+            <div class="row bins main-bins" id="tokens_div" style="font-size:14px"></div>
             <br>
-            <div class="row bins" id="input_div"></div>
+            <div class="row bins main-bins" id="input_div"></div>
+
+            <!-- Shifted confirmation checkbox, Submit button, and status message directly under right-hand reporting widget -->
+            <div class="right-submit-section">
+                {% if display_round == 2 %}
+                <div id="prior_confirm_widget" class="prior-confirm-box">
+                    <label style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: #2b5f87;">
+                        <input type="checkbox" id="confirm_prior_checkbox" style="width: 17px; height: 17px; cursor: pointer;">
+                        <span>I have reviewed my Round 1 allocation and am ready to submit.</span>
+                    </label>
+                </div>
+                <br id="prior_confirm_break">
+                {% endif %}
+                <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
+                <div class="directions-status">
+                    <span id="directions"></span>
+                </div>
+                {{ if DEBUG }}
+                <div style="margin-top: 12px;">
+                    <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.05rem; padding: 8px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button>
+                </div>
+                {{ endif }}
+            </div>
         </div>
         {% endif %}
     </div>
@@ -332,63 +397,57 @@
                 </h5>
             </div>
             <div id="chart_container"></div>
-            <div class="row bins" id="tokens_div" style="font-size:14px"></div>
+            <div class="row bins main-bins" id="tokens_div" style="font-size:14px"></div>
             <br>
-            <div class="row bins" id="input_div"></div>
+            <div class="row bins main-bins" id="input_div"></div>
+
+            <div class="right-submit-section">
+                {% if display_round == 2 %}
+                <div id="prior_confirm_widget" class="prior-confirm-box">
+                    <label style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: #2b5f87;">
+                        <input type="checkbox" id="confirm_prior_checkbox" style="width: 17px; height: 17px; cursor: pointer;">
+                        <span>I have reviewed my Round 1 allocation and am ready to submit.</span>
+                    </label>
+                </div>
+                <br id="prior_confirm_break">
+                {% endif %}
+                <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
+                <div class="directions-status">
+                    <span id="directions"></span>
+                </div>
+                {{ if DEBUG }}
+                <div style="margin-top: 12px;">
+                    <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.05rem; padding: 8px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button>
+                </div>
+                {{ endif }}
+            </div>
         </div>
     </div>
     {% endif %}
 
     <br>
 
-
-    {{ for field in form }}
-        <input type="hidden" name={{field.name}} id="response" />
-    {{ endfor }}
-
-{#    <div id="submit_div">#}
-    <div class="row">
-        <div class="col-4" style="text-align: left">
-            <span id="unallocated_tokens"></span>
-        </div>
-        <div class="col-4" style="text-align: center">
-            {% if display_round == 2 %}
-            <div id="prior_confirm_widget" class="prior-confirm-box">
-                <label style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: #2b5f87;">
-                    <input type="checkbox" id="confirm_prior_checkbox" style="width: 17px; height: 17px; cursor: pointer;">
-                    <span>I have reviewed my Round 1 allocation and am ready to submit.</span>
-                </label>
-            </div>
-            <br id="prior_confirm_break">
-            {% endif %}
-            <button id="submit" class="otree-btn-next btn btn-primary" disabled><span id="submit_text"></span></button>
-            {{ if DEBUG }}
-            <br><br>
-            <button type="button" class="btn btn-warning btn-sm" onclick="devAutoFill()" style="font-size: 1.2rem; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">DEV: Auto-Fill Randomly (or press SPACE)</button>
-            {{ endif }}
-        </div>
-
-        <div class="col-4" style="text-align: right">
-            <span id="directions">t</span>
-        </div>
-    </div>
-
     <div class="bottom-tabs-bar">
         <button type="button" class="bottom-tab-btn" id="btn_instructions_tab" onclick="toggleBottomTab('instructions')">
             <span id="arrow_instructions">▸</span> &nbsp; 📖 &nbsp; View Written Instructions
         </button>
 
+        {# Commented out View Advice tab per refactoring specification #}
+        {% comment %}
         {% if display_round == 2 and advice_purchased %}
         <button type="button" class="bottom-tab-btn" id="btn_advice_tab" onclick="toggleBottomTab('advice')">
             <span id="arrow_advice">▸</span> &nbsp; 📋 &nbsp; View Advice
         </button>
         {% endif %}
+        {% endcomment %}
     </div>
 
     <div class="bottom-tab-panel" id="panel_instructions">
         {{ include_sibling "instructions_div.html" }}
     </div>
 
+    {# Commented out View Advice panel per refactoring specification #}
+    {% comment %}
     {% if display_round == 2 and advice_purchased %}
     <div class="bottom-tab-panel advice-panel-wide" id="panel_advice">
         <div style="background: #1a1a2e; color: #D4AF37; border-radius: 8px;
@@ -408,6 +467,7 @@
         </style>
     </div>
     {% endif %}
+    {% endcomment %}
 
 {% endblock %}
 
@@ -542,6 +602,16 @@
                 response_changed();
             });
 
+            function sliderRowMargins() {
+                if (!my_chart || !my_chart.xAxis || !my_chart.xAxis[0]) return {};
+                let leftInt = my_chart.xAxis[0].toPixels(-0.5,false) - my_chart.container.clientLeft;
+                let rightInt = my_chart.container.clientWidth - my_chart.xAxis[0].toPixels(num_bins - 0.5,false);
+
+                return {
+                    'margin-left': (leftInt) + 'px',
+                    'margin-right': (rightInt) + 'px',
+                }
+            }
 
             my_chart = Highcharts.chart('chart_container', {
                 title: {
@@ -551,6 +621,11 @@
                     type: "column",
                     animation: false,
                     marginTop: 40,  // Extra space so that bar labels are not cropped when always on top of bar.
+                    events: {
+                        render: function() {
+                            $('.main-bins').css(sliderRowMargins());
+                        }
+                    }
                 },
                 // colors: ['#faa71b'],
                 // colors: [getComputedStyle(document.documentElement,null).getPropertyValue(color[0])],
@@ -582,14 +657,21 @@
                 xAxis: {
                     tickLength: 0,
                     labels: {
+                        rotation: 0,
+                        autoRotation: false,
                         style: {
                             fontSize: "14px",
                             fontWeight: "normal",
+                            textAlign: "center",
                             textShadow: "0px",
                             textOutline: "none",
                         },
                         formatter: function () {
-                            return bin_labels[this.value]
+                            let lbl = String(bin_labels[this.value] || '');
+                            lbl = lbl.replace(/(\d)\s+lbs/i, '$1<br>lbs');
+                            lbl = lbl.replace(/^Under\s+5'0"/i, "Under<br>5'0\"");
+                            lbl = lbl.replace(/10th\s+or\s+higher/i, '10th or<br>higher');
+                            return lbl;
                         }
                     }
                 },
@@ -621,21 +703,127 @@
                 },
             });
 
+            $('.main-bins').css(sliderRowMargins());
 
-            function sliderRowMargins() {
-                let leftInt = -30
-                let rightInt = 0
-
-                leftInt = my_chart.xAxis[0].toPixels(-0.5,false) - my_chart.container.clientLeft
-                rightInt = my_chart.container.clientWidth - my_chart.xAxis[0].toPixels(num_bins - 0.5,false)
-
-                return {
-                    'margin-left': (leftInt) + 'px',
-                    'margin-right': (rightInt) + 'px',
+            // Render read-only Advice histogram in Round 2 left column if present
+            const adviceChartEl = document.getElementById('round2_advice_chart_container');
+            if (adviceChartEl) {
+                const advice_tokens = {{ advice_tokens }};
+                let adv_ss = 0;
+                for (let b = 0; b < num_bins; b++) {
+                    adv_ss += Math.pow(advice_tokens[b] / num_tokens, 2);
                 }
-            }
+                const advice_scores = new Array(num_bins);
+                for (let b = 0; b < num_bins; b++) {
+                    advice_scores[b] = alpha + beta * ((2 * (advice_tokens[b] / num_tokens)) - adv_ss);
+                }
 
-            $('.bins').css(sliderRowMargins());
+                function syncRound2AdviceMargins(chart) {
+                    if (!chart || !chart.xAxis || !chart.xAxis[0]) return;
+                    const leftInt = chart.xAxis[0].toPixels(-0.5, false) - chart.container.clientLeft;
+                    const rightInt = chart.container.clientWidth - chart.xAxis[0].toPixels(num_bins - 0.5, false);
+                    $('.round2-advice-bins').css({
+                        'margin-left': leftInt + 'px',
+                        'margin-right': rightInt + 'px'
+                    });
+                }
+
+                const round2_advice_chart = Highcharts.chart('round2_advice_chart_container', {
+                    title: { text: '' },
+                    chart: {
+                        type: 'column',
+                        animation: false,
+                        height: 225,
+                        marginTop: 15,
+                        spacingBottom: 6,
+                        events: {
+                            render: function() {
+                                syncRound2AdviceMargins(this);
+                            }
+                        }
+                    },
+                    colors: ['#6495ED'],
+                    plotOptions: {
+                        series: {
+                            animation: false,
+                            enableMouseTracking: false,
+                            states: {
+                                hover: { enabled: false }
+                            }
+                        },
+                        column: {
+                            maxPointWidth: 60,
+                            dataLabels: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    tooltip: { enabled: false },
+                    xAxis: {
+                        tickLength: 0,
+                        min: 0,
+                        max: num_bins - 1,
+                        labels: {
+                            rotation: 0,
+                            autoRotation: false,
+                            step: 1,
+                            overflow: 'allow',
+                            crop: false,
+                            style: {
+                                fontSize: '10.5px',
+                                fontWeight: 'normal',
+                                textAlign: 'center',
+                                textOverflow: 'none',
+                                textShadow: '0px',
+                                textOutline: 'none'
+                            },
+                            formatter: function() {
+                                let lbl = String(bin_labels[this.value] || '');
+                                lbl = lbl.replace(/(\d)\s+lbs/i, '$1<br>lbs');
+                                lbl = lbl.replace(/^Under\s+5'0"/i, "Under<br>5'0\"");
+                                lbl = lbl.replace(/(\d'\d+")-(\d'\d+")/g, '$1-<br>$2');
+                                lbl = lbl.replace(/(\d+%)-(\d+%)/g, '$1-<br>$2');
+                                lbl = lbl.replace(/10th\s+or\s+higher/i, '10th or<br>higher');
+                                return lbl;
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: { text: '' },
+                        min: alpha - beta,
+                        max: alpha + beta,
+                        tickPositions: [alpha - beta, alpha - beta / 2, alpha, alpha + beta / 2, alpha + beta],
+                        labels: {
+                            style: { fontSize: '11px' },
+                            formatter: function() {
+                                return currency_a + this.value.toFixed(2);
+                            }
+                        },
+                        gridLineWidth: 0,
+                        lineWidth: 1,
+                        tickWidth: 1
+                    },
+                    series: [{
+                        data: advice_scores
+                    }],
+                    credits: { enabled: false },
+                    legend: { enabled: false }
+                });
+
+                const advTokensDiv = $('#round2_advice_tokens_div');
+                for (let b = 0; b < num_bins; b++) {
+                    const tVal = advice_tokens[b];
+                    const cellHtml =
+                        "<div class='col d-flex align-items-stretch p-0'>" +
+                            "<div class='round2-advice-token-cell w-100'>" +
+                                "<span class='tok-num'>" + tVal + "</span>" +
+                                "<span class='tok-lbl'>" + tokens + "</span>" +
+                            "</div>" +
+                        "</div>";
+                    advTokensDiv.append(cellHtml);
+                }
+                syncRound2AdviceMargins(round2_advice_chart);
+            }
 
             // console.log(my_chart)
             // console.log(sliderRowMargins())

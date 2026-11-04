@@ -3,19 +3,332 @@
 
 {% block title %}{% endblock %}
 
+{% block style %}
+    <style>
+        html body .otree-body,
+        html body .container.otree-body {
+            max-width: 1600px !important;
+            width: 100% !important;
+        }
+
+        .advice-top-banner {
+            background: #1a1a2e;
+            color: #D4AF37;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .advice-source-header {
+            margin-bottom: 14px;
+        }
+
+        .advice-source-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .advice-source-subtitle {
+            font-size: 0.98rem;
+            font-style: italic;
+            color: #4b5563;
+            margin-bottom: 0;
+        }
+
+        .advice-stimulus-wrap img {
+            max-height: 430px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .advice-reminder-box {
+            background: #f8fbfd;
+            border: 1px solid #b8cfe3;
+            border-left: 4px solid #2979D0;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            color: #1f4e78;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .advice-bins {
+            flex-wrap: nowrap;
+        }
+
+        .advice-tokens-row {
+            margin-top: 4px;
+        }
+
+        .advice-token-cell {
+            text-align: center;
+            padding: 7px 3px;
+            margin: 0 2px;
+            background-color: #eef6fb;
+            border: 1px solid #b8cfe3;
+            border-radius: 5px;
+            line-height: 1.15;
+            white-space: nowrap;
+        }
+
+        .advice-token-cell .token-number {
+            display: block;
+            font-size: 20px;
+            font-weight: 800;
+            color: #1f4e78;
+        }
+
+        .advice-token-cell .token-unit {
+            display: block;
+            font-weight: 500;
+            font-size: 12px;
+            color: #4b5563;
+            margin-top: 2px;
+        }
+
+        .advice-reasoning-row {
+            margin-top: 8px;
+        }
+
+        .advice-reasoning-cell {
+            text-align: center;
+            padding: 6px 4px;
+            font-size: 12.5px;
+            line-height: 1.35;
+            color: #374151;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            margin: 0 2px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .advice-chart-heading {
+            text-align: center;
+            font-weight: 700;
+            color: #2979D0;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 
-    <!-- Label telling subject which question this advice is for -->
-    <div style="background: #1a1a2e; color: #D4AF37; border-radius: 8px;
-                padding: 12px 20px; margin-bottom: 20px; text-align: center;">
+    <!-- Top label telling subject which question this advice is for -->
+    <div class="advice-top-banner">
         <strong style="font-size: 1.1em;">
             📋 Advice for: {{ advice_label }}
         </strong>
     </div>
 
-    {{ include advice_path }}
+    <div class="row align-items-start">
+        <!-- LEFT COLUMN: Advice Source Header + Stimulus + Reminder Box -->
+        <div class="col-5">
+            <div class="advice-source-header">
+                <div class="advice-source-title">{{ advice_header }}</div>
+                <p class="advice-source-subtitle">{{ advice_subheader }}</p>
+            </div>
 
-    <div style="display: flex; justify-content: center; margin-top: 20px;">
-    {% next_button %}
+            <div class="advice-stimulus-wrap">
+                {{ include stimulus_path | safe }}
+            </div>
 
+            <div class="advice-reminder-box">
+                You will still have access to this advice when you make your follow-up report in Round 2. No need to memorize it!
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Read-Only Highcharts Advice Histogram + Advised Tokens + Optional Rationale -->
+        <div class="col-7">
+            <div class="advice-chart-heading">
+                {{ advice_short_title }}
+            </div>
+
+            <div id="advice_chart_container" style="min-height: 380px;"></div>
+
+            <!-- Advised Token Allocation per bin (aligned with chart bars) -->
+            <div class="row advice-bins advice-tokens-row g-0" id="advice_tokens_div"></div>
+
+            <!-- Optional Per-Bin Text Rationale (aligned with chart bars) -->
+            <div class="row advice-bins advice-reasoning-row g-0" id="advice_reasoning_div" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: center; margin-top: 24px;">
+        {% next_button %}
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'highcharts.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bin_labels = {{ bin_labels }};
+            const num_bins = bin_labels.length;
+            const advice_tokens = {{ advice_tokens }};
+            const advice_reasoning = {{ advice_reasoning }};
+            const num_tokens = {{ num_tokens }};
+            const alpha = {{ alpha }};
+            const beta = {{ beta }};
+            const currency_a = '';
+            const tokens_label = 'tokens';
+
+            function formatBinLabelHorizontal(label) {
+                if (!label) return '';
+                let s = String(label);
+                // Ensure weight labels put "lbs" on a second line consistently
+                s = s.replace(/(\d)\s+lbs/i, '$1<br>lbs');
+                // Wrap longer labels onto two lines so Highcharts never tilts them
+                s = s.replace(/^Under\s+5'0"/i, "Under<br>5'0\"");
+                s = s.replace(/10th\s+or\s+higher/i, '10th or<br>higher');
+                return s;
+            }
+
+            function computeQSRScores(tokenArr) {
+                let ss = 0;
+                for (let b = 0; b < num_bins; b++) {
+                    ss += Math.pow(tokenArr[b] / num_tokens, 2);
+                }
+                const scores = new Array(num_bins);
+                for (let i = 0; i < num_bins; i++) {
+                    scores[i] = alpha + beta * ((2 * (tokenArr[i] / num_tokens)) - ss);
+                }
+                return scores;
+            }
+
+            const advice_scores = computeQSRScores(advice_tokens);
+
+            function syncAdviceRowMargins(chart) {
+                if (!chart || !chart.xAxis || !chart.xAxis[0]) return;
+                const leftInt = chart.xAxis[0].toPixels(-0.5, false) - chart.container.clientLeft;
+                const rightInt = chart.container.clientWidth - chart.xAxis[0].toPixels(num_bins - 0.5, false);
+                $('.advice-bins').css({
+                    'margin-left': leftInt + 'px',
+                    'margin-right': rightInt + 'px'
+                });
+            }
+
+            const advice_chart = Highcharts.chart('advice_chart_container', {
+                title: {
+                    text: ''
+                },
+                chart: {
+                    type: 'column',
+                    animation: false,
+                    marginTop: 25,
+                    events: {
+                        render: function() {
+                            syncAdviceRowMargins(this);
+                        }
+                    }
+                },
+                colors: ['#6495ED'],
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        enableMouseTracking: false,
+                        states: {
+                            hover: { enabled: false }
+                        }
+                    },
+                    column: {
+                        maxPointWidth: 100,
+                        dataLabels: {
+                            enabled: false
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: false
+                },
+                xAxis: {
+                    tickLength: 0,
+                    min: 0,
+                    max: num_bins - 1,
+                    labels: {
+                        rotation: 0,
+                        autoRotation: false,
+                        overflow: 'allow',
+                        crop: false,
+                        style: {
+                            fontSize: '13px',
+                            fontWeight: 'normal',
+                            textAlign: 'center',
+                            textShadow: '0px',
+                            textOutline: 'none'
+                        },
+                        formatter: function() {
+                            return formatBinLabelHorizontal(bin_labels[this.value]);
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    min: alpha - beta,
+                    max: alpha + beta,
+                    tickPositions: [alpha - beta, alpha - beta / 2, alpha, alpha + beta / 2, alpha + beta],
+                    labels: {
+                        formatter: function() {
+                            return currency_a + this.value.toFixed(2);
+                        }
+                    },
+                    gridLineWidth: 0,
+                    lineWidth: 1,
+                    tickWidth: 1
+                },
+                series: [{
+                    data: advice_scores
+                }],
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                }
+            });
+
+            // Populate advised token allocations underneath each bin (number on top, "tokens" below)
+            const tokensDiv = $('#advice_tokens_div');
+            for (let i = 0; i < num_bins; i++) {
+                const tokVal = advice_tokens[i];
+                const cellHtml =
+                    "<div class='col d-flex align-items-stretch p-0'>" +
+                        "<div class='advice-token-cell w-100'>" +
+                            "<span class='token-number'>" + tokVal + "</span>" +
+                            "<span class='token-unit'>" + tokens_label + "</span>" +
+                        "</div>" +
+                    "</div>";
+                tokensDiv.append(cellHtml);
+            }
+
+            // Populate per-bin reasoning underneath token counts if present
+            if (advice_reasoning && advice_reasoning.length === num_bins) {
+                const reasoningDiv = $('#advice_reasoning_div');
+                for (let i = 0; i < num_bins; i++) {
+                    const rText = advice_reasoning[i] || '';
+                    const rHtml =
+                        "<div class='col d-flex align-items-stretch p-0'>" +
+                            "<div class='advice-reasoning-cell w-100'>" + rText + "</div>" +
+                        "</div>";
+                    reasoningDiv.append(rHtml);
+                }
+                reasoningDiv.show();
+            }
+
+            syncAdviceRowMargins(advice_chart);
+        });
+    </script>
 {% endblock %}

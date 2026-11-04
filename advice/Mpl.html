@@ -51,10 +51,16 @@
     </table>
 
     <input type="hidden" name="mpl_response" id="response" />
-    <div style="display: flex; justify-content: center; margin-top: 20px;">
-
-    <button id="submit" class="otree-btn-next btn btn-primary" disabled>Submit</button>
-
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="submit" class="otree-btn-next btn btn-primary" disabled>Submit</button>
+        {{ if DEBUG }}
+        <div style="margin-top: 12px;">
+            <button type="button" class="btn btn-warning btn-sm" onclick="devBuyAllMpl()" style="font-size: 1.05rem; padding: 8px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                DEV: Buy Advice (All Rows) &amp; Submit (or press SPACE)
+            </button>
+        </div>
+        {{ endif }}
+    </div>
 
 {% endblock %}
 
@@ -95,6 +101,25 @@
 
         });
 
+        {{ if DEBUG }}
+        function devBuyAllMpl() {
+            for (let r = 0; r < num_rows; r++) {
+                response[r] = 0;
+                $('#R' + r).removeClass('selected');
+                $('#L' + r).addClass('selected');
+            }
+            $("#response").val(JSON.stringify(response));
+            $('#submit').prop('disabled', false);
+            $('#submit').click();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                devBuyAllMpl();
+            }
+        });
+        {{ endif }}
+
     </script>
 {% endblock %}
-

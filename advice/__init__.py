@@ -3,6 +3,7 @@ import json
 import csv
 import random
 import settings
+from .advice_data import get_advice_data
 
 
 doc = """
@@ -189,6 +190,11 @@ class Pre_beliefs(Page):
             al_advice_source=advice_vars['al_advice_source'],
             song_title=advice_vars['song_title'],
             advice_label=advice_vars['advice_label'],
+            advice_tokens=advice_vars['advice_tokens'],
+            advice_reasoning=advice_vars['advice_reasoning'],
+            advice_header=advice_vars['advice_header'],
+            advice_subheader=advice_vars['advice_subheader'],
+            advice_short_title=advice_vars['advice_short_title'],
         )
 
 class Preview_Advice(Page):
@@ -263,6 +269,7 @@ class Mpl(Page):
             num_rows=num_rows,
             rows=rows,
             treatment_label = player.treatment.capitalize(),
+            DEBUG=settings.DEBUG,
         )
 
     @staticmethod
@@ -406,6 +413,13 @@ class Advice(Page):
             16: 'Song Ranking — Song 2',
         }
         advice_label = task_labels.get(player.round_number, '')
+        bin_labels = json.loads(player.bin_labels)
+        advice_info = get_advice_data(
+            qid=player.qid,
+            treatment=player.treatment,
+            al_advice_source=player.al_advice_source,
+            song_title=song_title,
+        )
 
         return dict(
             advice_path=advice_path,
@@ -414,6 +428,16 @@ class Advice(Page):
             qid=player.qid,
             song_title=song_title,
             advice_label=advice_label,
+            stimulus_path=f"shared_stimulus/{player.qid}.html",
+            bin_labels=bin_labels,
+            alpha=player.alpha,
+            beta=player.beta,
+            num_tokens=player.num_tokens,
+            advice_tokens=advice_info['advice_tokens'],
+            advice_reasoning=advice_info['advice_reasoning'],
+            advice_header=advice_info['advice_header'],
+            advice_subheader=advice_info['advice_subheader'],
+            advice_short_title=advice_info['advice_short_title'],
         )
 
 
@@ -554,6 +578,11 @@ class Post_beliefs(Page):
             al_advice_source=advice_vars['al_advice_source'],
             song_title=advice_vars['song_title'],
             advice_label=advice_vars['advice_label'],
+            advice_tokens=advice_vars['advice_tokens'],
+            advice_reasoning=advice_vars['advice_reasoning'],
+            advice_header=advice_vars['advice_header'],
+            advice_subheader=advice_vars['advice_subheader'],
+            advice_short_title=advice_vars['advice_short_title'],
             algorithm_table_image=algorithm_table_image,
         )
 

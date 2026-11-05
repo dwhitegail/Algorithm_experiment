@@ -12,55 +12,15 @@
     }
 </style>
 
-<div style="max-width: 1000px; margin: 40px auto; padding: 0 24px;">
+<div style="max-width: 1300px; margin: 40px auto; padding: 0 24px;">
 
-    <div style="border-bottom: 2px solid #2979D0; padding-bottom: 20px; margin-bottom: 32px;">
+<!--    <div style="border-bottom: 2px solid #2979D0; padding-bottom: 20px; margin-bottom: 32px;">-->
+    <div style="padding-bottom: 10px; margin-bottom: 24px;">
         <h2 style="font-weight: 700; color: #1a1a2e; margin: 0 0 10px 0; font-size: 1.8rem;">
             Round 1 Complete — {{ task_name }} Task <br>
         </h2>
         <p style="margin: 0 0 16px 0; color: #555; font-size: 1.2rem; line-height: 1.7;">
             YOU HAVE COMPLETED <strong>Round 1</strong> for the <strong>{{ task_name }} Task </strong>. <br>
-<!--            <strong>ON THE NEXT PAGE</strong>: You will see your-->
-<!--                <span style="-->
-<!--                    display: inline-block;-->
-<!--                    background: #FFE600;-->
-<!--                    color: #1a1a2e;-->
-<!--                    font-weight: 700;-->
-<!--                    font-size: 1.2rem;-->
-<!--                    padding: 3px 12px;-->
-<!--                    border-radius: 4px;-->
-<!--                    vertical-align: middle;-->
-<!--                ">Round 1 allocation preloaded into Round 2</span>-->
-<!--                as shown in the example below.<br><br>-->
-<!--            If you want your Round 2 allocations to remain the same as in Round 1, then check the box that states-->
-<!--            <span style="-->
-<!--                    display: inline-block;-->
-<!--                    background: #E8F0FE;-->
-<!--                    color: #1a1a2e;-->
-<!--                    font-weight: 700;-->
-<!--                    font-size: 1.2rem;-->
-<!--                    padding: 3px 12px;-->
-<!--                    border-radius: 4px;-->
-<!--                    border: 1px solid #2979D0;-->
-<!--                    vertical-align: middle;-->
-<!--                ">I have reviewed my Round 1 allocation and am ready to submit.</span>-->
-<!--                This button is located just above the "Submit" button.<br><br>-->
-
-<!--            If you purchased and received advice, you will still have access to it via the-->
-<!--            <span style="-->
-<!--                display: inline-block;-->
-<!--                background: #E8F0FE;-->
-<!--                color: #1a1a2e;-->
-<!--                font-weight: 600;-->
-<!--                font-size: 1.1rem;-->
-<!--                padding: 4px 14px;-->
-<!--                border-radius: 4px;-->
-<!--                border: 1px solid #2979D0;-->
-<!--                vertical-align: middle;-->
-<!--            ">Advice Tab</span>-->
-<!--            located at the bottom of the page. <br>-->
-<!--            If you did NOT purchase advice, you will see everything else except the advice tab.-->
-<!--        </p>-->
 
     </div>
 
@@ -101,28 +61,28 @@
                     vertical-align: middle;
                 ">I have reviewed my Round 1 allocation and am ready to submit.</span>
                 This box is located just above the "Submit" button.</li>
-            <li>If you purchased and received advice, a miniature table of the advice allocation will be shown under the
-                picture or stimuli used for the question being answered. You can also view the extensive advice
-                you received earlier for this question via the
-            <span style="
-                display: inline-block;
-                background: #E8F0FE;
-                color: #1a1a2e;
-                font-weight: 600;
-                font-size: 1rem;
-                padding: 4px 14px;
-                border-radius: 4px;
-                border: 1px solid #2979D0;
-                vertical-align: middle;
-            ">Advice Tab</span>
-            located at the bottom of the page. <br>
-            <li>If you <strong>DID NOT</strong> purchase advice, you will see everything else except the advice tab.</li>
+            <li>If you <strong>purchased and received advice</strong>, a histogram of the advice allocation will be shown under the
+                picture or stimuli used for the question being answered.
+<!--                You can also view the extensive advice you received earlier for this question via the-->
+<!--            <span style="-->
+<!--                display: inline-block;-->
+<!--                background: #E8F0FE;-->
+<!--                color: #1a1a2e;-->
+<!--                font-weight: 600;-->
+<!--                font-size: 1rem;-->
+<!--                padding: 4px 14px;-->
+<!--                border-radius: 4px;-->
+<!--                border: 1px solid #2979D0;-->
+<!--                vertical-align: middle;-->
+<!--            ">Advice Tab</span>-->
+<!--            located at the bottom of the page. <br>-->
+            <li>If you <strong>DID NOT</strong> purchase advice, you will see everything else except the advice histogram.</li>
             <li>Your Round 2 report will be submitted when you click <strong>Submit</strong>.</li>
         </ul>
 
-        <img src="{% static 'post_pic.jpg' %}"
-             alt="Advice tab illustration"
-             style="max-width: 100%; border: 1px solid #dce3f0; border-radius: 6px; display: block;">
+        <img src="{% static 'post_pic.png' %}"
+             alt="Round 2 Instructions illustration"
+             style="max-width: 1100px; width: 95%; height: auto; border: 1px solid #dce3f0; margin: 25px auto 0; border-radius: 6px; display: block;">
     </div>
 
     <div style="text-align: center;">

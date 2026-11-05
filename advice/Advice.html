@@ -20,24 +20,30 @@
             text-align: center;
         }
 
-        .advice-source-header {
-            margin-bottom: 14px;
+        .advice-right-header-box {
+            background: #eef6fb;
+            border: 1px solid #b8cfe3;
+            border-left: 5px solid #2979D0;
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 22px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .advice-source-title {
-            font-size: 1.15rem;
+        .advice-chart-heading {
             font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 4px;
+            color: #1f4e78;
+            font-size: 22px;
+            margin-bottom: 6px;
         }
 
         .advice-source-subtitle {
             font-size: 20px;
-            font-style: italic;
             font-weight: 400;
-            line-height: 1.6;
-            color: #4b5563;
+            color: #1f2937;
             margin-bottom: 0;
+            line-height: 1.45;
         }
 
         .advice-stimulus-wrap img {
@@ -113,14 +119,6 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-
-        .advice-chart-heading {
-            text-align: center;
-            font-weight: 700;
-            color: #2979D0;
-            font-size: 1.05rem;
-            margin-bottom: 6px;
-        }
     </style>
 {% endblock %}
 
@@ -134,13 +132,8 @@
     </div>
 
     <div class="row align-items-start">
-        <!-- LEFT COLUMN: Advice Source Header + Stimulus + Reminder Box -->
+        <!-- LEFT COLUMN: Stimulus + Reminder Box -->
         <div class="col-5">
-            <div class="advice-source-header">
-                <div class="advice-source-title">{{ advice_header }}</div>
-                <p class="advice-source-subtitle">{{ advice_subheader }}</p>
-            </div>
-
             <div class="advice-stimulus-wrap">
                 {{ include stimulus_path | safe }}
             </div>
@@ -150,10 +143,15 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Read-Only Highcharts Advice Histogram + Advised Tokens + Optional Rationale -->
+        <!-- RIGHT COLUMN: Prominent Advice Source Banner + Read-Only Highcharts Advice Histogram + Advised Tokens + Optional Rationale -->
         <div class="col-7">
-            <div class="advice-chart-heading">
-                {{ advice_short_title }}
+            <div class="advice-right-header-box">
+                <div class="advice-chart-heading">
+                    {{ advice_short_title }}
+                </div>
+                <p class="advice-source-subtitle">
+                    {{ advice_subheader }}
+                </p>
             </div>
 
             <div id="advice_chart_container" style="min-height: 380px;"></div>

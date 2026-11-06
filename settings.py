@@ -328,7 +328,7 @@ SECRET_KEY = '4720801523770'
 
 INSTALLED_APPS = ['otree']
 
-DEBUG = True
+DEBUG = False
 
 
 # import os
